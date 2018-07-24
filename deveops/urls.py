@@ -22,6 +22,8 @@ Including another URLconf
 from django.urls import include, path, re_path
 from django.views.static import serve
 from django.conf import settings
+# from rest_framework.documentation import include_docs_urls
+
 urlpatterns = [
     # API
     path(r'api-auth/', include('authority.urls.api_urls')),
@@ -30,7 +32,7 @@ urlpatterns = [
     path(r'api-utils/', include('utils.urls.api_urls')),
     path(r'api-work/', include('work.urls.api_urls')),
     path(r'api-var/', include('variable.urls.api_urls')),
-    path(r'api-dns/', include('yodns.urls.api_urls')),
+    # path(r'api-dns/', include('yodns.urls.api_urls')),
     path(r'api-db/', include('db.urls.api_urls')),
     # path(r'api-app/', include('application.urls.api_urls')),
     # url(r'^api-application/',include('application.urls.api_urls',namespace='api-application')),
@@ -39,7 +41,7 @@ urlpatterns = [
     path(r'api-dashboard/', include('dashboard.urls.api_urls')),
     path(r'api-monitor/', include('monitor.urls.api_urls')),
     # path(r'api-timeline/', include('timeline.urls.api_urls')),
-
+    # path('docs/',include_docs_urls(title=u'接口说明文档',authentication_classes=[],permission_classes=[])),
     re_path(r'media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
 ]
 

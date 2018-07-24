@@ -111,7 +111,7 @@ def get_qrcode(user):
     file = settings.QCODE_ROOT+'/'+file_name+'.png'
     if not os.path.exists(file):
         data = pyotp.totp.TOTP(user.qrcode).provisioning_uri(user.username, issuer_name="devEops")
-        print('data',data)
+        # print('data',data)
         qr = QRCode(
             version=1,
             error_correction=constants.ERROR_CORRECT_L,
