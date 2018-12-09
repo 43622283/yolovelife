@@ -7,6 +7,7 @@ from deveops.tools.aliyun_v2.request.cms.base import AliyunCMSTool
 from deveops.tools.aliyun_v2.analyze.cms import AnalyzeCMSTool
 from django.conf import settings
 
+
 class AliyunCMSECSTool(AliyunCMSTool):
     def action_get_metric(self):
         super(AliyunCMSECSTool, self).action_get_metric()
@@ -60,9 +61,34 @@ class AliyunCMSECSTool(AliyunCMSTool):
         results = self.post()
         yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))
 
-
     def tool_get_metric_disk_use(self, instance_id, time):
         self.action_get_metric()
         self.time_select(time)
         self.request.add_query_param('Metric', 'diskusage_used')
-        self.request.add_query_param('Dimensions', str({'instanceId': instance_id,'device':'/dev/vda1'}))
+        self.request.add_query_param('Dimensions', str({'instanceId': instance_id, 'device':'/dev/vda1'}))
+        results = self.post()
+        yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))
+
+    def tool_get_metric_load_1m(self, instance_id, time):
+        self.action_get_metric()
+        self.time_select(time)
+        self.request.add_query_param('Metric', 'load_1m')
+        self.request.add_query_param('Dimensions', str({'instanceId': instance_id}))
+        results = self.post()
+        yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))
+
+    def tool_get_metric_load_5m(self, instance_id, time):
+        self.action_get_metric()
+        self.time_select(time)
+        self.request.add_query_param('Metric', 'load_5m')
+        self.request.add_query_param('Dimensions', str({'instanceId': instance_id}))
+        results = self.post()
+        yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))
+
+    def tool_get_metric_load_15m(self, instance_id, time):
+        self.action_get_metric()
+        self.time_select(time)
+        self.request.add_query_param('Metric', 'load_15m')
+        self.request.add_query_param('Dimensions', str({'instanceId': instance_id}))
+        results = self.post()
+        yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))

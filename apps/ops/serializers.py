@@ -98,9 +98,10 @@ class QuickGitMissionSerializer(serializers.ModelSerializer):
             'tasks': [
                 {
                     'name': 'Checkout',
-                    'git': 'repo={SRC} dest={{BASE}}/code version={BRANCH}'.format(
-                        SRC=validated_data['src_git'],
-                        BRANCH=validated_data['src_branch'],
+                    'git': 'repo={0} dest={1}/code version={2}'.format(
+                        validated_data['src_git'],
+                        "{{BASE}}",
+                        validated_data['src_branch'],
                     ),
                 }
             ]
@@ -119,9 +120,10 @@ class QuickGitMissionSerializer(serializers.ModelSerializer):
             'tasks': [
                 {
                     'name': 'Sync',
-                    'synchronize': 'src={{BASE}}/code{SRC} dest={DEST} compress=yes use_ssh_args=yes'.format(
-                        SRC=validated_data['src_path'],
-                        DEST=validated_data['dest_path'],
+                    'synchronize': 'src={0}/code{1} dest={2} compress=yes use_ssh_args=yes'.format(
+                        "{{BASE}}",
+                        validated_data['src_path'],
+                        validated_data['dest_path'],
                     ),
                 }
             ]

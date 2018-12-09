@@ -49,7 +49,6 @@ class AliyunCDNTool(AliyunTool):
         results = self.post()
         return results
 
-
     def tool_get_task(self, task_id):
         self.action_get_cdn_task()
         self.request.add_query_param('TaskId', task_id)

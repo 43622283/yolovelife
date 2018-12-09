@@ -4,11 +4,13 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 import redis
+import json
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import Response, status
 from rest_framework.views import APIView
 from deveops.api import WebTokenAuthentication
 from django.conf import settings
+from manager.models import Group
 
 __all__ = [
     "DashboardCountAPI", "DashboardGroupAPI", "DashboardWorkAPI",
@@ -44,7 +46,7 @@ class DashboardWorkAPI(WebTokenAuthentication, APIView):
             db=settings.REDIS_SPACE,
             password=settings.REDIS_PASSWD
         )
-        week_list = ['Won', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
+        week_list = [b'Won', b'Tue', b'Wed', b'Thur', b'Fri', b'Sat', b'Sun']
         TEMP = connect.hgetall('WORK',)
         WORK = []
         for key in week_list:
@@ -53,7 +55,7 @@ class DashboardWorkAPI(WebTokenAuthentication, APIView):
                 '执行次数': TEMP[key]
             })
         return Response(
-            {'title': '一周内工单执行','dataset': WORK} or {}, status.HTTP_200_OK
+            {'title': '一周内工单执行', 'dataset': WORK} or {}, status.HTTP_200_OK
         )
 
 
@@ -76,3 +78,30 @@ class DashboardGroupAPI(WebTokenAuthentication, APIView):
         return Response(
             {'title': '主机统计', 'dataset': GROUP} or {}, status.HTTP_200_OK
         )
+
+
+class DashboardGroupRandomLoadAPI(WebTokenAuthentication, APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        connect = redis.StrictRedis(
+            host=settings.REDIS_HOST,
+            port=settings.REDIS_PORT,
+            db=settings.REDIS_SPACE,
+            password=settings.REDIS_PASSWD
+        )
+        group = Group.objects.order_by('?')[:1].get()
+        results = connect.get('GROUP'+str(group.uuid))
+        if results is not None:
+            return Response(
+                {
+                    'data': json.loads(str(results,encoding='utf-8')),
+                    'group': group.name
+                } or {},
+                status.HTTP_200_OK
+            )
+        else:
+            return Response({
+                'data': '',
+                'group': '',
+            }, status.HTTP_404_NOT_FOUND)

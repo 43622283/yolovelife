@@ -4,10 +4,13 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 import redis
+import json
+import time
 from django.utils import timezone as datetime
+from django.db.models import Q
 from celery.task import periodic_task
-from celery.schedules import crontab
 from django.conf import settings
+from deveops.tools.aliyun_v2.request.cms.ecs import AliyunCMSECSTool
 from manager.models import Group, Host
 from zdb.models import Instance
 from ops.models import Push_Mission
@@ -119,3 +122,25 @@ def statistics_group():
             break
         connect.hset('GROUP', item[0], item[1])
         count = count+1
+
+
+@periodic_task(run_every=settings.DASHBOARD_GROUP_LOAD)
+def statistics_group_load():
+    for group in Group.objects.all():
+        # DELETE
+        connect.delete('GROUP'+str(group.uuid))
+        group_list = list()
+        for host in group.hosts.filter(~(Q(aliyun_id='') or Q(aliyun_id__isnull=True)))[:10]:
+            API = AliyunCMSECSTool()
+            results = API.tool_get_metric_load_5m(host.aliyun_id, 1).__next__()
+            group_list.append({
+                'title': host.hostname,
+                'dataset': results,
+            })
+            time.sleep(5)
+
+        connect.set(
+            'GROUP'+str(group.uuid),
+            json.dumps(group_list)
+        )
+

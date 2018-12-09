@@ -49,6 +49,9 @@ def choose_type(domain):
         return settings.TYPE_CDN_QN
     elif 'wangs' in CNAME:
         return settings.TYPE_CDN_WS
+    else:
+        return settings.TYPE_CDN_NONE
+
 
 def process(API, obj):
     task_id = API.tool_flush_cdn(obj.url)['RefreshTaskId']
@@ -67,15 +70,17 @@ def process(API, obj):
 
 @task(base=CDNTask)
 def refresh_cdn(obj):
-    type = choose_type(pick_domain(obj.url))
+    type_id = choose_type(pick_domain(obj.url))
     CDN.objects.filter(
         uuid=obj.uuid,
         id=obj.id,
-    ).update(type=type)
+    ).update(type=type_id)
+    if type_id == settings.TYPE_CDN_NONE:
+        return
 
-    if obj.type == settings.TYPE_CDN_ALIYUN:
+    if type_id == settings.TYPE_CDN_ALIYUN:
         API = AliyunCDNTool()
         process(API, obj)
-    elif obj.type == settings.TYPE_CDN_QN:
+    elif type_id == settings.TYPE_CDN_QN:
         API = QiNiuCDNTool()
         process(API, obj)

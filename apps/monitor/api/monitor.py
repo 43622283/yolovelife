@@ -96,3 +96,48 @@ class MonitorHostAliyunDetailDiskUse(WebTokenAuthentication, APIView):
                 self.get_object().aliyun_id,
                 int(kwargs['time'])).__next__()
         })
+
+
+class MonitorHostAliyunDetailLoad1m(WebTokenAuthentication, APIView):
+    permission_classes = [MonitorPermission.MonitorAliyunAPIRequiredMixin, IsAuthenticated]
+
+    def get_object(self):
+        return Host.objects.filter(uuid=self.kwargs['pk']).get()
+
+    def get(self, request, *args, **kwargs):
+        from deveops.tools.aliyun_v2.request.cms.ecs import AliyunCMSECSTool
+        API = AliyunCMSECSTool()
+        return Response({
+            'title': settings.LANGUAGE.MonitorHostAliyunDetailLoad1m,
+            'dataset': API.tool_get_metric_load_1m(self.get_object().aliyun_id, int(kwargs['time'])).__next__()
+        })
+
+
+class MonitorHostAliyunDetailLoad5m(WebTokenAuthentication, APIView):
+    permission_classes = [MonitorPermission.MonitorAliyunAPIRequiredMixin, IsAuthenticated]
+
+    def get_object(self):
+        return Host.objects.filter(uuid=self.kwargs['pk']).get()
+
+    def get(self, request, *args, **kwargs):
+        from deveops.tools.aliyun_v2.request.cms.ecs import AliyunCMSECSTool
+        API = AliyunCMSECSTool()
+        return Response({
+            'title': settings.LANGUAGE.MonitorHostAliyunDetailLoad5m,
+            'dataset': API.tool_get_metric_load_5m(self.get_object().aliyun_id, int(kwargs['time'])).__next__()
+        })
+
+
+class MonitorHostAliyunDetailLoad15m(WebTokenAuthentication, APIView):
+    permission_classes = [MonitorPermission.MonitorAliyunAPIRequiredMixin, IsAuthenticated]
+
+    def get_object(self):
+        return Host.objects.filter(uuid=self.kwargs['pk']).get()
+
+    def get(self, request, *args, **kwargs):
+        from deveops.tools.aliyun_v2.request.cms.ecs import AliyunCMSECSTool
+        API = AliyunCMSECSTool()
+        return Response({
+            'title': settings.LANGUAGE.MonitorHostAliyunDetailLoad15m,
+            'dataset': API.tool_get_metric_load_15m(self.get_object().aliyun_id, int(kwargs['time'])).__next__()
+        })

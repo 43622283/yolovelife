@@ -10,4 +10,5 @@ urlpatterns = [
     path(r'v1/count/', DashboardAPI.DashboardCountAPI.as_view()),
     path(r'v1/work/', DashboardAPI.DashboardWorkAPI.as_view()),
     path(r'v1/group/', DashboardAPI.DashboardGroupAPI.as_view()),
+    path(r'v1/group/random/load/', DashboardAPI.DashboardGroupRandomLoadAPI.as_view()),
 ]

@@ -5,7 +5,6 @@
 from deveops.tools.aliyun_v2.request.base import AliyunTool
 from django.conf import settings
 
-
 class AliyunDNSTool(AliyunTool):
     def init_action(self):
         self.request.set_domain('pvtz.aliyuncs.com')
