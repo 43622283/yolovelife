@@ -28,25 +28,6 @@ class MetaSerializer(serializers.ModelSerializer):
             'id', 'uuid', 'group_name'
         )
 
-    def create(self, validated_data):
-        hosts = None
-
-        # if 'hosts' in validated_data.keys():
-        #     hosts = validated_data.pop('hosts')
-
-        obj = super(MetaSerializer, self).create(validated_data)
-
-        # if hosts is not None:
-        #     obj.hosts.set(hosts)
-        obj.save()
-
-        return obj
-
-    def update(self, instance, validated_data):
-        obj = super(MetaSerializer, self).update(instance, validated_data)
-        obj.save()
-        return obj
-
 
 class MissionNeedFileSerializer(serializers.ModelSerializer):
     filelist = serializers.ListField(source='file_list', read_only=True)

@@ -24,18 +24,18 @@ class CodeWorkStatusSerializer(serializers.ModelSerializer):
 class CodeWorkCheckSerializer(CodeWorkStatusSerializer):
     def update(self, instance, validated_data):
         if len(instance.file_list) != 0:
-            instance.push_mission.status = settings.OPS_PUSH_MISSION_WAIT_UPLOAD
+            instance.push_mission.status = settings.STATUS_PUSH_MISSION_WAIT_UPLOAD
         else:
-            instance.push_mission.status = settings.OPS_PUSH_MISSION_WAIT_RUN
+            instance.push_mission.status = settings.STATUS_PUSH_MISSION_WAIT_RUN
         instance.push_mission.save()
-        return super(CodeWorkCheckSerializer,self).update(instance, {})
+        return super(CodeWorkCheckSerializer, self).update(instance, {})
 
 
 class CodeWorkRunSerializer(CodeWorkStatusSerializer):
     def update(self, instance, validated_data):
-        instance.push_mission.status = settings.OPS_PUSH_MISSION_WAIT_RUN
+        instance.push_mission.status = settings.STATUS_PUSH_MISSION_WAIT_RUN
         instance.save()
-        return super(CodeWorkRunSerializer,self).update(instance, {})
+        return super(CodeWorkRunSerializer, self).update(instance, {})
 
 
 class CodeWorkSerializer(serializers.HyperlinkedModelSerializer):
@@ -64,12 +64,12 @@ class CodeWorkSerializer(serializers.HyperlinkedModelSerializer):
 
         # 任务是否需要审核
         if mission.need_validate:
-            push_obj.status = settings.OPS_PUSH_MISSION_WAIT_EXAM
+            push_obj.status = settings.STATUS_PUSH_MISSION_WAIT_EXAM
         # 任务是否需要上传文件
         elif mission.file_list:
-            push_obj.status = settings.OPS_PUSH_MISSION_WAIT_UPLOAD
+            push_obj.status = settings.STATUS_PUSH_MISSION_WAIT_UPLOAD
         else:
-            push_obj.status = settings.OPS_PUSH_MISSION_WAIT_RUN
+            push_obj.status = settings.STATUS_PUSH_MISSION_WAIT_RUN
 
         push_obj.save()
 
@@ -122,9 +122,9 @@ class SafeWorkStatusSerializer(SafeWorkSerializer):
     def update(self, instance, validated_data):
         status = validated_data.pop('status')
         if status == 'done':
-            validated_data['status'] = settings.SAFEWORK_DONE
+            validated_data['status'] = settings.STATUS_SAFEWORK_DONE
         elif status == 'reject':
-            validated_data['status'] = settings.SAFEWORK_REJECT
+            validated_data['status'] = settings.STATUS_SAFEWORK_REJECT
         elif status == 'run':
-            validated_data['status'] = settings.SAFEWORK_WAIT_DONE
+            validated_data['status'] = settings.STATUS_SAFEWORK_WAIT_DONE
         return super(SafeWorkStatusSerializer, self).update(instance, validated_data)

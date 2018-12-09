@@ -45,7 +45,7 @@ class DiskSpaceCallback(Callback):
         if result._task.action != 'set_fact':
             percentage = result._result['stdout']
             connect_ip = result._host.address
-            print('Disk_Space',percentage,connect_ip)
+            print('Disk_Space', percentage, connect_ip)
             host = self.group.hosts.filter(connect_ip=connect_ip).get()
             if int(percentage[:-1]) > settings.SPACE_DISK_LIMIT:  # 磁盘溢出
                 print('溢出')

@@ -43,7 +43,8 @@ class Code_Work(Work):
     # 关联推出的任务
     user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True, on_delete=models.SET_NULL)
     mission = models.ForeignKey(Mission, related_name='works', null=True, blank=True, on_delete=models.SET_NULL)
-    push_mission = models.ForeignKey(Push_Mission, related_name='works', on_delete=models.SET_NULL, null=True, blank=True)
+    push_mission = models.ForeignKey(Push_Mission, related_name='works', on_delete=models.SET_NULL, null=True,
+                                     blank=True)
 
     class Meta:
         permissions = (
@@ -55,7 +56,6 @@ class Code_Work(Work):
             ('yo_upload_codework', u'为工单上传文件'),
             ('yo_results_codework', u'查看错误工单信息'),
         )
-
 
     @property
     def status(self):
@@ -80,18 +80,18 @@ class Code_Work(Work):
     def file_list(self,file_list):
         fs =FILE.objects.filter(uuid__in=file_list)
         self.push_mission.files.set(fs)
-        self.push_mission.status = settings.OPS_PUSH_MISSION_WAIT_RUN
+        self.push_mission.status = settings.STATUS_PUSH_MISSION_WAIT_RUN
         self.push_mission.save()
 
 
 class Safe_Work(Work):
     SAFE_WORK_STATUS = (
-        (settings.SAFEWORK_REJECT, '拒绝'),
-        (settings.SAFEWORK_WAIT_RUN, '等待执行'),
-        (settings.SAFEWORK_WAIT_DONE, '正在执行'),
-        (settings.SAFEWORK_DONE, '执行完毕'),
+        (settings.STATUS_SAFEWORK_REJECT, '拒绝'),
+        (settings.STATUS_SAFEWORK_WAIT_RUN, '等待执行'),
+        (settings.STATUS_SAFEWORK_WAIT_DONE, '正在执行'),
+        (settings.STATUS_SAFEWORK_DONE, '执行完毕'),
     )
-    _status = models.IntegerField(default=settings.SAFEWORK_WAIT_RUN, choices=SAFE_WORK_STATUS)
+    _status = models.IntegerField(default=settings.STATUS_SAFEWORK_WAIT_RUN, choices=SAFE_WORK_STATUS)
 
     # 来源
     src_group = models.OneToOneField(Group, related_name='src_safe_work', on_delete=models.SET_NULL, null=True, blank=True)

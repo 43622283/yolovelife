@@ -22,6 +22,16 @@ def null_tasks():
     }
 
 
+def null_mission():
+    return {
+        'gather_facts': 'no',
+        'hosts': ['localhost',],
+    }
+
+def null_vars():
+    return []
+
+
 class TASKS(models.Model):
     _tasks = JSONField(default=null_tasks)
 
@@ -138,23 +148,19 @@ class Mission(models.Model):
     def count(self):
         return self.push_missions.count()
 
-    # @property
     def _playbook(self):
         return yaml.dump(self.to_yaml(), default_flow_style=False)
-
-    def model_to_dict(self):
-        from django.forms.models import model_to_dict
-        return model_to_dict(self)
 
 
 class Push_Mission(models.Model):
     STATUS = (
-        (settings.OPS_PUSH_MISSION_WAIT_EXAM, '审核工单'), # 未审核
-        (settings.OPS_PUSH_MISSION_WAIT_UPLOAD, '上传文件'), # 未上传文件
-        (settings.OPS_PUSH_MISSION_WAIT_RUN, '执行工单'), # 未执行
-        (settings.OPS_PUSH_MISSION_RUNNING, '执行中'), # 执行中
-        (settings.OPS_PUSH_MISSION_SUCCESS, '执行完毕'), # 执行完毕
-        (settings.OPS_PUSH_MISSION_FAILED, '执行失败'), # 执行失败
+        (settings.STATUS_PUSH_MISSION_WAIT_EXAM, '审核工单'), # 未审核
+        (settings.STATUS_PUSH_MISSION_WAIT_UPLOAD, '上传文件'), # 未上传文件
+        (settings.STATUS_PUSH_MISSION_WAIT_RUN, '执行工单'), # 未执行
+        (settings.STATUS_PUSH_MISSION_RUNNING, '执行中'), # 执行中
+        (settings.STATUS_PUSH_MISSION_SUCCESS, '执行完毕'), # 执行完毕
+        (settings.STATUS_PUSH_MISSION_FAILED, '执行失败'), # 执行失败
+        (settings.STATUS_PUSH_MISSION_RERUN, '重新执行') # 重新执行
     )
 
     id = models.AutoField(primary_key=True)
@@ -171,6 +177,10 @@ class Push_Mission(models.Model):
     results = models.TextField()
     # 关联文件
     files = models.ManyToManyField(FILE, related_name='pushmission', blank=True)
+    # 执行的任务内容
+    to_yaml = JSONField(default=null_mission())
+    # 参数的内容
+    vars = JSONField(default=null_vars())
 
     @property
     def status(self):
@@ -183,7 +193,20 @@ class Push_Mission(models.Model):
             self._status = status
             self.save()
 
-    def results_append(self,results):
+    def vars_save(self, vars):
+        if self.mission or vars is None:
+            pass
+        elif vars:
+            pass
+
+    def mission_save(self, to_yaml):
+        if self.mission or to_yaml is None:
+            # self.to_yaml = self.mission
+            pass
+        elif to_yaml:
+            pass
+
+    def results_append(self, results):
         self.results = self.results + str(results)
         self.save()
 
