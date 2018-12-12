@@ -33,6 +33,9 @@ class Group(models.Model):
     key = models.OneToOneField(Key, related_name='group', on_delete=models.SET_NULL, null=True, blank=True)
     jumper = models.OneToOneField(Jumper, related_name='group', on_delete=models.SET_NULL, null=True, blank=True)
 
+    # 更改密码
+    cycle = models.IntegerField(default=settings.PASSWORD_LIMIT)
+
     class Meta:
         permissions = (('yo_list_group', u'罗列应用组'),
                        ('yo_create_group', u'新增应用组'),
@@ -88,6 +91,11 @@ class Group(models.Model):
         var_dict['JUMPER_IP'] = self.jumper.connect_ip
         var_dict['JUMPER_PORT'] = self.jumper.sshport
         return var_dict
+
+    def run_cycle(self):
+        if self.jumper.status == settings.STATUS_JUMPER_CAN_BE_USE and self.cycle > 0:
+            self.cycle = self.cycle - 1
+            self.save()
 
 
 class Host(models.Model):

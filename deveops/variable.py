@@ -107,6 +107,7 @@ TIMELINE_KEY_VALUE = {
     'Host_HOST_UPDATE':11,
     'Host_HOST_DELETE':12,
     'Host_HOST_SORT':13,
+    'Host_HOST_PASSWORD':14,
     # Group
     'Group_GROUP_CREATE':20,
     'Group_GROUP_UPDATE':21,

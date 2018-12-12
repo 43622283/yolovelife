@@ -10,11 +10,16 @@ DASHBOARD_GROUP_LOAD = crontab(minute="*")
 
 MANAGER_HOST_TIME = crontab(minute='*/30', day_of_week="sunday")
 
-MANAGER_HOST_SSH_CHECK = crontab(minute='*/10', day_of_week="sunday")
+MANAGER_HOST_SSH_CHECK = crontab(minute='*')#/10', day_of_week="sunday")
 
 MANAGER_HOST_LOAD_CHECK = crontab(minute='*/30', day_of_week="sunday")
 
 MANAGER_HOST_DISK_CHECK = crontab(minute='*/15', day_of_week="sunday")
+
+MANAGER_PASSWORD_CHECK = crontab(minute='11', hour='3')
+
+MANAGER_PASSWORD_CHANGE = crontab(minute='*')
+# MANAGER_PASSWORD_CHANGE = crontab(minute='11', hour='3', day_of_month='29')
 
 POOL_SLB = crontab(minute='*/30', day_of_week="sunday")
 

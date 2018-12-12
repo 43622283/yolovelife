@@ -10,7 +10,7 @@ from celery.task import periodic_task
 from django.db.models import Q
 from django.conf import settings
 from manager.models import Host, Group
-from manager.ansible_v2.callback import SSHCallback, DiskInodeCallback, DiskSpaceCallback, UptimeCallback
+from manager.ansible_v2.callback import SSHCallback, DiskInodeCallback, DiskSpaceCallback, UptimeCallback, PasswordCallback
 from deveops.ansible_v2.playbook import Playbook
 
 
@@ -206,3 +206,47 @@ def run_uptime(group):
 
     uptime_playbook.import_task(UPTIME_PLAY_SOURCE)
     uptime_playbook.run()
+
+
+def run_password(group):
+    # 准备变量
+    vars_dict = group.vars_dict
+    vars_dict['TOOL'] = settings.TOOL_ROOT + '/'
+
+    # 创建临时目录
+    TMP = settings.OPS_ROOT + '/' + str(time.time()) + '/'
+    if not os.path.exists(TMP):
+        os.makedirs(TMP)
+
+    KEY = TMP + str(time.time()) + '.key'
+    write_key(group.key, KEY)
+
+    # Playbook实例
+    callback = PasswordCallback(group)
+    password_playbook = Playbook(group, KEY, callback)
+    print(vars_dict)
+    password_playbook.import_vars(vars_dict)
+    from manager.ansible_v2.playsource import PASSWORD_CHANGE_PLAY_SOURCE
+
+    PASSWORD_CHANGE_PLAY_SOURCE[0]['hosts'] = list(group.hosts.filter(
+        Q(_status=settings.STATUS_HOST_CAN_BE_USE)
+    ).values_list('connect_ip', flat=True))
+
+    print(PASSWORD_CHANGE_PLAY_SOURCE)
+    password_playbook.import_task(PASSWORD_CHANGE_PLAY_SOURCE)
+    password_playbook.run()
+
+
+@periodic_task(run_every=settings.MANAGER_PASSWORD_CHECK)
+def password_check():
+    for group in Group.objects.filter(jumper___status=settings.STATUS_JUMPER_CAN_BE_USE):
+        group.run_cycle()
+
+
+@periodic_task(run_every=settings.MANAGER_PASSWORD_CHANGE)
+def password_change():
+    for group in Group.objects.filter(cycle=0):
+        run_password(group)
+        Group.objects.filter(id=group.id, uuid=group.uuid).update(
+            cycle=settings.PASSWORD_LIMIT
+        )

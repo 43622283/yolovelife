@@ -28,6 +28,7 @@ def null_mission():
         'hosts': ['localhost',],
     }
 
+
 def null_vars():
     return []
 
@@ -178,9 +179,10 @@ class Push_Mission(models.Model):
     # 关联文件
     files = models.ManyToManyField(FILE, related_name='pushmission', blank=True)
     # 执行的任务内容
-    to_yaml = JSONField(default=null_mission())
+    to_yaml = JSONField(default=null_mission)
     # 参数的内容
-    vars = JSONField(default=null_vars())
+    vars = JSONField(default=null_vars)
+
 
     @property
     def status(self):
@@ -192,19 +194,6 @@ class Push_Mission(models.Model):
         if self._status >= 0:
             self._status = status
             self.save()
-
-    def vars_save(self, vars):
-        if self.mission or vars is None:
-            pass
-        elif vars:
-            pass
-
-    def mission_save(self, to_yaml):
-        if self.mission or to_yaml is None:
-            # self.to_yaml = self.mission
-            pass
-        elif to_yaml:
-            pass
 
     def results_append(self, results):
         self.results = self.results + str(results)

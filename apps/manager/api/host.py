@@ -117,16 +117,25 @@ class ManagerHostPasswordAPI(WebTokenAuthentication, generics.ListAPIView):
     permission_classes = [HostPermission.HostPasswordRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
+    msg = settings.LANGUAGE.ManagerHostPasswordAPI
 
     def get_queryset(self):
         host = models.Host.objects.filter(uuid=self.kwargs['pk'])
         return host
 
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_PASSWORD'])
     def get(self, request, *args, **kwargs):
+        host = self.get_object()
+
         if self.request.user.check_qrcode(kwargs['qrcode']):
-            return super(ManagerHostPasswordAPI, self).get(request, *args, **kwargs)
+            return self.msg.format(
+                USER=request.user.full_name,
+                HOSTNAME=host.hostname,
+                CONNECT_IP=host.connect_ip,
+                UUID=host.uuid,
+            ), super(ManagerHostPasswordAPI, self).get(request, *args, **kwargs)
         else:
-            return self.qrcode_response
+            return '', self.qrcode_response
 
 
 class ManagerHostSelectGroupAPI(WebTokenAuthentication, generics.UpdateAPIView):

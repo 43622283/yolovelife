@@ -77,11 +77,21 @@ class Code_Work(Work):
         return self.mission.file_list
 
     @file_list.setter
-    def file_list(self,file_list):
+    def file_list(self, file_list):
         fs =FILE.objects.filter(uuid__in=file_list)
         self.push_mission.files.set(fs)
         self.push_mission.status = settings.STATUS_PUSH_MISSION_WAIT_RUN
         self.push_mission.save()
+
+    def close(self):
+        self.vars_save()
+        self.mission_save()
+
+    def vars_save(self):
+        self.push_mission.vars = self.vars_dict
+
+    def mission_save(self):
+        self.push_mission.to_yaml = self.mission.to_yaml()
 
 
 class Safe_Work(Work):

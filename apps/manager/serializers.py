@@ -35,7 +35,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = models.Group
         fields = (
             'id', 'uuid', 'name', 'info', '_status', 'users', '_framework', 'pmn_groups', 'key',
-            'jumper', 'framework',
+            'jumper', 'framework', 'cycle'
         )
         read_only_fields = (
             'id', 'uuid', 'framework'
@@ -47,7 +47,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data):
         # instance.framework_update()
         # 刪除原有的外鍵以及相關的文件
-        return super(GroupSerializer, self).update(instance,validated_data)
+        return super(GroupSerializer, self).update(instance, validated_data)
 
 
 class GroupSelectHostSerializer(GroupSerializer):
@@ -60,12 +60,9 @@ class GroupSelectHostSerializer(GroupSerializer):
         )
 
     def update(self, instance, validated_data):
-        # instance.hosts.add(validated_data['hosts'])
         instance.hosts.add(*validated_data['hosts'])
         validated_data.pop('hosts')
         return super(GroupSelectHostSerializer, self).update(instance, validated_data)
-        # print(validated_data)
-        # return super(GroupSelectHostSerializer,self).update(instance,validated_data)
 
 
 class HostSampleSerializer(serializers.ModelSerializer):

@@ -111,3 +111,19 @@ class UptimeCallback(Callback):
                 host.save()
         return super(UptimeCallback, self).v2_runner_on_ok(result, **kwargs)
 
+
+class PasswordCallback(Callback):
+    def __init__(self, group):
+        self.group = group
+        super(PasswordCallback, self).__init__()
+
+    def v2_runner_on_ok(self, result, **kwargs):
+        connect_ip = result._host.address
+        if result._task.action == 'set_fact' or result._task.action=='setup':
+            pass
+        elif result._task.action == 'script':
+            password = result._result['stdout']
+            host = self.group.hosts.filter(connect_ip=connect_ip).get()
+            host.password = password[:13]
+            host.save()
+        return super(PasswordCallback, self).v2_runner_on_ok(result, **kwargs)
