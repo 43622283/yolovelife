@@ -39,6 +39,7 @@ ManagerHostUpdateAPI = '%1{USER}%2 更新了资产主机 更新后信息 %1主�
 ManagerHostDeleteAPI = '%1{USER}%2 删除了资产主机 删除原信息 %1主机:{HOSTNAME} 连接地址:{CONNECT_IP}%2 UUID:{UUID}'
 ManagerHostSelectGroupAPI = '%1{USER}%2 操作了资产主机归属 %1主机:{HOSTNAME} 连接地址:{CONNECT_IP}%2 UUID:{UUID}'
 ManagerHostPasswordAPI = '%1{USER}%2 获取了资产主机密码 %1主机:{HOSTNAME} 连接地址:{CONNECT_IP}%2 UUID:{UUID}'
+ManagerHostPasswordAPICanNotCatchPassword = '您无法获取非您管理的主机密码'
 
 # Ops
 ## META

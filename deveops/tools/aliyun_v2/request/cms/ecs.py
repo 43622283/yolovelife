@@ -16,7 +16,7 @@ class AliyunCMSECSTool(AliyunCMSTool):
     def tool_get_metric_cpu(self, instance_id, time):
         self.action_get_metric()
         self.time_select(time)
-        self.request.add_query_param('Metric', 'cpu_total')#'CPUUtilization')
+        self.request.add_query_param('Metric', 'CPUUtilization')# 'cpu_total') #'CPUUtilization')
         self.request.add_query_param('Dimensions', str({'instanceId': instance_id}))
         results = self.post()
         yield AnalyzeCMSTool.change_timestamp(results.get('Datapoints'))

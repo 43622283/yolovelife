@@ -126,14 +126,19 @@ class ManagerHostPasswordAPI(WebTokenAuthentication, generics.ListAPIView):
     @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_PASSWORD'])
     def get(self, request, *args, **kwargs):
         host = self.get_object()
-
-        if self.request.user.check_qrcode(kwargs['qrcode']):
-            return self.msg.format(
-                USER=request.user.full_name,
-                HOSTNAME=host.hostname,
-                CONNECT_IP=host.connect_ip,
-                UUID=host.uuid,
-            ), super(ManagerHostPasswordAPI, self).get(request, *args, **kwargs)
+        user = self.request.user
+        if user.check_qrcode(kwargs['qrcode']):
+            if host.groups.filter(id__in=user.assetgroups.all()).exists():
+                return self.msg.format(
+                    USER=request.user.full_name,
+                    HOSTNAME=host.hostname,
+                    CONNECT_IP=host.connect_ip,
+                    UUID=host.uuid,
+                ), super(ManagerHostPasswordAPI, self).get(request, *args, **kwargs)
+            else:
+                return '', Response({
+                    'detail': settings.LANGUAGE.ManagerHostPasswordAPICanNotCatchPassword,
+                }, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             return '', self.qrcode_response
 
