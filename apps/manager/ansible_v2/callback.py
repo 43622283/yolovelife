@@ -20,20 +20,26 @@ class SSHCallback(Callback):
         super(SSHCallback, self).__init__()
 
     def v2_runner_on_ok(self, result, **kwargs):
-        connect_ip = result._host.address
-        host = self.group.hosts.filter(connect_ip=connect_ip).get()
-        if host._status == settings.STATUS_HOST_DENY_OR_REFUSE:
-            host._status = settings.STATUS_HOST_CAN_BE_USE
-            host.save()
+        if result._task.action != 'set_fact':
+            connect_ip = result._host.address
+            host = self.group.hosts.filter(connect_ip=connect_ip).get()
+            if host._status == settings.STATUS_HOST_DENY_OR_REFUSE:
+                host._status = settings.STATUS_HOST_CAN_BE_USE
+                host.save()
         return super(SSHCallback, self).v2_runner_on_ok(result, **kwargs)
 
     def v2_runner_on_unreachable(self, result):
-        connect_ip = result._host.address
-        host = self.group.hosts.filter(connect_ip=connect_ip).get()
-        if host._status != settings.STATUS_HOST_CLOSE or host._status != settings.STATUS_HOST_PAUSE:
-            host._status = settings.STATUS_HOST_DENY_OR_REFUSE
-            host.save()
+        if result._task.action != 'set_fact':
+            connect_ip = result._host.address
+            host = self.group.hosts.filter(connect_ip=connect_ip).get()
+            if host._status != settings.STATUS_HOST_CLOSE or host._status != settings.STATUS_HOST_PAUSE:
+                host._status = settings.STATUS_HOST_DENY_OR_REFUSE
+                host.save()
         return super(SSHCallback, self).v2_runner_on_unreachable(result)
+
+    def v2_runner_on_failed(self, result, ignore_errors=False):
+        print('failed')
+        return super(SSHCallback, self).v2_runner_on_failed(result, ignore_errors)
 
 
 class DiskSpaceCallback(Callback):

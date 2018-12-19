@@ -6,6 +6,7 @@ import datetime
 from deveops.tools.aliyun_v2.analyze.base import AnalyzeTool
 from django.conf import settings
 
+
 class AnalyzeRDSTool(AnalyzeTool):
 
     @staticmethod
