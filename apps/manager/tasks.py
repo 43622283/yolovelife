@@ -110,7 +110,9 @@ def run_ssh_check(group):
     vars_dict = group.vars_dict
 
     # 创建临时目录
-    TMP = settings.OPS_ROOT + '/' + str(time.time()) + '/'
+    TMP = settings.OPS_ROOT + '/' + str(time.time(
+
+    )) + '/'
     if not os.path.exists(TMP):
         os.makedirs(TMP)
 

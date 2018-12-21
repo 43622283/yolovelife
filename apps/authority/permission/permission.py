@@ -6,7 +6,7 @@
 from rest_framework.permissions import BasePermission
 
 __all__ = [
-    "PermissionAPIRequiredMixin", "PermissionListRequiredMixin"
+    "PermissionAPIRequiredMixin", "PermissionListRequiredMixin", "PermissionZDBListRequiredMixin"
 ]
 
 
@@ -24,3 +24,8 @@ class PermissionAPIRequiredMixin(BasePermission):
 
 class PermissionListRequiredMixin(PermissionAPIRequiredMixin):
     permission_required = u'authority.yo_list_permission'
+
+
+class PermissionZDBListRequiredMixin(PermissionAPIRequiredMixin):
+    def has_permission(self, request, view):
+        return True

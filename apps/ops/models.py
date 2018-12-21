@@ -101,7 +101,7 @@ class META(TASKS):
         proxy = {}
         hosts_list = []
         for host in self.hosts.all():
-            if host.status == settings.STATUS_HOST_CAN_BE_USE:
+            if host.status > 0:
                 hosts_list.append(host.connect_ip)
 
         if self.group.jumper is not None:

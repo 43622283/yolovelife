@@ -87,3 +87,7 @@ MonitorHostAliyunDetailDiskUse = '根磁盘情况'
 MonitorHostAliyunDetailLoad1m = '一分钟负载'
 MonitorHostAliyunDetailLoad5m = '五分钟负载'
 MonitorHostAliyunDetailLoad15m = '十五分钟负载'
+
+## ZDB
+# Instance
+ZDBInstanceFlushDatabaseAPI = '该实例已经进入刷新列表'

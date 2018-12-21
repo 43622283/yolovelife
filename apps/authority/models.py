@@ -16,7 +16,7 @@ from django.conf import settings
 from authority.tasks import jumper_status_flush
 
 __all__ = [
-    "Key", "ExtendUser", "Jumper",
+    "Key", "ExtendUser", "Jumper", 'ZDBPermission'
 ]
 
 connect = redis.StrictRedis(
@@ -208,5 +208,18 @@ class Jumper(models.Model):
                         '-o ProxyCommand="ssh -p{{JUMPER_PORT}} -i {{KEY}} -W %h:%p root@{{JUMPER_IP}}"'
                 }
         }
+
+
+class ZDBPermission(models.Model):
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+
+    class Meta:
+        permissions = (
+            ('zdb_admin', u'管理员admin'),
+            ('zdb_dev', u'开发人员dev'),
+            ('zdb_audit', u'审计人员audit'),
+            ('zdb_general', u'普通人员general')
+        )
 
 

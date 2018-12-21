@@ -49,5 +49,6 @@ urlpatterns = [
     path(r'v1/jumper/<uuid:pk>/delete/', jumper.JumperDeleteAPI.as_view()),
     #
     # Resource permission api
-    path(r'v1/permission/',permission.PermissionListAPI.as_view()),
+    path(r'v1/permission/', permission.PermissionListAPI.as_view()),
+    path(r'v1/permission/zdb/', permission.PermissionZDBListAPI.as_view()),
 ]
