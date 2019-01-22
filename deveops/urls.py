@@ -35,6 +35,7 @@ urlpatterns = [
     path(r'api-cdn/', include('yocdn.urls.api_urls')),
     path(r'api-zdb/', include('zdb.urls.api_urls')),
     path(r'api-dashboard/', include('dashboard.urls.api_urls')),
+    path(r'api-slot/', include('slot.urls.api_urls')),
     path(r'api-monitor/', include('monitor.urls.api_urls')),
     # path(r'api-console/', include('console.urls.api_urls')),
     path(r'api-ezsetup/', include('ezsetup.urls.api_urls')),

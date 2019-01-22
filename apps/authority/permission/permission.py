@@ -23,7 +23,7 @@ class PermissionAPIRequiredMixin(BasePermission):
 
 
 class PermissionListRequiredMixin(PermissionAPIRequiredMixin):
-    permission_required = u'authority.yo_list_permission'
+    permission_required = u'authority.deveops_list_permission'
 
 
 class PermissionZDBListRequiredMixin(PermissionAPIRequiredMixin):

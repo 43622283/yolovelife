@@ -40,6 +40,7 @@ ManagerHostDeleteAPI = '%1{USER}%2 删除了资产主机 删除原信息 %1主�
 ManagerHostSelectGroupAPI = '%1{USER}%2 操作了资产主机归属 %1主机:{HOSTNAME} 连接地址:{CONNECT_IP}%2 UUID:{UUID}'
 ManagerHostPasswordAPI = '%1{USER}%2 获取了资产主机密码 %1主机:{HOSTNAME} 连接地址:{CONNECT_IP}%2 UUID:{UUID}'
 ManagerHostPasswordAPICanNotCatchPassword = '您无法获取非您管理的主机密码'
+ExpireAliyunECS = '阿里云ID%1{aliyun_id}%2 资产名称%1{hostname}%2 即将过期时间%1{expired}%2'
 
 # Ops
 ## META

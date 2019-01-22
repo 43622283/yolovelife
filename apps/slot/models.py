@@ -25,5 +25,14 @@ class Slot(models.Model):
     time = models.DateTimeField(auto_now_add=True, editable=False)
     type = models.IntegerField(default=0)
 
+    status = models.BooleanField(default=False)
+
     class Meta:
         ordering = ['time', ]
+
+    @property
+    def group_name(self):
+        if self.group is not None:
+            return self.group.name
+        else:
+            return 'None'

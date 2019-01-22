@@ -22,45 +22,45 @@ class CodeWorkAPIRequiredMixin(BasePermission):
 
 
 class CodeWorkListRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_list_codework'
+    permission_required = u'work.deveops_list_codework'
 
 
 class CodeWorkCreateRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_create_codework'
+    permission_required = u'work.deveops_create_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkCreateRequiredMixin, self).has_permission(request, view)
 
 class CodeWorkExamRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_exam_codework'
+    permission_required = u'work.deveops_exam_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkExamRequiredMixin, self).has_permission(request, view)
 
 
 class CodeWorkUploadRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_upload_codework'
+    permission_required = u'work.deveops_upload_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkUploadRequiredMixin, self).has_permission(request, view)
 
 
 class CodeWorkRunRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_run_codework'
+    permission_required = u'work.deveops_run_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkRunRequiredMixin, self).has_permission(request, view)
 
 
 class CodeWorkDeleteRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_delete_codework'
+    permission_required = u'work.deveops_delete_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkDeleteRequiredMixin, self).has_permission(request, view)
 
 
 class CodeWorkResultsRequiredMixin(CodeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_results_codework'
+    permission_required = u'work.deveops_results_codework'
 
     def has_permission(self, request, view):
         return request, super(CodeWorkResultsRequiredMixin, self).has_permission(request, view)

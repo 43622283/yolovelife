@@ -24,6 +24,6 @@ class Process(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_process_create', u'创建工序'),
-            ('yo_process_update', u'更新工序'),
+            ('deveops_process_create', u'创建工序'),
+            ('deveops_process_update', u'更新工序'),
         )

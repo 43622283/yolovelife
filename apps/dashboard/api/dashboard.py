@@ -8,6 +8,7 @@ import json
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import Response, status
 from rest_framework.views import APIView
+from django_redis import get_redis_connection
 from deveops.api import WebTokenAuthentication
 from django.conf import settings
 from manager.models import Group
@@ -21,13 +22,8 @@ class DashboardCountAPI(WebTokenAuthentication, APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
-        connect = redis.StrictRedis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            db=settings.REDIS_SPACE,
-            password=settings.REDIS_PASSWD
-        )
-        TEMP = connect.hgetall('COUNT',)
+        conn = get_redis_connection('data')
+        TEMP = conn.hgetall('COUNT',)
         COUNT = {}
         for key in TEMP:
             COUNT[str(key, encoding='utf-8')] = TEMP[key]
@@ -37,17 +33,12 @@ class DashboardCountAPI(WebTokenAuthentication, APIView):
 
 
 class DashboardWorkAPI(WebTokenAuthentication, APIView):
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
-        connect = redis.StrictRedis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            db=settings.REDIS_SPACE,
-            password=settings.REDIS_PASSWD
-        )
-        week_list = [b'Won', b'Tue', b'Wed', b'Thur', b'Fri', b'Sat', b'Sun']
-        TEMP = connect.hgetall('WORK',)
+        conn = get_redis_connection('data')
+        week_list = [b'Won', b'Tue', b'Wed', b'Thur', b'Fri', b'Sat', b'Sun',]
+        TEMP = conn.hgetall('WORK',)
         WORK = []
         for key in week_list:
             WORK.append({
@@ -63,13 +54,8 @@ class DashboardGroupAPI(WebTokenAuthentication, APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
-        connect = redis.StrictRedis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            db=settings.REDIS_SPACE,
-            password=settings.REDIS_PASSWD
-        )
-        TEMP = connect.hgetall('GROUP',)
+        conn = get_redis_connection('data')
+        TEMP = conn.hgetall('GROUP',)
         GROUP = [
             ['主机数目','count'],
         ]
@@ -84,18 +70,13 @@ class DashboardGroupRandomLoadAPI(WebTokenAuthentication, APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
-        connect = redis.StrictRedis(
-            host=settings.REDIS_HOST,
-            port=settings.REDIS_PORT,
-            db=settings.REDIS_SPACE,
-            password=settings.REDIS_PASSWD
-        )
+        conn = get_redis_connection('data')
         group = Group.objects.order_by('?')[:1].get()
-        results = connect.get('GROUP'+str(group.uuid))
+        results = conn.get('GROUP'+str(group.uuid))
         if results is not None:
             return Response(
                 {
-                    'data': json.loads(str(results,encoding='utf-8')),
+                    'data': json.loads(str(results, encoding='utf-8')),
                     'group': group.name
                 } or {},
                 status.HTTP_200_OK

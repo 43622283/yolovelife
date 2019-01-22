@@ -39,9 +39,26 @@ def vmware2cmdb():
         childrens = API.get_all_vms()
         for child in childrens:
             dict_models = API.get_vm_models(child, conf['VMWARE_SERVER'])
-            host_query = Host.objects.filter(vmware_id=dict_models['vmware_id'], connect_ip=dict_models['connect_ip'])
+            host_query = Host.objects.filter(
+                vmware_id=dict_models['vmware_id'],
+                connect_ip=dict_models['connect_ip']
+            )
             if not host_query.exists():
                 host_maker(dict_models)
+            else:
+                host_updater(host_query, dict_models)
+
+
+@periodic_task(run_every=settings.MANAGER_HOST_TIME)
+def qingcloud2cmdb():
+    from deveops.tools.qingcloud.request import instance
+    API = instance.QingCloudInstanceTool()
+    for dict_models in API.tool_get_instances_models():
+        host_query = Host.objects.filter(qingcloud_id=dict_models['qingcloud_id'])
+        if not host_query.exists():
+            host_maker(dict_models)
+        else:
+            host_updater(host_query, dict_models)
 
 
 @periodic_task(run_every=settings.MANAGER_HOST_TIME)
@@ -65,11 +82,11 @@ def cmdb2aliyun():
     for host in queryset:
         status = API.tool_get_instance_models(host.aliyun_id).__next__()
         if status == 'delete':
-            host.delete()
+            host.remove()
         else:
             expired_models = API.tool_get_instance_expired_models(host.aliyun_id).__next__()
             if expired_models.get('expired') < settings.ALIYUN_OVERDUETIME:
-                host.delete()
+                host.remove()
             else:
                 if host.status == settings.STATUS_HOST_PAUSE:
                     if status == settings.STATUS_HOST_CAN_BE_USE:

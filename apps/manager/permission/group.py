@@ -26,25 +26,25 @@ class GroupAPIRequiredMixin(BasePermission):
 
 
 class GroupListRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_list_group'
+    permission_required = u'manager.deveops_list_group'
 
 
 class GroupCreateRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_create_group'
+    permission_required = u'manager.deveops_create_group'
 
 
 class GroupUpdateRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_update_group'
+    permission_required = u'manager.deveops_update_group'
 
 
 class GroupDetailRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_detail_group'
+    permission_required = u'manager.deveops_detail_group'
 
 
 class GroupDeleteRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_delete_group'
+    permission_required = u'manager.deveops_delete_group'
 
 
 class GroupSelectHostRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'manager.yo_group_sort_host'
+    permission_required = u'manager.deveops_group_sort_host'
 

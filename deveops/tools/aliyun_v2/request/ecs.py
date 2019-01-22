@@ -133,3 +133,17 @@ class AliyunECSTool(AliyunTool):
             yield AnalyzeECSTool.get_models(results.get('Instances').get('Instance')[0])
         except IndexError as e:
             yield 'delete'
+
+
+    def tool_get_instance_models(self, instance_id):
+        self.action_get_instance()
+        self.request.add_query_param(
+            'InstanceIds', '["{INSTANCE_ID}"]'.format(
+                INSTANCE_ID=instance_id
+            )
+        )
+        results = self.post()
+        try:
+            yield AnalyzeECSTool.get_expired_models(results.get('Instances').get('Instance')[0])
+        except IndexError as e:
+            yield 'delete'

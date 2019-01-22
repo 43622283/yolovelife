@@ -20,25 +20,25 @@ class ZDBInstanceAPIRequiredMixin(BasePermission):
 
 
 class ZDBInstanceListRequiredMixin(ZDBInstanceAPIRequiredMixin):
-    permission_required = u'zdb.yo_list_db'
+    permission_required = u'zdb.deveops_list_db'
 
 
 class ZDBInstanceCreateRequiredMixin(ZDBInstanceAPIRequiredMixin):
-    permission_required = u'zdb.yo_create_db'
+    permission_required = u'zdb.deveops_create_db'
 
     def has_permission(self, request, view):
         return request, super(ZDBInstanceCreateRequiredMixin, self).has_permission(request, view)
 
 
 class ZDBInstanceUpdateRequiredMixin(ZDBInstanceAPIRequiredMixin):
-    permission_required = u'zdb.yo_update_db'
+    permission_required = u'zdb.deveops_update_db'
 
     def has_permission(self, request, view):
         return request, super(ZDBInstanceUpdateRequiredMixin, self).has_permission(request, view)
 
 
 class ZDBInstanceDeleteRequiredMixin(ZDBInstanceAPIRequiredMixin):
-    permission_required = u'zdb.yo_delete_db'
+    permission_required = u'zdb.deveops_delete_db'
 
     def has_permission(self, request, view):
         return request, super(ZDBInstanceDeleteRequiredMixin, self).has_permission(request, view)

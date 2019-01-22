@@ -22,25 +22,25 @@ class DNSAPIRequiredMixin(BasePermission):
 
 
 class DNSListRequiredMixin(DNSAPIRequiredMixin):
-    permission_required = u'yodns.yo_list_dns'
+    permission_required = u'yodns.deveops_list_dns'
 
 
 class DNSCreateRequiredMixin(DNSAPIRequiredMixin):
-    permission_required = u'yodns.yo_create_dns'
+    permission_required = u'yodns.deveops_create_dns'
 
     def has_permission(self, request, view):
         return request, super(DNSCreateRequiredMixin, self).has_permission(request, view)
 
 
 class DNSUpdateRequiredMixin(DNSAPIRequiredMixin):
-    permission_required = u'yodns.yo_update_dns'
+    permission_required = u'yodns.deveops_update_dns'
 
     def has_permission(self, request, view):
         return request, super(DNSUpdateRequiredMixin, self).has_permission(request, view)
 
 
 class DNSDeleteRequiredMixin(DNSAPIRequiredMixin):
-    permission_required = u'yodns.yo_delete_dns'
+    permission_required = u'yodns.deveops_delete_dns'
 
     def has_permission(self, request, view):
         return request, super(DNSDeleteRequiredMixin, self).has_permission(request, view)

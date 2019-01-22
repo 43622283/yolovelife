@@ -39,18 +39,15 @@ class UserLoginAPI(ObtainJSONWebToken):
 
 
 class UserInfoAPI(WebTokenAuthentication, APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ]
 
     def get(self, request, *args, **kwargs):
-        info_dist = {}
+        info_dist = dict()
         info_dist['username'] = request.user.username
         info_dist['name'] = request.user.full_name
         info_dist['info'] = request.user.info
-        if request.user.is_superuser is True:
-            info_dist['isadmin'] = True
-        else:
-            info_dist['isadmin'] = 'None'
-
+        info_dist['roles'] = list(request.user.get_role_permissions())
+        info_dist['pages'] = list(request.user.get_page_permissions())
         return Response(info_dist, status=status.HTTP_200_OK)
 
 

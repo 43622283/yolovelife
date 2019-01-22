@@ -43,25 +43,10 @@ class AnalyzeECSTool(AnalyzeTool):
 
     @staticmethod
     def get_expired_models(json_results):
-        try:
-            ipaddr = json_results.get('NetworkInterfaces').get('NetworkInterface')[0].get('PrimaryIpAddress')
-        except AttributeError as e:
-            if len(json_results.get('PublicIpAddress').get('IpAddress')) != 0:
-                ipaddr = json_results.get('PublicIpAddress').get('IpAddress')[0]
-            else:
-                ipaddr = json_results.get('VpcAttributes').get('PrivateIpAddress').get('IpAddress')[0]
-
-        tags_list = []
-        if json_results.__contains__('Tags'):
-            for tag in json_results['Tags']['Tag']:
-                tags_list.append(tag['TagKey'] + tag['TagValue'])
         return {
-            'connect_ip': ipaddr,
             'expired': AnalyzeECSTool.get_expired_day(json_results.get('ExpiredTime')),
-            'recognition_id': json_results.get('InstanceId'),
-            'instancename': json_results.get('InstanceName'),
-            'tags': ':'.join(tags_list),
-            'status': json_results.get('Status')
+            'aliyun_id': json_results.get('InstanceId'),
+            'hostname': json_results.get('InstanceName')
         }
 
     @staticmethod

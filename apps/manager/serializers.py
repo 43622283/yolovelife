@@ -5,6 +5,7 @@
 # Email YoLoveLife@outlook.com
 from rest_framework import serializers
 from manager import models
+from django.conf import settings
 from authority.models import ExtendUser
 
 __all__ = [
@@ -82,7 +83,7 @@ class HostSerializer(serializers.ModelSerializer):
         model = models.Host
         fields = (
             'id', 'connect_ip', 'hostname', 'sshport', '_status', 'groups',
-            'passwd', 'uuid', 'position', 'systemtype', 'info', 'aliyun_id', 'vmware_id'
+            'passwd', 'uuid', 'position', 'systemtype', 'info', 'aliyun_id', 'vmware_id', 'qingcloud_id'
         )
         read_only_fields = (
             'id', 'uuid', 'groups'
@@ -90,6 +91,12 @@ class HostSerializer(serializers.ModelSerializer):
         write_only_fields = (
             'passwd',
         )
+
+
+class HostDeleteSerializer(HostSerializer):
+    def update(self, instance, validated_data):
+        validated_data['status'] = settings.STATUS_HOST_DELETE
+        return super(HostDeleteSerializer, self).update(instance, validated_data)
 
 
 class HostPasswordSerializer(serializers.ModelSerializer):

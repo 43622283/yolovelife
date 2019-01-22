@@ -23,25 +23,25 @@ class MetaAPIRequiredMixin(BasePermission):
 
 
 class MetaListRequiredMixin(MetaAPIRequiredMixin):
-    permission_required = u'ops.yo_list_meta'
+    permission_required = u'ops.deveops_list_meta'
 
 
 class MetaCreateRequiredMixin(MetaAPIRequiredMixin):
-    permission_required = u'ops.yo_create_meta'
+    permission_required = u'ops.deveops_create_meta'
 
     def has_permission(self, request, view):
         return request, super(MetaCreateRequiredMixin, self).has_permission(request, view)
 
 
 class MetaUpdateRequiredMixin(MetaAPIRequiredMixin):
-    permission_required = u'ops.yo_update_meta'
+    permission_required = u'ops.deveops_update_meta'
 
     def has_permission(self, request, view):
         return request, super(MetaUpdateRequiredMixin, self).has_permission(request, view)
 
 
 class MetaDeleteRequiredMixin(MetaAPIRequiredMixin):
-    permission_required = u'ops.yo_delete_meta'
+    permission_required = u'ops.deveops_delete_meta'
 
     def has_permission(self, request, view):
         return request, super(MetaDeleteRequiredMixin, self).has_permission(request, view)

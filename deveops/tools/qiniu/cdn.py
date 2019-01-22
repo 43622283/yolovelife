@@ -39,7 +39,6 @@ class QiNiuCDNTool(QiNiuTool):
     def get_log_data(self):
         pass
 
-
     def check(self, url):
         if 'http' in url:
             index = url.find('//')
@@ -55,7 +54,6 @@ class QiNiuCDNTool(QiNiuTool):
             else:
                 return 'DIR'
 
-
     def sort(self, urls):
         file_urls = []
         dir_urls = []
@@ -66,7 +64,6 @@ class QiNiuCDNTool(QiNiuTool):
                 dir_urls.append(url)
 
         return file_urls, dir_urls
-
 
     def refreshs(self, urls):
         file_urls, dir_urls = self.sort(urls)

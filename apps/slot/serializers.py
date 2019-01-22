@@ -12,13 +12,17 @@ __all__ = [
 
 
 class SlotSerializer(serializers.HyperlinkedModelSerializer):
-    group_name = serializers.CharField(source="group.name", read_only=True)
+    groupname = serializers.CharField(source="group_name", read_only=True)
 
     class Meta:
         model = models.Slot
         fields = (
-            'id', 'uuid', 'type', 'info', 'time', 'group_name'
+            'id', 'uuid', 'type', 'info', 'time', 'groupname', 'status'
         )
         read_only_fields = (
             'id', 'uuid',
         )
+
+    def update(self, instance, validated_data):
+        validated_data['status'] = True
+        return super(SlotSerializer, self).update(instance, validated_data)

@@ -29,7 +29,7 @@ class HostPagination(PageNumberPagination):
 
 class ManagerHostListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Host
-    queryset = models.Host.objects.all()
+    queryset = models.Host.objects.exclude(_status=settings.STATUS_HOST_DELETE)
     serializer_class = serializers.HostSampleSerializer
     permission_classes = [HostPermission.HostListRequiredMixin, IsAuthenticated]
     filter_class = filter.HostFilter
@@ -38,7 +38,7 @@ class ManagerHostListAPI(WebTokenAuthentication, generics.ListAPIView):
 class ManagerHostListByPageAPI(ManagerHostListAPI):
     module = models.Host
     serializer_class = serializers.HostSerializer
-    queryset = models.Host.objects.all()
+    queryset = models.Host.objects.exclude(_status=settings.STATUS_HOST_DELETE)
     permission_classes = [HostPermission.HostListRequiredMixin, IsAuthenticated]
     pagination_class = HostPagination
     filter_class = filter.HostFilter
@@ -88,9 +88,9 @@ class ManagerHostUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
             return '', self.qrcode_response
 
 
-class ManagerHostDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
+class ManagerHostDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.Host
-    serializer_class = serializers.HostSerializer
+    serializer_class = serializers.HostDeleteSerializer
     queryset = models.Host.objects.all()
     permission_classes = [HostPermission.HostDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
@@ -98,10 +98,10 @@ class ManagerHostDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     msg = settings.LANGUAGE.ManagerHostDeleteAPI
 
     @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_DELETE'])
-    def delete(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             host = self.get_object()
-            response = super(ManagerHostDeleteAPI, self).delete(request, *args, **kwargs)
+            response = super(ManagerHostDeleteAPI, self).update(request, *args, **kwargs)
             return self.msg.format(
                 USER=request.user.full_name,
                 HOSTNAME=host.hostname,

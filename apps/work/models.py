@@ -48,13 +48,14 @@ class Code_Work(Work):
 
     class Meta:
         permissions = (
-            ('yo_list_codework', u'罗列发布工单'),
-            ('yo_create_codework', u'新增发布工单'),
-            ('yo_detail_codework', u'详细查看发布工单'),
-            ('yo_exam_codework', u'审核发布工单'),
-            ('yo_run_codework', u'运行发布工单'),
-            ('yo_upload_codework', u'为工单上传文件'),
-            ('yo_results_codework', u'查看错误工单信息'),
+            ('deveops_list_codework', u'罗列发布工单'),
+            ('deveops_create_codework', u'新增发布工单'),
+            ('deveops_detail_codework', u'详细查看发布工单'),
+            ('deveops_exam_codework', u'审核发布工单'),
+            ('deveops_run_codework', u'运行发布工单'),
+            ('deveops_upload_codework', u'为工单上传文件'),
+            ('deveops_results_codework', u'查看错误工单信息'),
+            ('deveops_page_work', u'工单页面'),
         )
 
     @property
@@ -122,10 +123,10 @@ class Safe_Work(Work):
 
     class Meta:
         permissions = (
-            ('yo_list_safework', u'罗列安全工单'),
-            ('yo_create_safework', u'新增安全工单'),
-            ('yo_status_safework', u'修改安全工单状态'),
-            ('yo_detail_safework', u'详细查看安全工单')
+            ('deveops_list_safework', u'罗列安全工单'),
+            ('deveops_create_safework', u'新增安全工单'),
+            ('deveops_status_safework', u'修改安全工单状态'),
+            ('deveops_detail_safework', u'详细查看安全工单')
         )
 
     @property

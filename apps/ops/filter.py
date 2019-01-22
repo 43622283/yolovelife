@@ -24,7 +24,9 @@ class MetaFilter(django_filters.FilterSet):
 
     @staticmethod
     def host_filter(queryset, first_name, value):
-        hosts = Host.objects.filter(Q(connect_ip__icontains=value) | Q(hostname__contains=value))
+        hosts = Host.objects.filter(
+            Q(connect_ip__icontains=value) | Q(hostname__contains=value)
+        )
         return queryset.filter(hosts__in=hosts).distinct()
 
     @staticmethod

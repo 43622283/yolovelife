@@ -24,18 +24,18 @@ class Var2GroupAPIRequiredMixin(BasePermission):
 
 
 class Var2GroupListRequiredMixin(Var2GroupAPIRequiredMixin):
-    permission_required = u'variable.yo_list_group_var'
+    permission_required = u'variable.deveops_list_group_var'
 
 
 class Var2GroupCreateRequiredMixin(Var2GroupAPIRequiredMixin):
-    permission_required = u'variable.yo_change_group_var'
+    permission_required = u'variable.deveops_change_group_var'
 
     def has_permission(self, request, view):
         return request, super(Var2GroupCreateRequiredMixin, self).has_permission(request, view)
 
 
 class Var2GroupDeleteRequiredMixin(Var2GroupAPIRequiredMixin):
-    permission_required = u'variable.yo_delete_group_var'
+    permission_required = u'variable.deveops_delete_group_var'
 
     def has_permission(self, request, view):
         return request, super(Var2GroupDeleteRequiredMixin, self).has_permission(request, view)

@@ -65,7 +65,7 @@ def process(API, obj):
         )
         if dict_models['status'] == settings.STATUS_CDN_DONE or dict_models['status'] == settings.STATUS_CDN_ERROR:
             return
-        time.sleep(1)
+        time.sleep(3)
 
 
 @task(base=CDNTask)

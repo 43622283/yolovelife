@@ -13,6 +13,7 @@ from django.conf import settings
 from aliyunsdkcore.request import CommonRequest
 from deveops.tools.aliyun_v2.analyze.base import AnalyzeTool
 
+
 class AliyunTool(object):
     def __init__(self):
         self.clt = client.AcsClient(settings.ALIYUN_ACCESSKEY, settings.ALIYUN_ACCESSSECRET, 'cn-hangzhou')
@@ -29,11 +30,9 @@ class AliyunTool(object):
     def init_action(self):
         pass
 
-
     def init(self):
         self.init_request()
         self.init_action()
-
 
     def post(self):
         try:

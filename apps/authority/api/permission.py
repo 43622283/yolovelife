@@ -17,7 +17,7 @@ __all__ = [
 class PermissionListAPI(generics.ListAPIView):
     module = Permission
     serializer_class = serializers.PermissionSerializer
-    queryset = Permission.objects.filter(codename__istartswith="yo_")
+    queryset = Permission.objects.filter(codename__istartswith="deveops_")
     permission_classes = [PermissionPermission.PermissionListRequiredMixin, IsAuthenticated]
 
 

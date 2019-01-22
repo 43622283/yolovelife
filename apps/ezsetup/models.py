@@ -42,8 +42,9 @@ class SETUP(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_setup', u'罗列数据库实例'),
-            ('yo_create_setup', u'新增数据库实例')
+            ('deveops_list_setup', u'罗列数据库实例'),
+            ('deveops_create_setup', u'新增数据库实例'),
+            ('deveops_page_setup', u'装机宝页面'),
         )
 
     @property

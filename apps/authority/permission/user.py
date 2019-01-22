@@ -24,7 +24,7 @@ class UserAPIRequiredMixin(BasePermission):
 
 
 class UserOpsListRequiredMixin(UserAPIRequiredMixin):
-    permission_required = u'authority.yo_list_opsuser'
+    permission_required = u'authority.deveops_list_opsuser'
 
     def has_permission(self, request, view):
         perms = self.permission_required
@@ -38,17 +38,17 @@ class UserOpsListRequiredMixin(UserAPIRequiredMixin):
 
 
 class UserListRequiredMixin(UserAPIRequiredMixin):
-    permission_required = u'authority.yo_list_user'
+    permission_required = u'authority.deveops_list_user'
 
 
 class UserCreateRequiredMixin(UserAPIRequiredMixin):
-    permission_required = u'authority.yo_create_user'
+    permission_required = u'authority.deveops_create_user'
 
 
 class UserUpdateRequiredMixin(UserAPIRequiredMixin):
-    permission_required = u'authority.yo_update_user'
+    permission_required = u'authority.deveops_update_user'
 
 
 class UserDeleteRequiredMixin(UserAPIRequiredMixin):
-    permission_required = u'authority.yo_delete_user'
+    permission_required = u'authority.deveops_delete_user'
 

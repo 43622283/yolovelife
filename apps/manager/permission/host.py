@@ -26,28 +26,28 @@ class HostAPIRequiredMixin(BasePermission):
 
 
 class HostListRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_list_host'
+    permission_required = u'manager.deveops_list_host'
 
 
 class HostCreateRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_create_host'
+    permission_required = u'manager.deveops_create_host'
 
 
 class HostDetailRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_detail_host'
+    permission_required = u'manager.deveops_detail_host'
 
 
 class HostUpdateRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_update_host'
+    permission_required = u'manager.deveops_update_host'
 
 
 class HostDeleteRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_delete_host'
+    permission_required = u'manager.deveops_delete_host'
 
 
 class HostPasswordRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_passwd_host'
+    permission_required = u'manager.deveops_passwd_host'
 
 
 class HostSelectGroupRequiredMixin(HostAPIRequiredMixin):
-    permission_required = u'manager.yo_host_sort_group'
+    permission_required = u'manager.deveops_host_sort_group'

@@ -50,7 +50,7 @@ class GroupFilter(django_filters.FilterSet):
 
     @staticmethod
     def permission_filter(queryset, first_name, value):
-        ps = Permission.objects.filter(codename__icontains="yo_").filter(name__icontains=value)
+        ps = Permission.objects.filter(codename__icontains="deveops_").filter(name__icontains=value)
         return queryset.filter(permissions__in=ps).distinct()
 
     @staticmethod

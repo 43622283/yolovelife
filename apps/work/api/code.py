@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import Response, status
 from django.conf import settings
+from django_redis import get_redis_connection
 from timeline.decorator import decorator_api
 from ..permission import codework as CodeWorkPermission
 from deveops.api import WebTokenAuthentication
@@ -159,7 +160,9 @@ class CodeWorkResultsAPI(WebTokenAuthentication, generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         obj = self.get_object()
+        conn = get_redis_connection('ops')
+        results = conn.lrange(str(obj.push_mission.uuid), 0, -1)
         if obj.status > 0:
             return Response({'detail': u'该工单处于正常状态'}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            return Response({'results': obj.push_mission.results}, status=status.HTTP_202_ACCEPTED)
+            return Response({'results': results}, status=status.HTTP_202_ACCEPTED)

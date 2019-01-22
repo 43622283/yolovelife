@@ -22,18 +22,18 @@ class ImageAPIRequiredMixin(BasePermission):
 
 
 class ImageListRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.yo_list_image'
+    permission_required = u'utils.deveops_list_image'
 
 
 class ImageCreateRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.yo_create_image'
+    permission_required = u'utils.deveops_create_image'
 
     def has_permission(self, request, view):
         return request, super(ImageCreateRequiredMixin, self).has_permission(request, view)
 
 
 class ImageDeleteRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.yo_delete_image'
+    permission_required = u'utils.deveops_delete_image'
 
     def has_permission(self, request, view):
         return request, super(ImageDeleteRequiredMixin, self).has_permission(request, view)

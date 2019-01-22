@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
+from django_redis import get_redis_connection
 from manager.models import Group, Host
 from authority.models import ExtendUser
 from utils.models import FILE
@@ -83,10 +84,13 @@ class META(TASKS):
         ordering = [
             'level', 'id'
         ]
-        permissions = (('yo_list_meta', u'罗列元操作'),
-                       ('yo_create_meta', u'创建元操作'),
-                       ('yo_update_meta', u'更新元操作'),
-                       ('yo_delete_meta', u'删除元操作'))
+        permissions = (
+            ('deveops_list_meta', u'罗列元操作'),
+            ('deveops_create_meta', u'创建元操作'),
+            ('deveops_update_meta', u'更新元操作'),
+            ('deveops_delete_meta', u'删除元操作'),
+            ('deveops_page_meta', u'元操作页面'),
+        )
 
     def file_list(self):
         return super(META, self).file_list()
@@ -116,10 +120,13 @@ class META(TASKS):
 
 class Mission(models.Model):
     class Meta:
-        permissions = (('yo_list_mission', u'罗列任务'),
-                       ('yo_create_mission', u'创建任务'),
-                       ('yo_update_mission', u'更新任务'),
-                       ('yo_delete_mission', u'删除任务'))
+        permissions = (
+            ('deveops_list_mission', u'罗列任务'),
+            ('deveops_create_mission', u'创建任务'),
+            ('deveops_update_mission', u'更新任务'),
+            ('deveops_delete_mission', u'删除任务'),
+            ('deveops_page_mission', u'任务页面'),
+        )
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, related_name='group_missions')
@@ -174,15 +181,12 @@ class Push_Mission(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     # 任務結束時間
     finish_time = models.DateTimeField(auto_now=True)
-    # 執行內容
-    results = models.TextField()
     # 关联文件
     files = models.ManyToManyField(FILE, related_name='pushmission', blank=True)
     # 执行的任务内容
     to_yaml = JSONField(default=null_mission)
     # 参数的内容
     vars = JSONField(default=null_vars)
-
 
     @property
     def status(self):
@@ -196,8 +200,8 @@ class Push_Mission(models.Model):
             self.save()
 
     def results_append(self, results):
-        self.results = self.results + str(results)
-        self.save()
+        conn = get_redis_connection('ops')
+        conn.lpush(self.uuid, str(results))
 
 
 class Quick(models.Model):
@@ -209,5 +213,6 @@ class Quick(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_create_quick', u'快速配置任务'),
+            ('deveops_create_quick', u'快速配置任务'),
+            ('deveops_page_quick', u'快速配置页面'),
         )

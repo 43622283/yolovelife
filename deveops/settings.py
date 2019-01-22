@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'ezsetup.apps.EZSetupConfig',
     'yocdn.apps.YoCDNConfig',
     'pool.apps.PoolConfig',
+    'slot.apps.SlotConfig',
     'rest_framework',
     'rest_framework_jwt',
     'corsheaders',
@@ -125,6 +126,63 @@ DATABASES = {
             "init_command": "SET foreign_key_checks = 0;",
         },
     },
+}
+
+# Redis
+# redis://:{PASSWORD}@{HOST}:{PORT}/{SPACE}
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_CACHE_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'data': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_DATA_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'user': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_USER_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'ops': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_OPS_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    }
 }
 
 # Password validation
@@ -247,7 +305,7 @@ CHANNEL_LAYERS = {
                     PASSWORD=REDIS_PASSWD,
                     HOST=REDIS_HOST,
                     PORT=REDIS_PORT,
-                    SPACE=REDIS_SPACE)
+                    SPACE=REDIS_CHANNEL_SPACE)
             )],
         },
     },

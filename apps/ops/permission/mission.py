@@ -24,25 +24,25 @@ class MissionAPIRequiredMixin(BasePermission):
 
 
 class MissionListRequiredMixin(MissionAPIRequiredMixin):
-    permission_required = u'ops.yo_list_mission'
+    permission_required = u'ops.deveops_list_mission'
 
 
 class MissionCreateRequiredMixin(MissionAPIRequiredMixin):
-    permission_required = u'ops.yo_create_mission'
+    permission_required = u'ops.deveops_create_mission'
 
     def has_permission(self, request, view):
         return request, super(MissionCreateRequiredMixin, self).has_permission(request, view)
 
 
 class MissionUpdateRequiredMixin(MissionAPIRequiredMixin):
-    permission_required = u'ops.yo_update_mission'
+    permission_required = u'ops.deveops_update_mission'
 
     def has_permission(self, request, view):
         return request, super(MissionUpdateRequiredMixin, self).has_permission(request, view)
 
 
 class MissionDeleteRequiredMixin(MissionAPIRequiredMixin):
-    permission_required = u'ops.yo_delete_mission'
+    permission_required = u'ops.deveops_delete_mission'
 
     def has_permission(self, request, view):
         return request, super(MissionDeleteRequiredMixin, self).has_permission(request, view)

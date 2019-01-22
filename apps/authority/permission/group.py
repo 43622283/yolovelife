@@ -25,17 +25,17 @@ class GroupAPIRequiredMixin(BasePermission):
 
 
 class GroupListRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'authority.yo_list_pmngroup'
+    permission_required = u'authority.deveops_list_pmngroup'
 
 
 class GroupCreateRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'authority.yo_create_pmngroup'
+    permission_required = u'authority.deveops_create_pmngroup'
 
 
 class GroupUpdateRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'authority.yo_update_pmngroup'
+    permission_required = u'authority.deveops_update_pmngroup'
 
 
 class GroupDeleteRequiredMixin(GroupAPIRequiredMixin):
-    permission_required = u'authority.yo_delete_pmngroup'
+    permission_required = u'authority.deveops_delete_pmngroup'
 

@@ -28,12 +28,22 @@ class SlotListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
     pagination_class = SlotPagination
 
     def get_queryset(self):
-        user = self.request.user
-        pmn_groups = user.groups
-
-        groups = models.Group.objects.filter(
-            Q(users=user) or Q(pmn_groups__in=pmn_groups)
-        )
-
-        queryset = models.Slot.objects.filter(group_id__in=groups)
+        # user = self.request.user
+        # pmn_groups = user.groups
+        #
+        # groups = models.Group.objects.filter(
+        #     Q(users=user) or Q(pmn_groups__in=pmn_groups)
+        # )
+        # queryset = models.Slot.objects.filter(group_id__in=groups)
+        queryset = models.Slot.objects.all().order_by('-status')
         return queryset
+
+
+class SlotCheckAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    module = models.Slot
+    serializer_class = serializers.SlotSerializer
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'pk'
+    # permission_classes = [IsAuthenticated, ]
+    permission_classes = [AllowAny, ]
+    queryset = models.Slot.objects.all()

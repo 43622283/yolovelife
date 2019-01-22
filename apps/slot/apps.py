@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 from django.apps import AppConfig
 
 __all__ = [
-    "YoCDNConfig"
+    "SlotConfig"
 ]
 
 
-class YoCDNConfig(AppConfig):
-    name = 'yocdn'
+class SlotConfig(AppConfig):
+    name = 'slot'

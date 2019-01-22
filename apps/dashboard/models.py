@@ -9,3 +9,8 @@ import uuid
 __all__ = [
 
 ]
+
+
+class Dashboard(models.Model):
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)

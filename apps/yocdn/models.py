@@ -24,5 +24,6 @@ class CDN(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_yocdn_create', u'创建'),
+            ('deveops_yocdn_create', u'创建CDN刷新'),
+            ('deveops_page_cdn', u'CDN页面'),
         )

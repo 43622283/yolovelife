@@ -37,9 +37,10 @@ class FILE(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_file', u'罗列文件'),
-            ('yo_create_file', u'上传文件'),
-            ('yo_delete_file', u'删除文件'),
+            ('deveops_list_file', u'罗列文件'),
+            ('deveops_create_file', u'上传文件'),
+            ('deveops_delete_file', u'删除文件'),
+            ('deveops_page_file', u'分发中心页面'),
         )
 
     @property
@@ -62,7 +63,7 @@ class IMAGE(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_image', u'罗列图片'),
-            ('yo_create_image', u'上传图片'),
-            ('yo_delete_image', u'删除图片'),
+            ('deveops_list_image', u'罗列图片'),
+            ('deveops_create_image', u'上传图片'),
+            ('deveops_delete_image', u'删除图片'),
         )

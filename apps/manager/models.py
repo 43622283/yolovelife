@@ -13,6 +13,7 @@ from django.contrib.auth.models import Group as PerGroup
 from authority.models import Key, Jumper
 from django.conf import settings
 
+
 __all__ = [
     "Group", "Host"
 ]
@@ -37,12 +38,15 @@ class Group(models.Model):
     cycle = models.IntegerField(default=settings.PASSWORD_LIMIT)
 
     class Meta:
-        permissions = (('yo_list_group', u'罗列应用组'),
-                       ('yo_create_group', u'新增应用组'),
-                       ('yo_update_group', u'修改应用组'),
-                       ('yo_detail_group', u'详细查看应用组'),
-                       ('yo_delete_group', u'删除应用组'),
-                       ('yo_group_sort_host', u'批量归类主机'))
+        permissions = (
+            ('deveops_list_group', u'罗列应用组'),
+            ('deveops_create_group', u'新增应用组'),
+            ('deveops_update_group', u'修改应用组'),
+            ('deveops_detail_group', u'详细查看应用组'),
+            ('deveops_delete_group', u'删除应用组'),
+            ('deveops_group_sort_host', u'批量归类主机'),
+            ('deveops_page_group', u'应用组页面'),
+        )
 
     @property
     def status(self):
@@ -115,6 +119,7 @@ class Host(models.Model):
     hostname = models.CharField(max_length=50, default='localhost.localdomain', null=True, blank=True)
     aliyun_id = models.CharField(max_length=30, default='', blank=True, null=True)
     vmware_id = models.CharField(max_length=36, default='', blank=True, null=True)
+    qingcloud_id = models.CharField(max_length=30, default='', blank=True, null=True)
     info = models.CharField(max_length=200, default="", null=True, blank=True)
     position = models.CharField(max_length=50, default="")
     systemtype = models.CharField(max_length=50, default="")
@@ -124,13 +129,14 @@ class Host(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_host', u'罗列主机'),
-            ('yo_create_host', u'新增主机'),
-            ('yo_update_host', u'修改主机'),
-            ('yo_delete_host', u'删除主机'),
-            ('yo_host_sort_group', u'更改主机应用组'),
-            ('yo_passwd_host', u'获取主机密码'),
-            ('yo_webskt_host', u'远控主机')
+            ('deveops_list_host', u'罗列主机'),
+            ('deveops_create_host', u'新增主机'),
+            ('deveops_update_host', u'修改主机'),
+            ('deveops_delete_host', u'删除主机'),
+            ('deveops_host_sort_group', u'更改主机应用组'),
+            ('deveops_passwd_host', u'获取主机密码'),
+            ('deveops_webskt_host', u'远控主机'),
+            ('deveops_page_host', u'主机页面'),
         )
 
     @property
@@ -164,6 +170,9 @@ class Host(models.Model):
         for group in self.groups.all():
             group_list.append(group.name)
         return ';'.join(group_list)
+
+    def remove(self):
+        self.status = settings.STATUS_HOST_DELETE
 
     # :TODO 详细页面 管理用户
     def manage_user_get(self):

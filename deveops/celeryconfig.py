@@ -10,7 +10,7 @@ broker_url = "redis://:{PASSWORD}@{HOST}:{PORT}/{SPACE}".format(
     PASSWORD=settings.REDIS_PASSWD,
     HOST=settings.REDIS_HOST,
     PORT=settings.REDIS_PORT,
-    SPACE=settings.REDIS_SPACE
+    SPACE=settings.REDIS_CHANNEL_SPACE
 )
 task_serializer = 'pickle'
 result_serializer = 'pickle'

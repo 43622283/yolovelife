@@ -22,22 +22,22 @@ class FileAPIRequiredMixin(BasePermission):
 
 
 class FileListRequiredMixin(FileAPIRequiredMixin):
-    permission_required = u'utils.yo_list_file'
+    permission_required = u'utils.deveops_list_file'
 
 
 class FileCreateRequiredMixin(FileAPIRequiredMixin):
-    permission_required = u'utils.yo_create_file'
+    permission_required = u'utils.deveops_create_file'
 
     def has_permission(self, request, view):
         return request, super(FileCreateRequiredMixin, self).has_permission(request, view)
 
 
 class FileUpdateRequiredMixin(FileAPIRequiredMixin):
-    permission_required = u'utils.yo_create_file'
+    permission_required = u'utils.deveops_create_file'
 
 
 class FileDeleteRequiredMixin(FileAPIRequiredMixin):
-    permission_required = u'utils.yo_delete_file'
+    permission_required = u'utils.deveops_delete_file'
 
     def has_permission(self, request, view):
         return request, super(FileDeleteRequiredMixin, self).has_permission(request, view)

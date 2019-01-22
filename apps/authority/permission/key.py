@@ -24,17 +24,17 @@ class KeyAPIRequiredMixin(BasePermission):
 
 
 class KeyListRequiredMixin(KeyAPIRequiredMixin):
-    permission_required = u'authority.yo_list_key'
+    permission_required = u'authority.deveops_list_key'
 
 
 class KeyCreateRequiredMixin(KeyAPIRequiredMixin):
-    permission_required = u'authority.yo_create_key'
+    permission_required = u'authority.deveops_create_key'
 
 
 class KeyUpdateRequiredMixin(KeyAPIRequiredMixin):
-    permission_required = u'authority.yo_update_key'
+    permission_required = u'authority.deveops_update_key'
 
 
 class KeyDeleteRequiredMixin(KeyAPIRequiredMixin):
-    permission_required = u'authority.yo_delete_key'
+    permission_required = u'authority.deveops_delete_key'
 

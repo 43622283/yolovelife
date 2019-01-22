@@ -17,6 +17,6 @@ class Monitor(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_monitor_aliyun', u'阿里云监控查看'),
-            ('yo_monitor_vmware', u'VMware监控查看')
+            ('deveops_monitor_aliyun', u'阿里云监控查看'),
+            ('deveops_monitor_vmware', u'VMware监控查看')
         )

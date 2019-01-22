@@ -2,37 +2,57 @@
 # !/usr/bin/env python
 # Time 17-10-25
 # Author Yo
-# Email YoLoveLife@outlook.com
-import redis
 import json
 import time
 from django.utils import timezone as datetime
 from django.db.models import Q
 from celery.task import periodic_task
 from django.conf import settings
+from django_redis import get_redis_connection
 from deveops.tools.aliyun_v2.request.cms.ecs import AliyunCMSECSTool
 from manager.models import Group, Host
-from zdb.models import Instance
+from slot.models import Slot
+from zdb.models import DBInstance
 from ops.models import Push_Mission
 from utils.models import FILE
 from yodns.models import DNS
 from authority.models import ExtendUser
 
 
-# def obj_maker(MODELS, dict_models):
-#     MODELS.objects.create(**dict_models)
-#
-#
-# @periodic_task(run_every=settings.EXPIRED_TIME)
-# def expired_aliyun_ecs():
-#     ExpiredAliyunECS.objects.all().delete()
-#     from deveops.tools.aliyun_v2.request import ecs
-#     API = ecs.AliyunECSTool()
-#     for dict_models in API.tool_get_instances_expired_models():
-#         print(dict_models)
-#         if settings.ALIYUN_OVERDUETIME < dict_models.get('expired')< settings.ALIYUN_EXPIREDTIME:
-#             obj_maker(ExpiredAliyunECS, dict_models)
-#
+def obj_maker(MODELS, dict_models):
+    MODELS.objects.create(**dict_models)
+
+
+def expired_aliyun_ecs_slot_maker(host):
+    from deveops.tools.aliyun_v2.request import ecs
+    API = ecs.AliyunECSTool()
+    dict_models = API.tool_get_instance_expired_models(host.aliyun_id).__next__()
+    if settings.ALIYUN_OVERDUETIME < dict_models.get('expired') < settings.ALIYUN_EXPIREDTIME:
+        if Slot.objects.filter(info=settings.LANGUAGE.ExpireAliyunECS.format(
+            **dict_models
+        ), status=False).exists():
+            pass
+        else:
+            obj_maker(Slot, {
+                'group': None,
+                'info': settings.LANGUAGE.ExpireAliyunECS.format(
+                    **dict_models
+                ),
+                'type': settings.TYPE_SLOT_EXPIRE,
+            })
+
+
+@periodic_task(run_every=settings.DASHBOARD_EXPIRED_TIME)
+def expired_aliyun_ecs():
+
+    for host in Host.objects.filter(Q(groups=None) and ~Q(aliyun_id='')):
+        expired_aliyun_ecs_slot_maker(host)
+
+    for group in Group.objects.all():
+        for host in group.hosts.filter(~Q(aliyun_id='')):
+            expired_aliyun_ecs_slot_maker(host)
+
+
 #
 # @periodic_task(run_every=settings.EXPIRED_TIME)
 # def expired_aliyun_rds():
@@ -65,27 +85,20 @@ from authority.models import ExtendUser
 #             obj_maker(ExpiredAliyunMongoDB, dict_models)
 
 
-connect = redis.StrictRedis(
-    host=settings.REDIS_HOST,
-    port=settings.REDIS_PORT,
-    db=settings.REDIS_SPACE,
-    password=settings.REDIS_PASSWD,
-)
-
-
 @periodic_task(run_every=settings.DASHBOARD_STATS_COUNT)
 def statistics_count():
-    connect.delete('COUNT')
+    conn = get_redis_connection('data')
+    conn.delete('COUNT')
     count_dist = dict()
     count_dist['GROUP_COUNT'] = Group.objects.count()
     count_dist['HOST_COUNT'] = Host.objects.count()
     count_dist['DNS_COUNT'] = DNS.objects.count()
     count_dist['FILE_COUNT'] = FILE.objects.count()
     count_dist['USER_COUNT'] = ExtendUser.objects.count()
-    count_dist['DBINSTANCE_COUNT'] = Instance.objects.count()
+    count_dist['DBINSTANCE_COUNT'] = DBInstance.objects.count()
 
     for key, value in count_dist.items():
-        connect.hset('COUNT', key, value)
+        conn.hset('COUNT', key, value)
 
 
 week_list = ['Won', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
@@ -93,7 +106,8 @@ week_list = ['Won', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
 
 @periodic_task(run_every=settings.DASHBOARD_STATS_WORK)
 def statistics_work():
-    connect.delete('WORK')
+    conn = get_redis_connection('data')
+    conn.delete('WORK')
     work_dist = dict()
     import django
     now = django.utils.timezone.now().date()
@@ -105,12 +119,13 @@ def statistics_work():
             create_time__gt=start_day, create_time__lt=end_day
         ).count()
     for key, value in work_dist.items():
-        connect.hset('WORK', key, value)
+        conn.hset('WORK', key, value)
 
 
 @periodic_task(run_every=settings.DASHBOARD_STATS_GROUP)
 def statistics_group():
-    connect.delete('GROUP')
+    conn = get_redis_connection('data')
+    conn.delete('GROUP')
     group_dist = {}
     for group in Group.objects.all():
         group_dist[group.name] = group.hosts.count()
@@ -120,15 +135,15 @@ def statistics_group():
     for item in k:
         if count > 5:
             break
-        connect.hset('GROUP', item[0], item[1])
+        conn.hset('GROUP', item[0], item[1])
         count = count+1
 
 
 @periodic_task(run_every=settings.DASHBOARD_GROUP_LOAD)
 def statistics_group_load():
+    conn = get_redis_connection('data')
     for group in Group.objects.all():
-        # DELETE
-        connect.delete('GROUP'+str(group.uuid))
+        conn.delete('GROUP'+str(group.uuid))
         group_list = list()
         for host in group.hosts.filter(~(Q(aliyun_id='') or Q(aliyun_id__isnull=True)))[:10]:
             API = AliyunCMSECSTool()
@@ -139,7 +154,7 @@ def statistics_group_load():
             })
             time.sleep(5)
 
-        connect.set(
+        conn.set(
             'GROUP'+str(group.uuid),
             json.dumps(group_list)
         )

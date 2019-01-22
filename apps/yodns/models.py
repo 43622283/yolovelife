@@ -12,6 +12,7 @@ __all__ = [
     'DNS'
 ]
 
+
 class DNS(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
@@ -27,10 +28,11 @@ class DNS(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_dns', u'罗列域名'),
-            ('yo_create_dns', u'新增域名'),
-            ('yo_update_dns', u'修改域名'),
-            ('yo_detail_dns', u'详细查看域名'),
-            ('yo_delete_dns', u'删除域名'),
+            ('deveops_list_dns', u'罗列域名'),
+            ('deveops_create_dns', u'新增域名'),
+            ('deveops_update_dns', u'修改域名'),
+            ('deveops_detail_dns', u'详细查看域名'),
+            ('deveops_delete_dns', u'删除域名'),
+            ('deveops_page_dns', u'域名页面'),
         )
 

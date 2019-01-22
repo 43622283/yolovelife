@@ -26,8 +26,8 @@ class Var2Group(Variable):
 
     class Meta:
         permissions = (
-            ('yo_list_group_var', u'罗列组参数'),
-            ('yo_change_group_var', u'新增组参数'),
-            ('yo_delete_group_var', u'删除组参数'),
+            ('deveops_list_group_var', u'罗列组参数'),
+            ('deveops_change_group_var', u'新增组参数'),
+            ('deveops_delete_group_var', u'删除组参数'),
         )
 

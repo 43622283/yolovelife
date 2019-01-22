@@ -23,11 +23,11 @@ class MonitorAPIRequiredMixin(BasePermission):
 
 
 class MonitorAliyunAPIRequiredMixin(MonitorAPIRequiredMixin):
-    permission_required = u'monitor.yo_monitor_aliyun'
+    permission_required = u'monitor.deveops_monitor_aliyun'
 
 
 class MonitorVMwareAPIRequiredMixin(MonitorAPIRequiredMixin):
-    permission_required = u'monitor.yo_monitor_vmware'
+    permission_required = u'monitor.deveops_monitor_vmware'
 
 
 

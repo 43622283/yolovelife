@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django_redis import get_redis_connection
 import django.utils.timezone as timezone
 from deveops.utils import sshkey, aes
 from django.conf import settings
@@ -19,12 +20,6 @@ __all__ = [
     "Key", "ExtendUser", "Jumper", 'ZDBPermission'
 ]
 
-connect = redis.StrictRedis(
-    host=settings.REDIS_HOST,
-    port=settings.REDIS_PORT,
-    db=settings.REDIS_SPACE,
-    password=settings.REDIS_PASSWD,
-)
 
 
 def private_key_validator(key):
@@ -58,10 +53,11 @@ class Key(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_key', u'罗列密钥'),
-            ('yo_create_key', u'创建密钥'),
-            ('yo_update_key', u'更新密钥'),
-            ('yo_delete_key', u'删除密钥'),
+            ('deveops_list_key', u'罗列密钥'),
+            ('deveops_create_key', u'创建密钥'),
+            ('deveops_update_key', u'更新密钥'),
+            ('deveops_delete_key', u'删除密钥'),
+            ('deveops_page_key', u'秘钥页面'),
         )
 
     @property
@@ -123,17 +119,19 @@ class ExtendUser(AbstractUser):
 
     class Meta:
         permissions = (
-            ('yo_list_user', u'罗列用户'),
-            ('yo_list_opsuser', u'罗列运维用户'),
-            ('yo_create_user', u'新增用户'),
-            ('yo_update_user', u'修改用户'),
-            ('yo_delete_user', u'删除用户'),
-            ('yo_list_pmngroup', u'罗列权限组'),
-            ('yo_create_pmngroup', u'新增权限组'),
-            ('yo_update_pmngroup', u'修改权限组'),
-            ('yo_delete_pmngroup', u'删除权限组'),
+            ('deveops_list_user', u'罗列用户'),
+            ('deveops_list_opsuser', u'罗列运维用户'),
+            ('deveops_create_user', u'新增用户'),
+            ('deveops_update_user', u'修改用户'),
+            ('deveops_delete_user', u'删除用户'),
+            ('deveops_list_pmngroup', u'罗列权限组'),
+            ('deveops_create_pmngroup', u'新增权限组'),
+            ('deveops_update_pmngroup', u'修改权限组'),
+            ('deveops_delete_pmngroup', u'删除权限组'),
             # django.contrib.auth.models.Permission django.contrib.auth.models.Group 无法重构
-            ('yo_list_permission', u'罗列所有权限')
+            ('deveops_list_permission', u'罗列所有权限'),
+            ('deveops_page_user', u'用户页面'),
+            ('deveops_page_pmngroup', u'权限组页面'),
         )
 
     def get_8531email(self):
@@ -162,11 +160,25 @@ class ExtendUser(AbstractUser):
 
     @property
     def is_expire(self):
-        return not connect.exists(self.username)
+        conn = get_redis_connection('user')
+        return not conn.exists(self.username)
 
     @is_expire.setter
     def is_expire(self, qrcode):
-        connect.set(self.username, qrcode, self.expire or 1)
+        conn = get_redis_connection('user')
+        conn.set(self.username, qrcode, self.expire or 1)
+
+    def get_page_permissions(self, obj=None):
+        permission = self.get_all_permissions(obj)
+        return [
+            p for p in permission if 'page_' in p
+        ]
+
+    def get_role_permissions(self, obj=None):
+        permission = self.get_all_permissions(obj)
+        return [
+            p for p in permission if 'role_' in p
+        ]
 
 
 class Jumper(models.Model):
@@ -182,11 +194,12 @@ class Jumper(models.Model):
 
     class Meta:
         permissions = (
-            ('yo_list_jumper', u'罗列跳板机'),
-            ('yo_create_jumper', u'创建跳板机'),
-            ('yo_update_jumper', u'更新跳板机'),
-            ('yo_status_jumper', u'刷新跳板机器'),
-            ('yo_delete_jumper', u'删除跳板机'),
+            ('deveops_list_jumper', u'罗列跳板机'),
+            ('deveops_create_jumper', u'创建跳板机'),
+            ('deveops_update_jumper', u'更新跳板机'),
+            ('deveops_status_jumper', u'刷新跳板机器'),
+            ('deveops_delete_jumper', u'删除跳板机'),
+            ('deveops_page_jumper', u'跳板机页面'),
         )
 
     @property
@@ -216,10 +229,10 @@ class ZDBPermission(models.Model):
 
     class Meta:
         permissions = (
-            ('zdb_admin', u'管理员admin'),
-            ('zdb_dev', u'开发人员dev'),
-            ('zdb_audit', u'审计人员audit'),
-            ('zdb_general', u'普通人员general')
+            ('zdb_role_admin', u'管理员admin'),
+            ('zdb_role_dev', u'开发人员dev'),
+            ('zdb_role_audit', u'审计人员audit'),
+            ('zdb_role_general', u'普通人员general')
         )
 
 

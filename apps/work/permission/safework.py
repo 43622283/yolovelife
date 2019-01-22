@@ -25,11 +25,11 @@ class SafeWorkAPIRequiredMixin(BasePermission):
 
 
 class SafeWorkListRequiredMixin(SafeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_list_safework'
+    permission_required = u'work.deveops_list_safework'
 
 
 class SafeWorkCreateRequiredMixin(SafeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_create_safework'
+    permission_required = u'work.deveops_create_safework'
 
     def has_permission(self, request, view):
         perms = self.permission_required
@@ -42,7 +42,7 @@ class SafeWorkCreateRequiredMixin(SafeWorkAPIRequiredMixin):
             return False
 
 class SafeWorkStatusRequiredMixin(SafeWorkAPIRequiredMixin):
-    permission_required = u'work.yo_status_safework'
+    permission_required = u'work.deveops_status_safework'
 
     def has_permission(self, request, view):
         return request, super(SafeWorkStatusRequiredMixin, self).has_permission(request, view)
