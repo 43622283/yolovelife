@@ -58,7 +58,7 @@ class ManagerGroupCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [GroupPermission.GroupCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.ManagerGroupCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Group_GROUP_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['GROUP_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(ManagerGroupCreateAPI, self).create(request, *args, **kwargs)
@@ -89,7 +89,7 @@ class ManagerGroupUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.ManagerGroupUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Group_GROUP_UPDATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['GROUP_UPDATE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(ManagerGroupUpdateAPI, self).update(request, *args, **kwargs)
@@ -112,7 +112,7 @@ class ManagerGroupDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.ManagerGroupDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Group_GROUP_DELETE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['GROUP_DELETE'])
     def delete(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             group = self.get_object()
@@ -141,7 +141,7 @@ class ManagerGroupSelectHostAPI(WebTokenAuthentication, generics.UpdateAPIView):
     permission_classes = [GroupPermission.GroupSelectHostRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.ManagerGroupSelectHostAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Group_GROUP_SORT'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['GROUP_SORT'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             group = self.get_object()

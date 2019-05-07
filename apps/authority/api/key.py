@@ -3,16 +3,17 @@
 # Time 17-10-25
 # Author Yo
 # Email YoLoveLife@outlook.com
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.views import Response, status
-from rest_framework.pagination import PageNumberPagination
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from authority.permission import key as KeyPermission
-from timeline.decorator import decorator_api
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import Response, status
+from rest_framework.pagination import PageNumberPagination
 from deveops.api import WebTokenAuthentication
-from .. import models, serializers, filter
+from ..permissions import key as KeyPermission
+from ..serializers import key as serializer
+from .. import models, filter
+from timeline.decorator import decorator_api
 
 __all__ = [
     "KeyListAPI", "KeyCreateAPI", "KeyUpdateAPI",
@@ -26,7 +27,7 @@ class KeyPagination(PageNumberPagination):
 
 class KeyListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Key
-    serializer_class = serializers.KeySerializer
+    serializer_class = serializer.KeySerializer
     queryset = models.Key.objects.all()
     permission_classes = [KeyPermission.KeyListRequiredMixin, IsAuthenticated]
     filter_class = filter.KeyFilter
@@ -34,7 +35,7 @@ class KeyListAPI(WebTokenAuthentication, generics.ListAPIView):
 
 class KeyListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Key
-    serializer_class = serializers.KeySerializer
+    serializer_class = serializer.KeySerializer
     queryset = models.Key.objects.all()
     permission_classes = [KeyPermission.KeyListRequiredMixin, IsAuthenticated]
     pagination_class = KeyPagination
@@ -43,11 +44,11 @@ class KeyListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
 
 class KeyCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     module = models.Key
-    serializer_class = serializers.KeySerializer
+    serializer_class = serializer.KeySerializer
     permission_classes = [KeyPermission.KeyCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.KeyCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Key_KEY_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['KEY_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(KeyCreateAPI, self).create(request, *args, **kwargs)
@@ -62,14 +63,14 @@ class KeyCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
 
 class KeyUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.Key
-    serializer_class = serializers.KeySerializer
+    serializer_class = serializer.KeySerializer
     queryset = models.Key.objects.all()
     permission_classes = [KeyPermission.KeyUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.KeyUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Key_KEY_UPDATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['KEY_UPDATE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(KeyUpdateAPI, self).update(request, *args, **kwargs)
@@ -85,14 +86,14 @@ class KeyUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class KeyDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     module = models.Key
-    serializer_class = serializers.KeySerializer
+    serializer_class = serializer.KeySerializer
     queryset = models.Key.objects.all()
     permission_classes = [KeyPermission.KeyDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.KeyDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Key_KEY_DELETE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['KEY_DELETE'])
     def delete(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             key = self.get_object()

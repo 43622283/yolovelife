@@ -3,18 +3,43 @@
 # Time 17-11-16
 # Author Yo
 # Email YoLoveLife@outlook.com
-from timeline.models import History
+from timeline.models import History, SceneHistory
 from django.conf import settings
+
+
+def decorator_base(ClassName, timeline_type):
+    def wrapper(func):
+        def inner_wrapper(*args, **kwargs):
+            instances, msg, response = func(*args, **kwargs)
+            if 100 < response.status_code < 300:
+                obj = ClassName.objects.create(type=timeline_type)
+                obj.instances.set(instances)
+            return response
+        return inner_wrapper
+    return wrapper
 
 
 def decorator_api(timeline_type,):
     def wrapper(func):
         def inner_wrapper(*args, **kwargs):
             msg, response = func(*args, **kwargs)
-            if 100< response.status_code <300: # 200成功
+            if 100 < response.status_code < 300: # 200成功
                 history = History(type=timeline_type, msg=msg)
                 history.save()
             return response #DOT TOUCH it's magic
+        return inner_wrapper
+    return wrapper
+
+
+def decorator_workorder(timeline_type,):
+    def wrapper(func):
+        def inner_wrapper(*args, **kwargs):
+            obj, msg, response = func(*args, **kwargs)
+            if 100 < response.status_code < 300:
+                # 200成功
+                history = SceneHistory(type=timeline_type, msg=msg, workorder=obj)
+                history.save()
+            return response
         return inner_wrapper
     return wrapper
 

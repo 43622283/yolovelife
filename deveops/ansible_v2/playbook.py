@@ -61,12 +61,12 @@ class Playbook(object):
         tqm = None
         try:
             tqm = TaskQueueManager(
-                inventory = self.inventory,
-                variable_manager = self.variable_manager,
-                loader = self.loader,
-                options = self.options,
-                passwords = {},
-                stdout_callback = self.stdout_callback
+                inventory=self.inventory,
+                variable_manager=self.variable_manager,
+                loader=self.loader,
+                options=self.options,
+                passwords={},
+                stdout_callback=self.stdout_callback
             )
             for p in self.play:
                 result = tqm.run(p)

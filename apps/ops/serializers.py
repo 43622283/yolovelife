@@ -12,7 +12,7 @@ __all__ = [
 class MetaSerializer(serializers.ModelSerializer):
     hosts = serializers.PrimaryKeyRelatedField(required=False, many=True,
                                                queryset=models.Host.objects.all(),
-                                               allow_null=True)
+                                               allow_null=True,)
     need_files = serializers.ListField(source="file_list", read_only=True)
     _tasks = serializers.CharField(required=True, source="tasks")
     group = serializers.PrimaryKeyRelatedField(queryset=models.Group.objects.all())
@@ -205,3 +205,4 @@ class QuickSerializer(serializers.Serializer):
 
         obj = models.Quick.objects.create(**validated_data)
         return obj
+

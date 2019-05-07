@@ -15,6 +15,7 @@ import django.db.backends.mysql
 from deveops.variable import *
 # from deveops import conf as DEVEOPS_CONF
 from deveops.conf import *
+from deveops.timeline import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,6 +56,9 @@ INSTALLED_APPS = [
     'yocdn.apps.YoCDNConfig',
     'pool.apps.PoolConfig',
     'slot.apps.SlotConfig',
+    'scene.apps.SceneConfig',
+    'kalendar.apps.KalendarConfig',
+    'notify.apps.NotifyConfig',
     'rest_framework',
     'rest_framework_jwt',
     'corsheaders',
@@ -79,12 +83,15 @@ JWT_AUTH = {
     'JWT_SECRET_KEY': SECRET_KEY,
 }
 
-
 REST_FRAMEWORK = {
     # 'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FileUploadParser',
     )
 }
 
@@ -107,6 +114,7 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8080',
     '10.100.100.246:8888',
     '192.168.122.222:8000',
+    'dev-deveops.8531.cn',
 )
 
 ROOT_URLCONF = 'deveops.urls'
@@ -125,8 +133,9 @@ DATABASES = {
             'charset': 'utf8mb4',
             "init_command": "SET foreign_key_checks = 0;",
         },
-    },
+    }
 }
+
 
 # Redis
 # redis://:{PASSWORD}@{HOST}:{PORT}/{SPACE}
@@ -144,12 +153,12 @@ CACHES = {
             'PASSWORD': REDIS_PASSWD,
         }
     },
-    'data': {
+    'dashboard': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
             HOST=REDIS_HOST,
             PORT=REDIS_PORT,
-            SPACE=REDIS_DATA_SPACE,
+            SPACE=REDIS_DASHBOARD_SPACE,
         ),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
@@ -182,7 +191,46 @@ CACHES = {
             'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
             'PASSWORD': REDIS_PASSWD,
         }
-    }
+    },
+    'report': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_REPORT_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'kalendar': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_KALENDAR_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'notify': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_NOTIFY_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
 }
 
 # Password validation
@@ -208,7 +256,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        # 'APP_DIRS': True,
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
             ],
@@ -269,7 +317,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # LDAP
 if ENVIRONMENT != 'TRAVIS':
-    from django_auth_ldap.config import LDAPSearch,GroupOfNamesType
+    from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
     import ldap
     AUTHENTICATION_BACKENDS = (
         'django_auth_ldap.backend.LDAPBackend',

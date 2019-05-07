@@ -12,6 +12,16 @@ GroupCreateAPI = '%1{USER}%2 新建了权限组 新权限组信息 %1名称:{NAM
 GroupUpdateAPI = '%1{USER}%2 更新了权限组 更新后信息 %1名称:{NAME}%2'
 GroupDeleteAPI = '%1{USER}%2 删除了权限组 删除原信息 %1名称:{NAME}%2'
 
+## Role
+RoleCreateAPI = '{USER} 创建了角色 创建角色名:{NAME}'
+RoleUpdateAPI = '{USER} 更新了角色 更新后角色名:{NAME}'
+RoleUserAddAPI = '{USER} 新增了角色{NAME}下的用户'
+RoleUserRemoveAPI = '{USER} 在角色{NAME}中删除了部分用户'
+RolePageAddAPI = '{USER} 新增了角色{NAME}可操作的页面'
+RolePageRemoveAPI = '{USER} 删除了角色{NAME}部分可操作的页面'
+RoleAPIAddAPI = '{USER} 新增了角色{NAME}下可使用的接口'
+RoleAPIRemoveAPI = '{USER} 删除了角色{NAME}下课使用的接口'
+
 ## Key
 KeyCreateAPI = '%1{USER}%2 新建的密钥 密钥信息 %1名称:{NAME}%2 UUID:{UUID}'
 KeyUpdateAPI = '%1{USER}%2 更新了密钥 更新后密钥信息 %1名称:{NAME}%2 UUID:{UUID}'
@@ -76,6 +86,19 @@ UtilsFileDeleteAPI = '%1{USER}%2 在分发中心删除了未使用的文件 文�
 ## IMAGE
 UtilsImageCreateAPI = '%1{USER}%2 上传了架构图 UUID:{UUID}'
 
+# Scene
+## Report
+SceneReportDayAPI = ''
+SceneReportDayFormat = '时间{start_time}: 用户{user}本日内共操作工单{workorder_count}个，' \
+                       '其中{workorder_inactive}个未激活 {workorder_run}个正在运行 {workorder_done}已经完成'
+
+##
+SceneWorkOrderCreateAPI = '{USER}自建新工单'
+SceneWorkOrderUpdateAPI = '{USER}更新工单信息'
+SceneWorkOrderActiveAPI = '{USER}激活来电工单'
+SceneWorkOrderAppointAPI = '{USER1}将工单指派给{USER2} 指派理由：{REASON}'
+SceneWorkOrderDoneAPI = '{USER}完结工单'
+
 # EZSetup
 EZSetupCreateRedisAPI = '%1{USER}%2 通过平台易装了%1Redis应用%2 安装信息 UUID:{UUID}'
 
@@ -92,3 +115,4 @@ MonitorHostAliyunDetailLoad15m = '十五分钟负载'
 ## ZDB
 # Instance
 ZDBInstanceFlushDatabaseAPI = '该实例已经进入刷新列表'
+

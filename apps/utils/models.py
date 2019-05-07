@@ -13,9 +13,9 @@ __all__ = [
 ]
 
 
-def upload_image_path(instance,filename):
+def upload_image_path(instance, filename):
     t = filename.split('.')
-    return 'framework' + '/' + str(instance.uuid)
+    return 'framework' + '/' + str(instance.uuid) + '.' + t[1]
 
 
 def upload_file_path(instance,filename):

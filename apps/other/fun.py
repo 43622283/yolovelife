@@ -45,7 +45,7 @@ class Ptrancefrom(object):
             for j in range(self.width):
                 self.txt += self.get_char(*im.getpixel((j,i)))
                 self.txt += '\r\n'
-        print self.txt
+        print(self.txt)
     def write_to_file(self):
         '将生成的字符图片写入到文件'
         if self.output:

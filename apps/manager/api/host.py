@@ -50,7 +50,7 @@ class ManagerHostCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [HostPermission.HostCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.ManagerHostCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(ManagerHostCreateAPI, self).create(request, *args, **kwargs)
@@ -73,7 +73,7 @@ class ManagerHostUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = "pk"
     msg = settings.LANGUAGE.ManagerHostUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_UPDATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_UPDATE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(ManagerHostUpdateAPI, self).update(request, *args, **kwargs)
@@ -97,7 +97,7 @@ class ManagerHostDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.ManagerHostDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_DELETE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_DELETE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             host = self.get_object()
@@ -123,7 +123,7 @@ class ManagerHostPasswordAPI(WebTokenAuthentication, generics.ListAPIView):
         host = models.Host.objects.filter(uuid=self.kwargs['pk'])
         return host
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_PASSWORD'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_PASSWORD'])
     def get(self, request, *args, **kwargs):
         host = self.get_object()
         user = self.request.user
@@ -151,7 +151,7 @@ class ManagerHostSelectGroupAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.ManagerHostSelectGroupAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Host_HOST_SORT'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_SORT'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             host = self.get_object()

@@ -4,7 +4,6 @@
 # Email YoLoveLife@outlook.com
 import uuid
 import pyotp
-import redis
 from django.db import models
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
@@ -14,12 +13,11 @@ from django_redis import get_redis_connection
 import django.utils.timezone as timezone
 from deveops.utils import sshkey, aes
 from django.conf import settings
-from authority.tasks import jumper_status_flush
+from .tasks import jumper_status_flush
 
 __all__ = [
-    "Key", "ExtendUser", "Jumper", 'ZDBPermission'
+    "Key", "ExtendUser", "Jumper", "Group"
 ]
-
 
 
 def private_key_validator(key):
@@ -53,10 +51,10 @@ class Key(models.Model):
 
     class Meta:
         permissions = (
-            ('deveops_list_key', u'罗列密钥'),
-            ('deveops_create_key', u'创建密钥'),
-            ('deveops_update_key', u'更新密钥'),
-            ('deveops_delete_key', u'删除密钥'),
+            ('deveops_api_list_key', u'罗列密钥'),
+            ('deveops_api_create_key', u'创建密钥'),
+            ('deveops_api_update_key', u'更新密钥'),
+            ('deveops_api_delete_key', u'删除密钥'),
             ('deveops_page_key', u'秘钥页面'),
         )
 
@@ -119,17 +117,22 @@ class ExtendUser(AbstractUser):
 
     class Meta:
         permissions = (
-            ('deveops_list_user', u'罗列用户'),
-            ('deveops_list_opsuser', u'罗列运维用户'),
-            ('deveops_create_user', u'新增用户'),
-            ('deveops_update_user', u'修改用户'),
-            ('deveops_delete_user', u'删除用户'),
-            ('deveops_list_pmngroup', u'罗列权限组'),
-            ('deveops_create_pmngroup', u'新增权限组'),
-            ('deveops_update_pmngroup', u'修改权限组'),
-            ('deveops_delete_pmngroup', u'删除权限组'),
+            ('deveops_api_list_user', u'罗列用户'),
+            ('deveops_api_list_opsuser', u'罗列运维用户'),
+            ('deveops_api_list_workuser', u'罗列值班用户'),
+            ('deveops_api_create_user', u'新增用户'),
+            ('deveops_api_update_user', u'修改用户'),
+            ('deveops_api_delete_user', u'删除用户'),
+            ('deveops_api_list_pmngroup', u'罗列权限组'),
+            ('deveops_api_create_pmngroup', u'新增权限组'),
+            ('deveops_api_update_pmngroup', u'修改权限组'),
+            ('deveops_api_delete_pmngroup', u'删除权限组'),
             # django.contrib.auth.models.Permission django.contrib.auth.models.Group 无法重构
-            ('deveops_list_permission', u'罗列所有权限'),
+            ('deveops_api_list_permission', u'罗列所有权限'),
+            ('deveops_api_list_role', u'罗列角色'),
+            ('deveops_api_create_role', u'新增角色'),
+            ('deveops_api_update_role', u'修改角色'),
+            ('deveops_page_role', u'角色页面'),
             ('deveops_page_user', u'用户页面'),
             ('deveops_page_pmngroup', u'权限组页面'),
         )
@@ -154,7 +157,6 @@ class ExtendUser(AbstractUser):
 
     def check_qrcode(self, verifycode):
         t = pyotp.TOTP(self.qrcode)
-        print('验证器内存地址',t)
         result = t.verify(verifycode)
         return result
 
@@ -168,16 +170,16 @@ class ExtendUser(AbstractUser):
         conn = get_redis_connection('user')
         conn.set(self.username, qrcode, self.expire or 1)
 
+    def get_api_permissions(self, obj=None):
+        permission = self.get_all_permissions(obj)
+        return [
+            p for p in permission if 'api_' in p
+        ]
+
     def get_page_permissions(self, obj=None):
         permission = self.get_all_permissions(obj)
         return [
             p for p in permission if 'page_' in p
-        ]
-
-    def get_role_permissions(self, obj=None):
-        permission = self.get_all_permissions(obj)
-        return [
-            p for p in permission if 'role_' in p
         ]
 
 
@@ -194,11 +196,11 @@ class Jumper(models.Model):
 
     class Meta:
         permissions = (
-            ('deveops_list_jumper', u'罗列跳板机'),
-            ('deveops_create_jumper', u'创建跳板机'),
-            ('deveops_update_jumper', u'更新跳板机'),
-            ('deveops_status_jumper', u'刷新跳板机器'),
-            ('deveops_delete_jumper', u'删除跳板机'),
+            ('deveops_api_list_jumper', u'罗列跳板机'),
+            ('deveops_api_create_jumper', u'创建跳板机'),
+            ('deveops_api_update_jumper', u'更新跳板机'),
+            ('deveops_api_status_jumper', u'刷新跳板机器'),
+            ('deveops_api_delete_jumper', u'删除跳板机'),
             ('deveops_page_jumper', u'跳板机页面'),
         )
 
@@ -221,18 +223,4 @@ class Jumper(models.Model):
                         '-o ProxyCommand="ssh -p{{JUMPER_PORT}} -i {{KEY}} -W %h:%p root@{{JUMPER_IP}}"'
                 }
         }
-
-
-class ZDBPermission(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
-
-    class Meta:
-        permissions = (
-            ('zdb_role_admin', u'管理员admin'),
-            ('zdb_role_dev', u'开发人员dev'),
-            ('zdb_role_audit', u'审计人员audit'),
-            ('zdb_role_general', u'普通人员general')
-        )
-
 

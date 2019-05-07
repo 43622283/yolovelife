@@ -24,14 +24,14 @@ class ImagePagination(PageNumberPagination):
 
 
 class UtilsImageListAPI(WebTokenAuthentication,generics.ListAPIView):
-    module = models.FILE
+    module = models.IMAGE
     serializer_class = serializers.ImageSerializer
     queryset = models.FILE.objects.all()
     permission_classes = [ImagePermission.ImageListRequiredMixin, IsAuthenticated]
 
 
 class UtilsImageListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.FILE
+    module = models.IMAGE
     serializer_class = serializers.ImageSerializer
     permission_classes = [ImagePermission.ImageListRequiredMixin, IsAuthenticated]
     pagination_class = ImagePagination
@@ -39,13 +39,13 @@ class UtilsImageListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
 
 
 class UtilsImageCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
-    module = models.FILE
+    module = models.IMAGE
     serializer_class = serializers.ImageSerializer
     permission_classes = [ImagePermission.ImageCreateRequiredMixin, IsAuthenticated]
 
 
 class UtilsImageDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    module = models.FILE
+    module = models.IMAGE
     serializer_class = serializers.ImageSerializer
     queryset = models.FILE.objects.all()
     permission_classes = [ImagePermission.ImageDeleteRequiredMixin, IsAuthenticated]

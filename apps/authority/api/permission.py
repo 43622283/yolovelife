@@ -3,26 +3,26 @@
 # Time 17-10-25
 # Author Yo
 # Email YoLoveLife@outlook.com
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import Permission
-from authority.permission import permission as PermissionPermission
-from .. import models, serializers
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from ..permissions import permission as PermissionPermission
+from ..serializers import permission as serializer
 
 __all__ = [
-    "PermissionListAPI", 'PermissionZDBListAPI'
+    "PermissionAPIListAPI", 'PermissionPageListAPI'
 ]
 
 
-class PermissionListAPI(generics.ListAPIView):
+class PermissionAPIListAPI(generics.ListAPIView):
     module = Permission
-    serializer_class = serializers.PermissionSerializer
-    queryset = Permission.objects.filter(codename__istartswith="deveops_")
-    permission_classes = [PermissionPermission.PermissionListRequiredMixin, IsAuthenticated]
+    serializer_class = serializer.PermissionSerializer
+    queryset = Permission.objects.filter(codename__istartswith="deveops_api")
+    permission_classes = [PermissionPermission.PermissionAPIListRequiredMixin, IsAuthenticated]
 
 
-class PermissionZDBListAPI(generics.ListAPIView):
+class PermissionPageListAPI(generics.ListAPIView):
     module = Permission
-    serializer_class = serializers.PermissionSerializer
-    queryset = Permission.objects.filter(codename__istartswith="zdb_")
-    permission_classes = [PermissionPermission.PermissionZDBListRequiredMixin, IsAuthenticated]
+    serializer_class = serializer.PermissionSerializer
+    queryset = Permission.objects.filter(codename__istartswith="deveops_page")
+    permission_classes = [PermissionPermission.PermissionPageListRequiredMixin, IsAuthenticated]

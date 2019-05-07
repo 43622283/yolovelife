@@ -40,7 +40,7 @@ class CodeWorkCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [CodeWorkPermission.CodeWorkCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.CodeWorkCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Code_Work_CODEWORK_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['CODEWORK_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(CodeWorkCreateAPI, self).create(request, *args, **kwargs)
@@ -70,7 +70,7 @@ class CodeWorkCheckAPI(CodeWorkStatusAPI):
     permission_classes = [CodeWorkPermission.CodeWorkExamRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.CodeWorkCheckAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Code_Work_CODEWORK_CHECK'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['CODEWORK_CHECK'])
     def update(self, request, *args, **kwargs):
         work = self.get_object()
         user = request.user
@@ -98,7 +98,7 @@ class CodeWorkRunAPI(CodeWorkStatusAPI):
     permission_classes = [CodeWorkPermission.CodeWorkRunRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.CodeWorkRunAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Code_Work_CODEWORK_RUN'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['CODEWORK_RUN'])
     def update(self, request, *args, **kwargs):
         work = self.get_object()
         user = request.user
@@ -129,7 +129,7 @@ class CodeWorkUploadFileAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.CodeWorkUploadFileAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Code_Work_CODEWORK_UPLOAD'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['CODEWORK_UPLOAD'])
     def update(self, request, *args, **kwargs):
         work = self.get_object()
         user = request.user

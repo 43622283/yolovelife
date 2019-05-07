@@ -75,7 +75,7 @@ class OpsMissionCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [MissionPermission.MissionCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.OpsMissionCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Mission_MISSION_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['MISSION_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(OpsMissionCreateAPI, self).create(request, *args, **kwargs)
@@ -97,7 +97,7 @@ class OpsMissionUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.OpsMissionUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Mission_MISSION_UPDATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['MISSION_UPDATE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(OpsMissionUpdateAPI, self).update(request, *args, **kwargs)
@@ -121,7 +121,7 @@ class OpsMissionDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.OpsMissionDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['Mission_MISSION_DELETE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['MISSION_DELETE'])
     def delete(self, request, *args, **kwargs):
         mission = self.get_object()
         if self.qrcode_check(request):

@@ -6,6 +6,7 @@
 from __future__ import absolute_import,unicode_literals
 from ansible.plugins.callback import CallbackBase
 
+
 class Callback(CallbackBase):
     def __init__(self):
         super(Callback,self).__init__()

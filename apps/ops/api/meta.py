@@ -60,7 +60,7 @@ class OpsMetaCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [MetaPermission.MetaCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.OpsMetaCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_META_CREATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_CREATE'])
     def create(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(OpsMetaCreateAPI, self).create(request, *args, **kwargs)
@@ -81,7 +81,7 @@ class OpsMetaUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.OpsMetaUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_META_UPDATE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_UPDATE'])
     def update(self, request, *args, **kwargs):
         if self.qrcode_check(request):
             response = super(OpsMetaUpdateAPI, self).update(request, *args, **kwargs)
@@ -104,7 +104,7 @@ class OpsMetaDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.OpsMetaDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_META_DELETE'])
+    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['META_DELETE'])
     def delete(self, request, *args, **kwargs):
         meta = self.get_object()
         if self.qrcode_check(request):
