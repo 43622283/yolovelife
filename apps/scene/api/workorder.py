@@ -5,13 +5,15 @@
 # Email YoLoveLife@outlook.com
 from datetime import datetime, date, timedelta
 from rest_framework import generics
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import Response, status
 from django.db.models import Q
-from scene.permission import workorder as WorkOrderPermission
-from .. import models, serializers, filter
+from .. import models, filter
+from ..permissions import workorder as workoder_permission
+from ..permissions import comment as comment_permission
+from ..serializers import workorder as workoder_serializer
+from ..serializers import comment as comment_serializer
 from deveops.api import WebTokenAuthentication
 from timeline.models import SceneHistory
 from timeline.serializers import SceneHistorySerializer
@@ -33,14 +35,13 @@ class WorkOrderPagination(PageNumberPagination):
 
 class SceneWorkOrderListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderSerializer
+    serializer_class = workoder_serializer.WorkOrderSerializer
     queryset = models.WorkOrder.objects.all().order_by('_status')[:7]
-    # permission_classes = [WorkOrderPermission.WorkOrderListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
 
 
 class SceneWorkOrderMobileDetailAPI(WebTokenAuthentication, generics.ListAPIView):
-    permission_classes = [AllowAny, ]
+    permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
     queryset = models.WorkOrder.objects.all()
 
     def list(self, request, *args, **kwargs):
@@ -72,18 +73,17 @@ class SceneWorkOrderMobileDetailAPI(WebTokenAuthentication, generics.ListAPIView
 
 class SceneWorkOrderListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderSerializer
-    queryset = models.WorkOrder.objects.all()
-    # permission_classes = [WorkOrderPermission.WorkOrderListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    serializer_class = workoder_serializer.WorkOrderSerializer
+    queryset = models.WorkOrder.objects.all().order_by('_status')
+    permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
     pagination_class = WorkOrderPagination
     filter_class = filter.WorkOrderFilter
 
 
 class SceneWorkOrderCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderSerializer
-    permission_classes = [WorkOrderPermission.WorkOrderCreateRequiredMixin, IsAuthenticated]
+    serializer_class = workoder_serializer.WorkOrderSerializer
+    permission_classes = [workoder_permission.WorkOrderCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.SceneWorkOrderCreateAPI
 
     @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_CREATE'])
@@ -97,9 +97,9 @@ class SceneWorkOrderCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
 
 class SceneWorkOrderUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderSerializer
+    serializer_class = workoder_serializer.WorkOrderSerializer
     queryset = models.WorkOrder.objects.all()
-    permission_classes = [WorkOrderPermission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
+    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
     msg = settings.LANGUAGE.SceneWorkOrderUpdateAPI
@@ -117,9 +117,9 @@ class SceneWorkOrderUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class SceneWorkOrderActiveAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderActiveSerializer
+    serializer_class = workoder_serializer.WorkOrderActiveSerializer
     queryset = models.WorkOrder.objects.all()
-    permission_classes = [AllowAny, ]
+    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderActiveAPI
@@ -135,9 +135,9 @@ class SceneWorkOrderActiveAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class SceneWorkOrderAppointAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderAppointSerializer
+    serializer_class = workoder_serializer.WorkOrderAppointSerializer
     queryset = models.WorkOrder.objects.all()
-    permission_classes = [AllowAny, ]
+    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderAppointAPI
@@ -158,9 +158,9 @@ class SceneWorkOrderAppointAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class SceneWorkOrderDoneAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderDoneSerializer
+    serializer_class = workoder_serializer.WorkOrderDoneSerializer
     queryset = models.WorkOrder.objects.all()
-    permission_classes = [AllowAny,]
+    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderDoneAPI
@@ -178,10 +178,9 @@ class SceneWorkOrderDoneAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class SceneWorkOrderDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderSerializer
+    serializer_class = workoder_serializer.WorkOrderSerializer
     queryset = models.WorkOrder.objects.all()
-    # permission_classes = [WorkOrderPermission.WorkOrderDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny,]
+    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     # msg = settings.LANGUAGE.SceneWorkOrderDeleteAPI
@@ -202,7 +201,7 @@ class SceneWorkOrderDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 
 class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
-    permission_classes = [AllowAny, ]
+    permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
     queryset = models.WorkOrder.objects.all()
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
@@ -216,9 +215,9 @@ class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
 
         timeline_serializer = SceneHistorySerializer(timeline_queryset, many=True)
 
-        comment_serializer = serializers.CommentSerializer(obj.comments.order_by('create_time'), many=True)
+        com_serializer = comment_serializer.CommentSerializer(obj.comments.order_by('create_time'), many=True)
 
-        current_serializer = serializers.WorkOrderSerializer(obj,)
+        current_serializer = workoder_serializer.WorkOrderSerializer(obj,)
 
         order_queryset = models.WorkOrder.objects.filter(
             (~Q(phone='') & Q(phone=obj.phone))
@@ -226,22 +225,21 @@ class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
             | (~Q(serial_number='') & Q(serial_number=obj.serial_number))
         ).exclude(id=obj.id).exclude(user='', phone='')[:10]
 
-        order_serializer = serializers.WorkOrderSerializer(order_queryset, many=True)
+        order_serializer = workoder_serializer.WorkOrderSerializer(order_queryset, many=True)
         return Response(
             {
                 'current': current_serializer.data,
                 'timeline': timeline_serializer.data,
                 'order': order_serializer.data,
-                'comment': comment_serializer.data,
+                'comment': com_serializer.data,
             }, status.HTTP_200_OK
         )
 
 
 class SceneWorkOrderCommentAPI(WebTokenAuthentication, generics.UpdateAPIView):
     module = models.WorkOrder
-    serializer_class = serializers.WorkOrderCommentSerializer
+    serializer_class = workoder_serializer.WorkOrderCommentSerializer
     queryset = models.WorkOrder.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [comment_permission.CommentListRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'

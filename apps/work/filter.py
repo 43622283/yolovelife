@@ -25,7 +25,7 @@ class CodeWorkFilter(django_filters.FilterSet):
     @staticmethod
     def time_filter(queryset, first_name, value):
         date_list = value.split('to')
-        start_time = datetime.datetime.strptime(date_list[0],"%Y-%m-%d")
+        start_time = datetime.datetime.strptime(date_list[0], "%Y-%m-%d")
         end_time = datetime.datetime.strptime(date_list[1], "%Y-%m-%d")
         pm = Push_Mission.objects.filter(
             Q(create_time__range=(start_time,end_time))|Q(finish_time__range=(start_time,end_time))

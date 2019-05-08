@@ -6,8 +6,9 @@
 from rest_framework.permissions import BasePermission
 from django.conf import settings
 __all__ = [
-    'AssetAPIRequiredMixin', 'AssetCreateRequiredMixin', 'AssetDeleteRequiredMixin',
-    'AssetListRequiredMixin', 'AssetUpdateRequiredMixin'
+    'AssetAPIRequiredMixin', 'AssetCreateRequiredMixin',
+    'AssetListRequiredMixin', 'AssetUpdateRequiredMixin',
+    'AssetScrapRequiredMixin', 'AssetStopRequiredMixin'
 ]
 
 
@@ -35,6 +36,9 @@ class AssetUpdateRequiredMixin(AssetAPIRequiredMixin):
     permission_required = u'scene.deveops_api_update_asset'
 
 
-class AssetDeleteRequiredMixin(AssetAPIRequiredMixin):
-    permission_required = u'scene.deveops_api_delete_asset'
+class AssetStopRequiredMixin(AssetAPIRequiredMixin):
+    permission_required = u'scene.deveops_api_stop_asset'
 
+
+class AssetScrapRequiredMixin(AssetAPIRequiredMixin):
+    permission_required = u'scene.deveops_api_scrap_asset'

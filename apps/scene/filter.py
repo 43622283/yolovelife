@@ -54,6 +54,7 @@ class AssetFilter(django_filters.FilterSet):
     def status_filter(queryset, first_name, value):
         return queryset.filter(_status=value)
 
+
 class WorkOrderFilter(django_filters.FilterSet):
     duty_user = django_filters.CharFilter(method="duty_user_filter")
     title = django_filters.CharFilter(method="title_filter")
@@ -112,3 +113,15 @@ class CommentFilter(django_filters.FilterSet):
     @staticmethod
     def uuid_filter(queryset, first_name, value):
         return queryset.filter(repository__uuid=value)
+
+
+class ClassifyFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(method="name_filter")
+
+    class Meta:
+        model = models.Classify
+        fields = ['name']
+
+    @staticmethod
+    def name_filter(queryset, first_name, value):
+        return queryset.filter(name__contains=value)

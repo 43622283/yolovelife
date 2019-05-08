@@ -44,6 +44,8 @@ class Asset(models.Model):
             ('deveops_page_asset', u'工作资产页面'),
             ('deveops_api_list_asset', u'罗列工作资产'),
             ('deveops_api_update_asset', u'更新工作资产'),
+            ('deveops_api_stop_asset', u'暂停工作资产'),
+            ('deveops_api_scrap_asset', u'报废工作资产'),
             ('deveops_api_delete_asset', u'删除工作资产'),
         )
 
@@ -197,8 +199,8 @@ class AssetChange(models.Model):
         # Link to uuid Asset
         if Asset.objects.filter(uuid=self.uuid).exists():
             obj = Asset.objects.filter(uuid=self.uuid).get()
-            from . import serializers
-            return serializers.AssetSerializer(obj).data
+            from .serializers import asset as asset_serializer
+            return asset_serializer.AssetSerializer(obj).data
         else:
             return {}
 
@@ -223,15 +225,33 @@ class Comment(models.Model):
     user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True,
                                     on_delete=models.SET_NULL, related_name='comments')
 
-    permissions = (
-        ('deveops_api_list_comment', u'罗列知识库页面'),
-        ('deveops_api_create_comment', u'更新知识库页面'),
-    )
+    class Meta:
+        permissions = (
+            ('deveops_api_list_comment', u'罗列评论'),
+            ('deveops_api_create_comment', u'更新评论'),
+            ('deveops_api_delete_comment', u'删除评论'),
+        )
+
+
+class Classify(models.Model):
+    id = models.AutoField(primary_key=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    name = models.CharField(max_length=13, default='', null=True)
+
+    class Meta:
+        permissions = (
+            ('deveops_api_list_classify', u'罗列工单分类'),
+            ('deveops_api_create_classify', u'创建工单分类'),
+            ('deveops_api_delete_classify', u'删除工单分类'),
+        )
 
 
 class WorkOrder(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+
+    classify = models.ForeignKey(Classify, default=None, blank=True, null=True,
+                                    on_delete=models.SET_NULL, related_name='workorders')
 
     duty_user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True,
                                     on_delete=models.SET_NULL, related_name='workorders')
@@ -272,9 +292,10 @@ class WorkOrder(models.Model):
 
     class Meta:
         permissions = (
-            ('deveops_page_wo', u'现场工单页面'),
-            ('deveops_api_list_wo', u'罗列工单页面'),
-            ('deveops_api_update_wo', u'更新工单页面'),
+            ('deveops_page_workorder', u'现场工单页面'),
+            ('deveops_api_list_workorder', u'罗列现场工单'),
+            ('deveops_api_create_workorder', u'创建现场工单'),
+            ('deveops_api_update_workorder', u'更新现场工单'),
         )
 
     def active(self):
@@ -315,8 +336,10 @@ class Repository(models.Model):
     class Meta:
         permissions = (
             ('deveops_page_repository', u'现场知识库页面'),
-            ('deveops_api_list_repository', u'罗列知识库页面'),
-            ('deveops_api_update_repository', u'更新知识库页面'),
+            ('deveops_api_list_repository', u'罗列知识库'),
+            ('deveops_api_create_repository', u'创建知识库'),
+            ('deveops_api_update_repository', u'更新知识库'),
+            ('deveops_api_delete_repository', u'删除知识库'),
         )
 
     @property

@@ -85,7 +85,7 @@ class RolePageAddSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         pages = validated_data.pop('pages')
-        instance.permission.add(*pages)
+        instance.permissions.add(*pages)
         return super(RolePageAddSerializer, self).update(instance, {})
 
 
@@ -103,7 +103,7 @@ class RolePageRemoveSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         pages = validated_data.pop('pages')
-        instance.user_set.remove(*pages)
+        instance.permissions.remove(*pages)
         return super(RolePageRemoveSerializer, self).update(instance, {})
 
 
@@ -121,7 +121,7 @@ class RoleAPIAddSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         apis = validated_data.pop('apis')
-        instance.permission.add(*apis)
+        instance.permissions.add(*apis)
         return super(RoleAPIAddSerializer, self).update(instance, {})
 
 
@@ -139,5 +139,5 @@ class RoleAPIRemoveSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         apis = validated_data.pop('apis')
-        instance.user_set.remove(*apis)
+        instance.permissions.remove(*apis)
         return super(RoleAPIRemoveSerializer, self).update(instance, {})

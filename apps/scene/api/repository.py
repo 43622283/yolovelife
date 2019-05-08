@@ -8,11 +8,12 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.views import Response, status
-from scene.permission import location as RepositoryPermission
-from .. import models, serializers, filter
+from .. import models, filter
+from ..serializers import repository as repository_serializer
+from ..serializers import comment as comment_serializer
+from ..permissions import repository as repository_permission
 from deveops.api import WebTokenAuthentication
-from timeline.decorator import decorator_api
-from django.conf import settings
+from timeline.decorator import decorator_base
 
 __all__ = [
 
@@ -27,20 +28,16 @@ class RepositoryPagination(PageNumberPagination):
 
 
 class SceneRepositoryListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositorySerializer
+    serializer_class = repository_serializer.RepositorySerializer
     queryset = models.Repository.objects.all().order_by('-score', '-status', '-update_time')
-    # permission_classes = [RepositoryPermission.RepositoryListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryListRequiredMixin, IsAuthenticated]
     pagination_class = RepositoryPagination
     filter_class = filter.RepositoryFilter
 
 
 class SceneRepositoryCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositorySerializer
-    # permission_classes = [RepositoryPermission.RepositoryCreateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    serializer_class = repository_serializer.RepositorySerializer
+    permission_classes = [repository_permission.RepositoryCreateRequiredMixin, IsAuthenticated]
     # msg = settings.LANGUAGE.SceneRepositoryCreateAPI
 
     # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_CREATE'])
@@ -58,11 +55,9 @@ class SceneRepositoryCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
 
 
 class SceneRepositoryUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositorySerializer
+    serializer_class = repository_serializer.RepositorySerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryUpdateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryUpdateRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
     # msg = settings.LANGUAGE.SceneRepositoryUpdateAPI
@@ -83,11 +78,9 @@ class SceneRepositoryUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 
 class SceneRepositoryStarsAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositorySerializer
+    serializer_class = repository_serializer.RepositorySerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryUpdateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryUpdateRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
     # msg = settings.LANGUAGE.SceneRepositoryUpdateAPI
@@ -108,51 +101,41 @@ class SceneRepositoryStarsAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 
 class SceneRepositoryCommentAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositoryCommentSerializer
+    serializer_class = comment_serializer.RepositoryCommentSerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
 
 
 class SceneRepositoryBeOkAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositoryOkSerializer
+    serializer_class = repository_serializer.RepositoryOkSerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
 
 
 class SceneRepositoryBeExpiredAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositoryExpiredSerializer
+    serializer_class = repository_serializer.RepositoryExpiredSerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
 
 
 class SceneRepositoryBeMaintenanceAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositoryMaintenanceSerializer
+    serializer_class = repository_serializer.RepositoryMaintenanceSerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryUpdateRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
 
 
 class SceneRepositoryDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Repository
-    serializer_class = serializers.RepositorySerializer
+    serializer_class = repository_serializer.RepositorySerializer
     queryset = models.Repository.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     # msg = settings.LANGUAGE.SceneRepositoryDeleteAPI
@@ -173,7 +156,7 @@ class SceneRepositoryDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 
 class SceneRepositoryDetailAPI(WebTokenAuthentication, generics.ListAPIView):
-    permission_classes = [AllowAny, ]
+    permission_classes = [repository_permission.RepositoryListRequiredMixin, IsAuthenticated]
     queryset = models.Repository.objects.all()
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
@@ -181,13 +164,13 @@ class SceneRepositoryDetailAPI(WebTokenAuthentication, generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         obj = self.get_object()
 
-        repository_serializer = serializers.RepositoryDetailSerializer(obj)
+        repo_serializer = repository_serializer.RepositoryDetailSerializer(obj)
 
-        comment_serializer = serializers.CommentSerializer(obj.comments.order_by('create_time'), many=True)
+        com_serializer = comment_serializer.CommentSerializer(obj.comments.order_by('create_time'), many=True)
 
         return Response(
             {
-                'repository': repository_serializer.data,
-                'comments': comment_serializer.data,
+                'repository': repo_serializer.data,
+                'comments': com_serializer.data,
             }, status.HTTP_200_OK
         )

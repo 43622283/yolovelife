@@ -14,3 +14,8 @@ __all__ = [
 class Dashboard(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+
+    class Meta:
+        permissions = (
+            ('deveops_page_dashboard', u'跳板机页面'),
+        )

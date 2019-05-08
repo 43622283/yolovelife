@@ -41,7 +41,7 @@ urlpatterns = [
     # path(r'api-ezsetup/', include('ezsetup.urls.api_urls')),
     # path(r'api-ipool/', include('pool.urls.api_urls')),
     path(r'api-timeline/', include('timeline.urls.api_urls')),
-    path(r'api-scene/', include('scene.urls.api_urls')),
+    path(r'api-scene/', include('scene.api_urls')),
     path(r'api-kalendar/', include('kalendar.urls.api_urls')),
     path(r'api-notify/', include('notify.urls.api_urls')),
     path(r'api-docs/', include_docs_urls(title=u'接口说明文档', authentication_classes=[], permission_classes=[])),

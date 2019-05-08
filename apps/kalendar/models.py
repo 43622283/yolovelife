@@ -9,7 +9,7 @@ import django.utils.timezone as timezone
 from django.conf import settings
 import uuid
 __all__ = [
-
+    'Kalendar'
 ]
 
 
@@ -21,3 +21,12 @@ class Kalendar(models.Model):
     status = models.IntegerField(default=settings.STATUS_KALENDAR_NOTICE)
     title = models.CharField(default='', max_length=1000)
     description = models.CharField(default='', max_length=1000)
+
+    class Meta:
+        permissions = (
+            ('deveops_page_calendar', u'日历页面'),
+            ('deveops_api_list_calendar', u'罗列日历'),
+            ('deveops_api_update_calendar', u'更新日历'),
+            ('deveops_api_create_calendar', u'新建日历'),
+            ('deveops_api_delete_calendar', u'删除日历'),
+        )

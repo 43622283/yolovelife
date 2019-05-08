@@ -6,7 +6,7 @@
 from django.contrib.auth.models import Group
 from django.db import models
 import uuid
-from scene.models import WorkOrder
+from scene.models import WorkOrder, AssetChange
 
 
 class AbstractHistory(models.Model):
@@ -21,7 +21,11 @@ class AbstractHistory(models.Model):
 
 
 class RoleHistory(AbstractHistory):
-    instances = models.ManyToManyField(Group, default=None, blank=True, null=True, related_name='role_history')
+    instances = models.ManyToManyField(Group, default=None, blank=True, related_name='role_history')
+
+
+class AssetHistory(AbstractHistory):
+    instances = models.ManyToManyField(AssetChange, default=None, blank=True, related_name='asset_history')
 
 
 class History(models.Model):

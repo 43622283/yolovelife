@@ -6,7 +6,6 @@
 from django.contrib.auth.models import Permission, Group
 from django.db.models import Q
 import django_filters
-# from manager import models
 from . import models
 
 __all__ = [
@@ -38,6 +37,36 @@ class UserFilter(django_filters.FilterSet):
     @staticmethod
     def is_active_filter(queryset, first_name, value):
         return queryset.filter(is_active=value)
+
+
+class PageFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(method="name_filter")
+
+    class Meta:
+        model = Permission
+        fields = ['name', ]
+
+    @staticmethod
+    def name_filter(queryset, first_name, value):
+        return queryset.filter(codename__startswith='deveops_page').filter(
+            Q(codename__contains=value) |
+            Q(name__contains=value)
+        )
+
+
+class APIFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(method="name_filter")
+
+    class Meta:
+        model = Permission
+        fields = ['name', ]
+
+    @staticmethod
+    def name_filter(queryset, first_name, value):
+        return queryset.filter(codename__startswith='deveops_api').filter(
+            Q(codename__contains=value) |
+            Q(name__contains=value)
+        )
 
 
 class GroupFilter(django_filters.FilterSet):

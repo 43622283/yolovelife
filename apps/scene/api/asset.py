@@ -4,19 +4,17 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import Response, status
-from scene.permission import location as AssetPermission
-from .. import models, serializers, filter
+from .. import models, filter
+from ..serializers import asset as asset_serializer
+from ..permissions import asset as asset_permission
 from deveops.api import WebTokenAuthentication
-from timeline.decorator import decorator_api
-from django.conf import settings
 
 __all__ = [
     'AssetPagination',
     'SceneAssetListByPageAPI',
+    'SceneAssetListAPI',
 ]
 
 
@@ -29,19 +27,17 @@ class AssetPagination(PageNumberPagination):
 
 class SceneAssetListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Asset
-    serializer_class = serializers.AssetSerializer
+    serializer_class = asset_serializer.AssetSerializer
     queryset = models.Asset.objects.all()
-    # permission_classes = [AssetPermission.AssetListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [asset_permission.AssetListRequiredMixin, IsAuthenticated]
     filter_class = filter.AssetFilter
 
 
 class SceneAssetListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Asset
-    serializer_class = serializers.AssetSerializer
+    serializer_class = asset_serializer.AssetSerializer
     queryset = models.Asset.objects.all().order_by('-_status')
-    # permission_classes = [AssetPermission.AssetListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [asset_permission.AssetListRequiredMixin, IsAuthenticated]
     pagination_class = AssetPagination
     filter_class = filter.AssetFilter
 

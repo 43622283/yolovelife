@@ -4,15 +4,13 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import Response, status
-from scene.permission import location as CommentPermission
-from .. import models, serializers, filter
+from .. import models, filter
+from ..serializers import comment as comment_serializer
+from ..permissions import comment as comment_permission
 from deveops.api import WebTokenAuthentication
-from timeline.decorator import decorator_api
-from django.conf import settings
+from timeline.decorator import decorator_base
 
 __all__ = [
 
@@ -21,18 +19,16 @@ __all__ = [
 
 class SceneCommentListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Comment
-    serializer_class = serializers.CommentSerializer
+    serializer_class = comment_serializer.CommentSerializer
     queryset = models.Comment.objects.all()
-    # permission_classes = [CommentPermission.CommentListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [comment_permission.CommentListRequiredMixin, IsAuthenticated]
     filter_class = filter.CommentFilter
 
 
 class SceneCommentCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     module = models.Comment
-    serializer_class = serializers.CommentSerializer
-    # permission_classes = [CommentPermission.CommentCreateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    serializer_class = comment_serializer.CommentSerializer
+    permission_classes = [comment_permission.CommentCreateRequiredMixin, IsAuthenticated]
     # msg = settings.LANGUAGE.SceneCommentCreateAPI
 
     # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_CREATE'])
@@ -49,14 +45,14 @@ class SceneCommentCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     #         return '', self.qrcode_response
 
 
-class SceneCommentUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Comment
-    serializer_class = serializers.CommentSerializer
-    queryset = models.Comment.objects.all()
+# class SceneCommentUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
+#     module = models.Comment
+#     serializer_class = serializers.CommentSerializer
+#     queryset = models.Comment.objects.all()
     # permission_classes = [CommentPermission.CommentUpdateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
-    lookup_field = "uuid"
-    lookup_url_kwarg = "pk"
+    # permission_classes = [AllowAny, ]
+    # lookup_field = "uuid"
+    # lookup_url_kwarg = "pk"
     # msg = settings.LANGUAGE.SceneCommentUpdateAPI
 
     # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_UPDATE'])
@@ -74,14 +70,14 @@ class SceneCommentUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     #         return '', self.qrcode_response
 
 
-class SceneCommentStarsAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Comment
-    serializer_class = serializers.CommentSerializer
-    queryset = models.Comment.objects.all()
+# class SceneCommentStarsAPI(WebTokenAuthentication, generics.UpdateAPIView):
+#     module = models.Comment
+#     serializer_class = serializers.CommentSerializer
+#     queryset = models.Comment.objects.all()
     # permission_classes = [CommentPermission.CommentUpdateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
-    lookup_field = "uuid"
-    lookup_url_kwarg = "pk"
+    # permission_classes = [AllowAny, ]
+    # lookup_field = "uuid"
+    # lookup_url_kwarg = "pk"
     # msg = settings.LANGUAGE.SceneCommentUpdateAPI
 
     # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_UPDATE'])
@@ -101,10 +97,9 @@ class SceneCommentStarsAPI(WebTokenAuthentication, generics.UpdateAPIView):
 
 class SceneCommentDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
     module = models.Comment
-    serializer_class = serializers.CommentSerializer
+    serializer_class = comment_serializer.CommentSerializer
     queryset = models.Comment.objects.all()
-    # permission_classes = [CommentPermission.CommentDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [comment_permission.CommentDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     # msg = settings.LANGUAGE.SceneCommentDeleteAPI

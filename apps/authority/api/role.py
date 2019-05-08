@@ -12,19 +12,19 @@ from ..permissions import role as RolePermission
 from ..serializers import role as serializer
 from ..serializers import user as user_serializer
 from ..serializers import permission as permission_serializer
-from ..filter import UserFilter
+from ..filter import UserFilter, PageFilter
 from .. import models
 from timeline.decorator import decorator_base, decorator_api
 from timeline.models import RoleHistory
 
 __all__ = [
     'RoleUserAPI', 'RoleCreateAPI', 'RoleListAPI',
-    'RoleListByPageAPI', 'RolePagination'
+    'RolePagination'
 ]
 
 
 class RolePagination(PageNumberPagination):
-    page_size = 12
+    page_size = 7
     max_page_size = 50
     page_size_query_param = 'pageSize'
     page_query_param = 'current'
@@ -48,7 +48,7 @@ class RoleCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
         obj = models.Group.objects.get(id=response.data['id'])
         return [obj, ], self.msg.format(
             USER=request.user.full_name,
-            NAME=response.data['name'],
+            NAME=obj.name,
         ), response
 
 
@@ -137,12 +137,13 @@ class RolePageAPI(WebTokenAuthentication, generics.ListAPIView):
     lookup_url_kwarg = 'pk'
     lookup_field = 'id'
     pagination_class = RolePagination
+    filter_class = PageFilter
 
     def get_queryset(self):
         obj = models.Group.objects.get(
             **{self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
         )
-        return obj.permissions.filter(name__startswith='deveops_page')
+        return obj.permissions.filter(codename__startswith='deveops_page').order_by('id')
 
 
 class RolePageAddAPI(WebTokenAuthentication, generics.UpdateAPIView):
@@ -197,12 +198,13 @@ class RoleAPIAPI(WebTokenAuthentication, generics.ListAPIView):
     lookup_url_kwarg = 'pk'
     lookup_field = 'id'
     pagination_class = RolePagination
+    filter_class = PageFilter
 
     def get_queryset(self):
         obj = models.Group.objects.get(
             **{self.lookup_field: self.kwargs[self.lookup_url_kwarg]}
         )
-        return obj.permissions.filter(name__startswith='deveops_api')
+        return obj.permissions.filter(codename__startswith='deveops_api')
 
 
 class RoleAPIAddAPI(WebTokenAuthentication, generics.UpdateAPIView):
