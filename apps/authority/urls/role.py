@@ -9,7 +9,7 @@ from ..api import role
 urlpatterns = [
     path(r'v1/role/', role.RoleListAPI.as_view()),
     path(r'v1/role/create/', role.RoleCreateAPI.as_view()),
-    path(r'v1/role/update/', role.RoleUpdateAPI.as_view()),
+    path(r'v1/role/<int:pk>/update/', role.RoleUpdateAPI.as_view()),
     path(r'v1/role/<int:pk>/user/', role.RoleUserAPI.as_view()),
     path(r'v1/role/<int:pk>/user/add/', role.RoleUserAddAPI.as_view()),
     path(r'v1/role/<int:pk>/user/remove/', role.RoleUserRemoveAPI.as_view()),

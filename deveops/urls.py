@@ -44,6 +44,7 @@ urlpatterns = [
     path(r'api-scene/', include('scene.api_urls')),
     path(r'api-kalendar/', include('kalendar.urls.api_urls')),
     path(r'api-notify/', include('notify.urls.api_urls')),
+    path(r'api-info/', include('info.api_urls')),
     path(r'api-docs/', include_docs_urls(title=u'接口说明文档', authentication_classes=[], permission_classes=[])),
     re_path(r'media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
 ]

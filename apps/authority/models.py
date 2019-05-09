@@ -96,6 +96,7 @@ class Key(models.Model):
 
 
 class ExtendUser(AbstractUser):
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     img = models.CharField(max_length=10, default='user.jpg')
     phone = models.CharField(max_length=11, default='None',)
     full_name = models.CharField(max_length=11, default='未获取')

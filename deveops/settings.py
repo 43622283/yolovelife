@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'scene.apps.SceneConfig',
     'kalendar.apps.KalendarConfig',
     'notify.apps.NotifyConfig',
+    'info.apps.InfoConfig',
     'rest_framework',
     'rest_framework_jwt',
     'corsheaders',

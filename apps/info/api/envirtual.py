@@ -12,7 +12,7 @@ from ..permissions import envirtual as envirtual_permission
 from deveops.api import WebTokenAuthentication
 
 __all__ = [
-
+    'ENVIRTUALPagination', 'INFOENVIRTUALCreateAPI', 'INFOENVIRTUALDeleteAPI', 'INFOENVIRTUALListAPI'
 ]
 
 

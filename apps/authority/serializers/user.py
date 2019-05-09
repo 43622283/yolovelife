@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExtendUser
         fields = (
-            'id', 'is_active', 'phone', 'username', 'full_name', 'group_name', 'email8531', 'groups', 'email',
+            'id', 'uuid', 'is_active', 'phone', 'username', 'full_name', 'group_name', 'email8531', 'groups', 'email',
             'info', 'have_qrcode', 'expire',
         )
         read_only_fields = (
