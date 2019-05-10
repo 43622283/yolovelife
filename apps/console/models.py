@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from manager.models import Group, Host
 from authority.models import ExtendUser
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
 
 ]

@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.conf import settings
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from django.contrib.auth.models import Group
 from authority.models import ExtendUser
 
@@ -19,7 +19,7 @@ __all__ = [
 
 class Notice(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     create_time = models.DateTimeField(auto_now_add=True)
 
@@ -40,7 +40,7 @@ class Notice(models.Model):
 
 class Remind(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     create_time = models.DateTimeField(auto_now_add=True)
 

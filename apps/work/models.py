@@ -11,7 +11,8 @@ from ops.models import Push_Mission,Mission
 from manager.models import Group,Host
 from authority.models import ExtendUser
 from utils.models import FILE
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
+
 __all__ = [
     'Work', 'Code_Work', 'Safety_Work',
 ]
@@ -19,7 +20,7 @@ __all__ = [
 
 class Work(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     info = models.TextField()
 
     class Meta:

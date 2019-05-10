@@ -2,7 +2,6 @@
 # Time 17-10-25
 # Author Yo
 # Email YoLoveLife@outlook.com
-import uuid
 import pyotp
 from django.db import models
 from django.contrib.auth.models import Group
@@ -12,7 +11,9 @@ from django.core.exceptions import ValidationError
 from django_redis import get_redis_connection
 import django.utils.timezone as timezone
 from deveops.utils import sshkey, aes
+from deveops.utils.uuid_maker import uuid_maker
 from django.conf import settings
+from deveops.utils.uuid_maker import uuid_maker
 from .tasks import jumper_status_flush
 
 __all__ = [
@@ -38,7 +39,7 @@ def public_key_validator(key):
 
 class Key(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     name = models.CharField(max_length=100, default='')
 
     # 操作权限限定
@@ -96,7 +97,7 @@ class Key(models.Model):
 
 
 class ExtendUser(AbstractUser):
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     img = models.CharField(max_length=10, default='user.jpg')
     phone = models.CharField(max_length=11, default='None',)
     full_name = models.CharField(max_length=11, default='未获取')
@@ -187,7 +188,7 @@ class ExtendUser(AbstractUser):
 class Jumper(models.Model):
     # 全局ID
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     connect_ip = models.GenericIPAddressField(default='0.0.0.0')
     # 跳板机端口
     sshport = models.IntegerField(default='52000')

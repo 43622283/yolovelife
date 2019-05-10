@@ -5,13 +5,14 @@
 # Email YoLoveLife@outlook.com
 from django.contrib.auth.models import Group
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from scene.models import WorkOrder, AssetChange
+from django.conf import settings
 
 
 class AbstractHistory(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     type = models.IntegerField(default=0)
     msg = models.TextField(default='')
     create_time = models.DateTimeField(auto_now_add=True,)
@@ -30,7 +31,7 @@ class AssetHistory(AbstractHistory):
 
 class History(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     type = models.IntegerField(default=0)
     msg = models.TextField(default='')
     time = models.DateTimeField(auto_now_add=True,)
@@ -38,7 +39,7 @@ class History(models.Model):
 
 class SceneHistory(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     type = models.IntegerField(default=0)#历史类型
     msg = models.TextField(default='')#信息
     time = models.DateTimeField(auto_now_add=True,)#历史时间

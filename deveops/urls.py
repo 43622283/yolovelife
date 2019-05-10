@@ -28,7 +28,7 @@ urlpatterns = [
     path(r'api-auth/', include('authority.api_urls')),
     # path(r'api-manager/', include('manager.urls.api_urls')),
     # path(r'api-ops/', include('ops.urls.api_urls')),
-    # path(r'api-utils/', include('utils.urls.api_urls')),
+    path(r'api-utils/', include('utils.urls.api_urls')),
     # path(r'api-work/', include('work.urls.api_urls')),
     # path(r'api-var/', include('variable.urls.api_urls')),
     # path(r'api-dns/', include('yodns.urls.api_urls')),

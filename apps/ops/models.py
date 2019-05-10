@@ -9,7 +9,8 @@ from authority.models import ExtendUser
 from utils.models import FILE
 from django.conf import settings
 from django_mysql.models import JSONField
-import uuid, yaml
+import yaml
+from deveops.utils.uuid_maker import uuid_maker
 
 __all__ = [
     'META',
@@ -72,7 +73,7 @@ class TASKS(models.Model):
 class META(TASKS):
     # 指定某幾台主機進行操作的元操作
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, related_name='group_metas')
     # 當hosts為空 則說明該meta任務為本地執行
     hosts = models.ManyToManyField(Host, blank=True, related_name='user_metas', verbose_name=_("metas"))
@@ -128,7 +129,7 @@ class Mission(models.Model):
             ('deveops_page_mission', u'任务页面'),
         )
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, related_name='group_missions')
     metas = models.ManyToManyField(META, blank=True, related_name='missions', verbose_name=_("Mission"))
     info = models.CharField(default='', max_length=5000)
@@ -172,7 +173,7 @@ class Push_Mission(models.Model):
     )
 
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     # 由哪個Mission推送出來的任務
     mission = models.ForeignKey(Mission, related_name='push_missions', null=True, on_delete=models.SET_NULL)
     # 推出任务状态
@@ -206,7 +207,7 @@ class Push_Mission(models.Model):
 
 class Quick(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     data = models.CharField(default="", max_length=200)
     metatype = models.CharField(default="", max_length=200)
     user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True, on_delete=models.SET_NULL)

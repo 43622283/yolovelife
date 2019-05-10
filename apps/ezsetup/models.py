@@ -5,10 +5,10 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from manager.models import Group,Host
 from django.conf import settings
-
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
     'SETUP',
 ]
@@ -27,7 +27,7 @@ class SETUP(models.Model):
         (settings.STATUS_EZSETUP_LACK_OF_KEY_OR_JUMPER, '缺少跳板机或密钥'),
     )
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, related_name='group_setup')
     hosts = models.ManyToManyField(Host, blank=True, related_name='host_setup', verbose_name=_("metas"))

@@ -1,9 +1,9 @@
 # -*- coding:utf-8 -*-
 from django.db import models
-import uuid
 import socket
 from manager.models import Group,Host
 from deveops.utils import aes
+from deveops.utils.uuid_maker import uuid_maker
 from django.conf import settings
 from zdb.tasks import database_single_flush
 
@@ -14,7 +14,7 @@ __all__ = [
 
 class RedisInstance(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     name = models.CharField(max_length=100, default='undefined')
     host = models.CharField(max_length=200, default='localhost')
     port = models.CharField(max_length=5, default='3306')
@@ -40,7 +40,7 @@ class DBInstance(models.Model):
         (settings.STATUS_DB_INSTANCE_CAN_BE_USE, '正常'),
     )
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     name = models.CharField(max_length=100, default='undefined')
     connect_address = models.CharField(max_length=200, default='localhost')
@@ -78,7 +78,7 @@ class DBInstance(models.Model):
 
 class DBDatabase(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     instance = models.ForeignKey(DBInstance, on_delete=models.SET_NULL, null=True, related_name='databases')
     name = models.CharField(max_length=500, default='undefined')
 

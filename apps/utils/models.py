@@ -7,7 +7,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 from authority.models import ExtendUser
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
+
 __all__ = [
     'FILE', 'IMAGE'
 ]
@@ -25,10 +26,10 @@ def upload_file_path(instance,filename):
 
 class FILE(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(default=uuid.uuid4, max_length=100, null=True, blank=True)
+    name = models.CharField(default=uuid_maker, max_length=100, null=True, blank=True)
     # 文件使用时注入的参数名称
     var_name = models.CharField(default='', max_length=100 ,null=True, blank=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     file = models.FileField(upload_to=upload_file_path, null=True, blank=True)
     # 上传时间
     create_time = models.DateTimeField(auto_now_add=True)
@@ -37,9 +38,9 @@ class FILE(models.Model):
 
     class Meta:
         permissions = (
-            ('deveops_list_file', u'罗列文件'),
-            ('deveops_create_file', u'上传文件'),
-            ('deveops_delete_file', u'删除文件'),
+            ('deveops_api_list_file', u'罗列文件'),
+            ('deveops_api_create_file', u'上传文件'),
+            ('deveops_api_delete_file', u'删除文件'),
             ('deveops_page_file', u'分发中心页面'),
         )
 
@@ -53,8 +54,8 @@ class FILE(models.Model):
 
 class IMAGE(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(default=uuid.uuid4, max_length=100, null=True, blank=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(default=uuid_maker, max_length=100, null=True, blank=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
     # 上传时间
     create_time = models.DateTimeField(auto_now_add=True)
@@ -63,7 +64,7 @@ class IMAGE(models.Model):
 
     class Meta:
         permissions = (
-            ('deveops_list_image', u'罗列图片'),
-            ('deveops_create_image', u'上传图片'),
-            ('deveops_delete_image', u'删除图片'),
+            ('deveops_api_list_image', u'罗列图片'),
+            ('deveops_api_create_image', u'上传图片'),
+            ('deveops_api_delete_image', u'删除图片'),
         )

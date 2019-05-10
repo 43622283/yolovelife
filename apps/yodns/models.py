@@ -4,10 +4,10 @@
 # Author Yo
 # Modify WZZ
 # Email YoLoveLife@outlook.com
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from django.db import models
 from manager.models import Group
-
+from django.conf import settings
 __all__ = [
     'DNS'
 ]
@@ -15,7 +15,7 @@ __all__ = [
 
 class DNS(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     group = models.ForeignKey(Group, related_name='dns',
                               verbose_name="group", blank=True,

@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from manager.models import Group
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
     "Variable", "Var2Group",
 ]
@@ -12,7 +12,7 @@ __all__ = [
 
 class Variable(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     key = models.CharField(default='', max_length=100)
     value = models.CharField(default='', max_length=200)
 

@@ -12,7 +12,7 @@ __all__ = [
 class ImageAPIRequiredMixin(BasePermission):
     def has_permission(self, request, view):
         perms = self.permission_required
-        perm_list=list(request.user.get_all_permissions())
+        perm_list =list(request.user.get_all_permissions())
         if request.user.is_superuser:
             return True
         if perms in perm_list:
@@ -22,18 +22,12 @@ class ImageAPIRequiredMixin(BasePermission):
 
 
 class ImageListRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.deveops_list_image'
+    permission_required = u'utils.deveops_api_list_image'
 
 
 class ImageCreateRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.deveops_create_image'
-
-    def has_permission(self, request, view):
-        return request, super(ImageCreateRequiredMixin, self).has_permission(request, view)
+    permission_required = u'utils.deveops_api_create_image'
 
 
 class ImageDeleteRequiredMixin(ImageAPIRequiredMixin):
-    permission_required = u'utils.deveops_delete_image'
-
-    def has_permission(self, request, view):
-        return request, super(ImageDeleteRequiredMixin, self).has_permission(request, view)
+    permission_required = u'utils.deveops_api_delete_image'

@@ -27,13 +27,14 @@ class INFOINFOListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.INFO
     serializer_class = info_serializer.INFOSerializer
     queryset = models.INFO.objects.all()
-    permission_classes = [info_permission.INFOListRequiredMixin, IsAuthenticated]
+    # permission_classes = [info_permission.INFOListRequiredMixin, IsAuthenticated]
+    permission_classes = [AllowAny, ]
     filter_class = filter.INFOFilter
     pagination_class = INFOPagination
 
 
 class INFOINFOCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
-    serializer_class = info_serializer.INFOSerializer
+    serializer_class = info_serializer.INFOUpdateSerializer
     queryset = models.INFO.objects.all()
     # permission_classes = [info_permission.INFOCreateRequiredMixin, IsAuthenticated]
     permission_classes = [AllowAny, ]
@@ -45,7 +46,7 @@ class INFOINFOCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
 
 
 class INFOINFOUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    serializer_class = info_serializer.INFOSerializer
+    serializer_class = info_serializer.INFOUpdateSerializer
     queryset = models.INFO.objects.all()
     permission_classes = [info_permission.INFOUpdateRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from authority.models import ExtendUser
 
 

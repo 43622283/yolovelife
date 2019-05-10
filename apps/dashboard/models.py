@@ -5,7 +5,9 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
+from django.conf import settings
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
 
 ]
@@ -13,7 +15,7 @@ __all__ = [
 
 class Dashboard(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     class Meta:
         permissions = (

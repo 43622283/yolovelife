@@ -5,10 +5,10 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from authority.models import ExtendUser
 from django.conf import settings
-
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
 
 ]
@@ -16,7 +16,7 @@ __all__ = [
 
 class TYPE(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     name = models.CharField(max_length=100, default='无',)
 
     class Meta:
@@ -29,7 +29,7 @@ class TYPE(models.Model):
 
 class DEVELOPER(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -42,7 +42,7 @@ class DEVELOPER(models.Model):
 
 class LOCATION(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -55,7 +55,7 @@ class LOCATION(models.Model):
 
 class ENVIRTUAL(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -73,7 +73,7 @@ def upload_image_path(instance, filename):
 
 class INFO(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     name = models.CharField(max_length=6000, default='无')
 
@@ -103,25 +103,3 @@ class INFO(models.Model):
             ('deveops_api_create_info', u'创建信息'),
             ('deveops_api_update_info', u'创建信息'),
         )
-
-    def manager(self):
-        if self.managers.exists():
-            return list(self.managers.values_list('full_name', flat=True))
-        else:
-            return []
-
-    def developer(self):
-        if self.developers.exists():
-            return list(self.developers.values_list('name', flat=True))
-        else:
-            return []
-
-    def _info_obj(self):
-        return {
-            'main_manager': self.main_manager.full_name,
-            'managers': self.manager(),
-            'developers': self.developer(),
-            'type': self._type.name,
-            'location': self.location.name,
-            'envirtual': self.envirtual.name,
-        }

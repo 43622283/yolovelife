@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 import django.utils.timezone as timezone
 from django.conf import settings
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 __all__ = [
     'Kalendar'
 ]
@@ -15,7 +15,7 @@ __all__ = [
 
 class Kalendar(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     time = models.DateTimeField(default=timezone.now)
     status = models.IntegerField(default=settings.STATUS_KALENDAR_NOTICE)

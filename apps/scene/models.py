@@ -5,7 +5,7 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 import json
 from authority.models import ExtendUser
 from django.conf import settings
@@ -19,7 +19,7 @@ __all__ = [
 
 class Asset(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
 
     _status = models.IntegerField(default=settings.STATUS_ASSET_DONE,)
 
@@ -97,7 +97,7 @@ class Asset(models.Model):
 
 class AssetChange(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
 
     create_time = models.DateTimeField(auto_now_add=True)
 
@@ -218,7 +218,7 @@ def null_tags():
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     description = models.TextField(default='', null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
 
@@ -235,7 +235,7 @@ class Comment(models.Model):
 
 class Classify(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     name = models.CharField(max_length=13, default='', null=True)
 
     class Meta:
@@ -248,7 +248,7 @@ class Classify(models.Model):
 
 class WorkOrder(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     classify = models.ForeignKey(Classify, default=None, blank=True, null=True,
                                     on_delete=models.SET_NULL, related_name='workorders')
@@ -317,7 +317,7 @@ class WorkOrder(models.Model):
 
 class Repository(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     title = models.CharField(max_length=200, default='', null=True, blank=True)
     description = models.TextField(default='', null=True, blank=True)
     score = models.FloatField(default=0)
@@ -362,7 +362,7 @@ class Repository(models.Model):
 
 class Record(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
     sound = models.FileField(upload_to=upload_sound_path, null=True, blank=True)
     phone = models.CharField(max_length=12, default='', null=True)
 

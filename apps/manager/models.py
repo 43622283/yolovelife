@@ -5,7 +5,7 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from authority.models import ExtendUser
 from deveops.utils import sshkey, aes
 from utils.models import IMAGE
@@ -21,7 +21,7 @@ __all__ = [
 
 class Group(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     name = models.CharField(max_length=100, default='')
     info = models.CharField(max_length=100, default='')
@@ -105,7 +105,7 @@ class Group(models.Model):
 class Host(models.Model):
     # 主机标识
     id = models.AutoField(primary_key=True) # 全局ID
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     # 资产结构
     groups = models.ManyToManyField(Group, blank=True, related_name='hosts', verbose_name=_("Host"))

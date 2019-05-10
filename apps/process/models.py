@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
-import uuid
+from deveops.utils.uuid_maker import uuid_maker
 from authority.models import ExtendUser
 
 
@@ -13,7 +13,7 @@ __all__ = [
 
 class Process(models.Model):
     id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
 
     url = models.CharField(max_length=1000, default='')
     user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True, on_delete=models.SET_NULL)
