@@ -4,17 +4,16 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 from datetime import datetime, date, timedelta
-from django_redis import get_redis_connection
 from rest_framework import generics
-from rest_framework.views import APIView
-from . import models, serializers
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import Response, status
-from rest_framework.views import APIView
 from django_redis import get_redis_connection
 from deveops.api import WebTokenAuthentication
+from timeline.models import KalendarHistory
+from timeline.decorator import decorator_base
 from django.conf import settings
-from manager.models import Group
+from . import models, serializers
+from . import permission
 from kalendar.tasks import kalendar_push
 
 __all__ = [
@@ -22,8 +21,7 @@ __all__ = [
 
 
 class KalendarDaysAPI(WebTokenAuthentication, generics.ListAPIView):
-    # permission_classes = [AssetPermission.AssetListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [permission.KalendarListRequiredMixin, IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         conn = get_redis_connection('kalendar')
@@ -54,8 +52,7 @@ class KalendarDaysAPI(WebTokenAuthentication, generics.ListAPIView):
 
 
 class KalendarListAPI(WebTokenAuthentication, generics.ListAPIView):
-    # permission_classes = [AssetPermission.AssetListRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [permission.KalendarListRequiredMixin, IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         kalendar_queryset = models.Kalendar.objects.filter(
@@ -72,25 +69,11 @@ class KalendarListAPI(WebTokenAuthentication, generics.ListAPIView):
 
 
 class KalendarCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
-    module = models.Kalendar
     serializer_class = serializers.KalendarSerializer
-    # permission_classes = [RepositoryPermission.RepositoryCreateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
-    # msg = settings.LANGUAGE.SceneRepositoryCreateAPI
+    permission_classes = [permission.KalendarCreateRequiredMixin, IsAuthenticated]
+    msg = settings.LANGUAGE.KalendarCreateAPI
 
-    # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_CREATE'])
-    # def create(self, request, *args, **kwargs):
-    #     if self.qrcode_check(request):
-    #         response = super(ManagerHostCreateAPI, self).create(request, *args, **kwargs)
-    #         return self.msg.format(
-    #             USER=request.user.full_name,
-    #             HOSTNAME=response.data['hostname'],
-    #             CONNECT_IP=response.data['connect_ip'],
-    #             UUID=response.data['uuid'],
-    #         ), response
-    #     else:
-    #         return '', self.qrcode_response
-
+    @decorator_base(KalendarHistory, timeline_type=settings.TIMELINE_KEY_VALUE['KALENDAR_CREATE'])
     def create(self, request, *args, **kwargs):
         response = super(KalendarCreateAPI, self).create(request, *args, **kwargs)
         obj = models.Kalendar.objects.get(
@@ -98,65 +81,41 @@ class KalendarCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
             uuid=response.data['uuid']
         )
         kalendar_push.delay(obj.time)
-        return response
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+        ), response
 
 
 class KalendarUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.Kalendar
     serializer_class = serializers.KalendarSerializer
     queryset = models.Kalendar.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryUpdateRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [permission.KalendarUpdateRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
-    # msg = settings.LANGUAGE.SceneRepositoryUpdateAPI
+    msg = settings.LANGUAGE.KalendarUpdateAPI
 
-    # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_UPDATE'])
-    # def update(self, request, *args, **kwargs):
-    #     if self.qrcode_check(request):
-    #         response = super(SceneRepositoryUpdateAPI, self).update(request, *args, **kwargs)
-    #         host = self.get_object()
-    #         return self.msg.format(
-    #             USER=request.user.full_name,
-    #             HOSTNAME=host.hostname,
-    #             CONNECT_IP=host.connect_ip,
-    #             UUID=host.uuid,
-    #         ), response
-    #     else:
-    #         return '', self.qrcode_response
+    @decorator_base(KalendarHistory, timeline_type=settings.TIMELINE_KEY_VALUE['KALENDAR_UPDATE'])
     def update(self, request, *args, **kwargs):
         response = super(KalendarUpdateAPI, self).update(request, *args, **kwargs)
         obj = self.get_object()
         kalendar_push.delay(obj.time)
-        return response
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+        ), response
 
 
-class KalendarDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    module = models.Kalendar
-    serializer_class = serializers.KalendarSerializer
+class KalendarDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = serializers.KalendarDeleteSerializer
     queryset = models.Kalendar.objects.all()
-    # permission_classes = [RepositoryPermission.RepositoryDeleteRequiredMixin, IsAuthenticated]
-    permission_classes = [AllowAny, ]
+    permission_classes = [permission.KalendarDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
-    # msg = settings.LANGUAGE.SceneRepositoryDeleteAPI
+    msg = settings.LANGUAGE.KalendarDeleteAPI
 
-    # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_DELETE'])
-    # def update(self, request, *args, **kwargs):
-    #     if self.qrcode_check(request):
-    #         host = self.get_object()
-    #         response = super(SceneRepositoryDeleteAPI, self).update(request, *args, **kwargs)
-    #         return self.msg.format(
-    #             USER=request.user.full_name,
-    #             HOSTNAME=host.hostname,
-    #             CONNECT_IP=host.connect_ip,
-    #             UUID=host.uuid,
-    #         ), response
-    #     else:
-    #         return '', self.qrcode_response
-
-    def delete(self, request, *args, **kwargs):
-        time = self.get_object().time
-        response = super(KalendarDeleteAPI, self).delete(request, *args, **kwargs)
-        kalendar_push.delay(time)
-        return response
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        response = super(KalendarDeleteAPI, self).update(request, *args, **kwargs)
+        kalendar_push.delay(obj.time)
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+        ), response

@@ -9,9 +9,8 @@ from ..api import assetchange as AssetChangeAPI
 
 urlpatterns = [
     # Resource asset api
-    path(r'v1/asset/', AssetAPI.SceneAssetListAPI.as_view()),
-    path(r'v1/asset/bypage/', AssetAPI.SceneAssetListByPageAPI.as_view()),
-    path(r'v1/asset/change/bypage/', AssetChangeAPI.SceneAssetChangeListByPageAPI.as_view()),
+    path(r'v1/asset/list/', AssetAPI.SceneAssetListAPI.as_view()),
+    path(r'v1/asset/change/list/', AssetChangeAPI.SceneAssetChangeListAPI.as_view()),
     path(r'v1/asset/change/create/2install/', AssetChangeAPI.SceneAssetChangeCreate2InstallAPI.as_view()),
     path(r'v1/asset/change/create/<uuid:pk>/2config/', AssetChangeAPI.SceneAssetChangeCreate2ConfigAPI.as_view()),
     path(r'v1/asset/change/create/<uuid:pk>/2done/', AssetChangeAPI.SceneAssetChangeCreate2DoneAPI.as_view()),

@@ -18,12 +18,12 @@ from deveops.utils import aes
 from ..permissions import user as UserPermission
 from ..serializers import user as serializer
 from .. import models, filter
-from timeline.decorator import decorator_api
+from timeline.decorator import decorator_base
+from timeline.models import UserHistory
 
 __all__ = [
     'UserLoginAPI', 'UserInfoAPI', 'UserListAPI',
-    'UserOpsListAPI', 'UserUpdateAPI', 'UserDeleteAPI',
-    'UserListByPageAPI', 'UserPagination', 'UserOpsListByPageAPI',
+    'UserUpdateAPI', 'UserDeleteAPI', 'UserPagination',
     'UserQRCodeAPI', 'UserCreateAPI', 'UserExpireAPI',
 ]
 
@@ -31,10 +31,10 @@ __all__ = [
 class UserLoginAPI(ObtainJSONWebToken):
     msg = settings.LANGUAGE.UserLoginAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['LOGIN'])
+    @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['LOGIN'])
     def post(self, request, *args, **kwargs):
         response = super(UserLoginAPI, self).post(request, *args, **kwargs)
-        return self.msg.format(
+        return [None, ], self.msg.format(
             USERNAME=request.data['username']
         ), response
 
@@ -62,104 +62,63 @@ class UserPagination(PageNumberPagination):
 
 
 class UserListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.ExtendUser
     serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.all()
-    permission_classes = [UserPermission.UserListRequiredMixin, IsAuthenticated]
-    filter_class = filter.UserFilter
-
-
-class UserListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.ExtendUser
-    serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.all()
+    queryset = models.ExtendUser.objects.filter(_visible=True)
     permission_classes = [UserPermission.UserListRequiredMixin, IsAuthenticated]
     pagination_class = UserPagination
     filter_class = filter.UserFilter
-
-
-class UserOpsListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.ExtendUser
-    serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.filter(groups__name__contains='运维')
-    permission_classes = [UserPermission.UserOpsListRequiredMixin, IsAuthenticated]
-
-
-class UserOpsListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.ExtendUser
-    serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.filter(groups__name__contains='运维')
-    permission_classes = [UserPermission.UserOpsListRequiredMixin, IsAuthenticated]
-    pagination_class = UserPagination
-
-
-class UserWorkListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.ExtendUser
-    serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.all()#.filter(groups__name__contains='值班')
-    permission_classes = [UserPermission.UserOpsListRequiredMixin, IsAuthenticated]
 
 
 class UserCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
-    module = models.ExtendUser
     serializer_class = serializer.UserSerializer
     queryset = models.ExtendUser.objects.all()
     permission_classes = [UserPermission.UserCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UserCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['USER_CREATE'])
+    @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_CREATE'])
     def create(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            response = super(UserCreateAPI, self).create(request, *args, **kwargs)
-            return self.msg.format(
-                USER=request.user.full_name,
-                USERNAME=response.data['username'],
-                FULLNAME=response.data['full_name'],
-            ), response
-        else:
-            return '', self.qrcode_response
+        response = super(UserCreateAPI, self).create(request, *args, **kwargs)
+        obj = models.ExtendUser.get(id=response.data['id'], uuid=response.data['uuid'])
+
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+            USERNAME=response.data['username'],
+            FULLNAME=response.data['full_name'],
+        ), response
 
 
 class UserUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.ExtendUser
     serializer_class = serializer.UserSerializer
     queryset = models.ExtendUser.objects.all()
     permission_classes = [UserPermission.UserUpdateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UserUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['USER_UPDATE'])
+    @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_UPDATE'])
     def update(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            response = super(UserUpdateAPI, self).update(request, *args, **kwargs)
-            user = self.get_object()
-            return self.msg.format(
-                USER=request.user.full_name,
-                USERNAME=user.username,
-                FULLNAME=user.full_name,
-            ), response
-        else:
-            return '', self.qrcode_response
+        response = super(UserUpdateAPI, self).update(request, *args, **kwargs)
+        user = self.get_object()
+        return [user, ], self.msg.format(
+            USER=request.user.full_name,
+            USERNAME=user.username,
+            FULLNAME=user.full_name,
+        ), response
 
 
-class UserDeleteAPI(WebTokenAuthentication,generics.DestroyAPIView):
-    module = models.ExtendUser
-    serializer_class = serializer.UserSerializer
+class UserDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = serializer.UserDeleteSerializer
     queryset = models.ExtendUser.objects.all()
     permission_classes = [UserPermission.UserDeleteRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UserDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['USER_DELETE'])
-    def delete(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            user = self.get_object()
-            response = super(UserDeleteAPI, self).delete(request, *args, **kwargs)
-            return self.msg.format(
-                USER=request.user.full_name,
-                USERNAME=user.username,
-                FULLNAME=user.full_name,
-            ), response
-        else:
-            return '', self.qrcode_response
+    @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_DELETE'])
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        response = super(UserDeleteAPI, self).update(request, *args, **kwargs)
+        return [user, ], self.msg.format(
+            USER=request.user.full_name,
+            USERNAME=user.username,
+            FULLNAME=user.full_name,
+        ), response
 
 
 def get_qrcode(user):
@@ -191,7 +150,7 @@ class UserQRCodeAPI(WebTokenAuthentication, APIView):
     permission_classes = [IsAuthenticated, ]
     msg = settings.LANGUAGE.UserQRCodeAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['USER_QRCODE'])
+    @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_QRCODE'])
     def get(self, request, *args, **kwargs):
         user = request.user
         if user.have_qrcode is False:
@@ -201,11 +160,11 @@ class UserQRCodeAPI(WebTokenAuthentication, APIView):
             user.have_qrcode = True
             user.save()
             response = Response(response_dist, status=status.HTTP_201_CREATED)
-            return self.msg.format(
+            return [None, ], self.msg.format(
                 USER=request.user.full_name,
             ), response
         else:
-            return '', Response({
+            return [None, ], '', Response({
                 'detail': settings.LANGUAGE.UserQRCodeAPIHaveQRCode
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
 

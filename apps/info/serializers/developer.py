@@ -7,7 +7,7 @@ from rest_framework import serializers
 from ..models import DEVELOPER
 
 __all__ = [
-    'DEVELOPERSerializer'
+    'DEVELOPERSerializer', 'DEVELOPERDeleteSerializer'
 ]
 
 
@@ -17,3 +17,15 @@ class DEVELOPERSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'uuid', 'name'
         )
+
+
+class DEVELOPERDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DEVELOPER
+        fields = (
+            'id', 'uuid'
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(DEVELOPERDeleteSerializer, self).update(instance, validated_data)

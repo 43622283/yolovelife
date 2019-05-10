@@ -27,7 +27,7 @@ class AssetChangePagination(PageNumberPagination):
     page_query_param = 'current'
 
 
-class SceneAssetChangeListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
+class SceneAssetChangeListAPI(WebTokenAuthentication, generics.ListAPIView):
     serializer_class = asset_serializer.AssetChangeSerializer
     queryset = models.AssetChange.objects.all().order_by('_status', 'create_time')
     permission_classes = [asset_permission.AssetListRequiredMixin, IsAuthenticated]
@@ -39,14 +39,14 @@ class SceneAssetChangeCreate2InstallAPI(WebTokenAuthentication, generics.CreateA
     serializer_class = asset_serializer.AssetChangeCreate2InstallSerializer
     permission_classes = [asset_permission.AssetCreateRequiredMixin, IsAuthenticated]
 
-    # @decorator_base(AssetHistory, timeline_type=settings.TIMELINE_KEY_VALUE['ROLE_CREATE'])
-    # def create(self, request, *args, **kwargs):
-    #     response = super(SceneAssetChangeCreate2InstallAPI, self).create(request, *args, **kwargs)
-    #     obj = models.AssetChange.objects.get(id=response.data['id'], uuid=response.data['uuid'])
-    #     return [obj, ], self.msg.format(
-    #         USER=request.user.full_name,
-    #         NAME=response.data['name'],
-    #     ), response
+    @decorator_base(AssetHistory, timeline_type=settings.TIMELINE_KEY_VALUE['ASSET_CREATE'])
+    def create(self, request, *args, **kwargs):
+        response = super(SceneAssetChangeCreate2InstallAPI, self).create(request, *args, **kwargs)
+        obj = models.AssetChange.objects.get(id=response.data['id'], uuid=response.data['uuid'])
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+            NAME=response.data['name'],
+        ), response
 
 
 class SceneAssetChangeCreate2ConfigAPI(WebTokenAuthentication, generics.UpdateAPIView):

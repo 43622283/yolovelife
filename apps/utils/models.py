@@ -5,35 +5,26 @@
 # Email YoLoveLife@outlook.com
 from __future__ import unicode_literals
 from django.db import models
-from django.conf import settings
 from authority.models import ExtendUser
 from deveops.utils.uuid_maker import uuid_maker
+from deveops.models import BaseModal
 
 __all__ = [
-    'FILE', 'IMAGE'
+    'FILE'
 ]
 
 
-def upload_image_path(instance, filename):
+def upload_file_path(instance, filename):
     t = filename.split('.')
-    return 'framework' + '/' + str(instance.uuid) + '.' + t[1]
+    return 'file/{UUID}.{FILE_TYPE}'.format(
+        UUID=instance.uuid,
+        FILE_TYPE=t[1],
+    )
 
 
-def upload_file_path(instance,filename):
-    t = filename.split('.')
-    return 'work/' + str(instance.uuid)
-
-
-class FILE(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(default=uuid_maker, max_length=100, null=True, blank=True)
-    # 文件使用时注入的参数名称
-    var_name = models.CharField(default='', max_length=100 ,null=True, blank=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class FILE(BaseModal):
     file = models.FileField(upload_to=upload_file_path, null=True, blank=True)
-    # 上传时间
     create_time = models.DateTimeField(auto_now_add=True)
-    # 上传用户
     user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True, on_delete=models.SET_NULL)
 
     class Meta:
@@ -42,29 +33,4 @@ class FILE(models.Model):
             ('deveops_api_create_file', u'上传文件'),
             ('deveops_api_delete_file', u'删除文件'),
             ('deveops_page_file', u'分发中心页面'),
-        )
-
-    @property
-    def mission_used(self):
-        if self.pushmission is None:
-            return '未使用'
-        else:
-            return self.pushmission.get().works.get().uuid
-
-
-class IMAGE(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(default=uuid_maker, max_length=100, null=True, blank=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
-    image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
-    # 上传时间
-    create_time = models.DateTimeField(auto_now_add=True)
-    # 上传用户
-    user = models.ForeignKey(ExtendUser, default=None, blank=True, null=True, on_delete=models.SET_NULL)
-
-    class Meta:
-        permissions = (
-            ('deveops_api_list_image', u'罗列图片'),
-            ('deveops_api_create_image', u'上传图片'),
-            ('deveops_api_delete_image', u'删除图片'),
         )

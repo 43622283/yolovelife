@@ -3,6 +3,7 @@
 # Time 18-3-19
 # Author Yo
 # Email YoLoveLife@outlook.com
+from rest_framework.views import Response, status
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -26,7 +27,7 @@ class DEVELOPERPagination(PageNumberPagination):
 class INFODEVELOPERListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.DEVELOPER
     serializer_class = developer_serializer.DEVELOPERSerializer
-    queryset = models.DEVELOPER.objects.all()
+    queryset = models.DEVELOPER.objects.filter(_visible=True)
     permission_classes = [developer_permission.DEVELOPERListRequiredMixin, IsAuthenticated]
     filter_class = filter.DEVELOPERFilter
     pagination_class = DEVELOPERPagination
@@ -40,10 +41,18 @@ class INFODEVELOPERCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     lookup_url_kwarg = "pk"
 
 
-class INFODEVELOPERDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    serializer_class = developer_serializer.DEVELOPERSerializer
+class INFODEVELOPERDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = developer_serializer.DEVELOPERDeleteSerializer
     queryset = models.DEVELOPER.objects.all()
     permission_classes = [developer_permission.DEVELOPERDeleteRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
 
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.infos.exists():
+            return Response({
+                'detail': '该开发者有负责的项目 无法删除'
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            super(INFODEVELOPERDeleteAPI, self).update(request, *args, **kwargs)

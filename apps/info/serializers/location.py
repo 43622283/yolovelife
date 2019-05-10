@@ -17,3 +17,15 @@ class LOCATIONSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'uuid', 'name'
         )
+
+
+class LOCATIONDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LOCATION
+        fields = (
+            'id', 'uuid'
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(LOCATIONDeleteSerializer, self).update(instance, validated_data)

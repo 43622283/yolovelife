@@ -5,18 +5,16 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from deveops.utils.uuid_maker import uuid_maker
 from authority.models import ExtendUser
 from django.conf import settings
-from deveops.utils.uuid_maker import uuid_maker
+from deveops.models import BaseModal
+
 __all__ = [
 
 ]
 
 
-class TYPE(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+class TYPE(BaseModal):
     name = models.CharField(max_length=100, default='无',)
 
     class Meta:
@@ -27,9 +25,7 @@ class TYPE(models.Model):
         )
 
 
-class DEVELOPER(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+class DEVELOPER(BaseModal):
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -40,9 +36,7 @@ class DEVELOPER(models.Model):
         )
 
 
-class LOCATION(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+class LOCATION(BaseModal):
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -53,9 +47,7 @@ class LOCATION(models.Model):
         )
 
 
-class ENVIRTUAL(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+class ENVIRTUAL(BaseModal):
     name = models.CharField(max_length=100, default='无', )
 
     class Meta:
@@ -71,29 +63,19 @@ def upload_image_path(instance, filename):
     return 'framework' + '/' + str(instance.uuid) + t[1]
 
 
-class INFO(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class INFO(BaseModal):
 
-    name = models.CharField(max_length=6000, default='无')
-
-    detail = models.CharField(max_length=6000, default='无')
+    name = models.CharField(max_length=300, default='无')
+    detail = models.TextField(default='无')
 
     main_manager = models.ForeignKey(ExtendUser, related_name='infos_A', null=True, on_delete=models.SET_NULL)
-
     managers = models.ManyToManyField(ExtendUser,  related_name='infos', blank=True)
-
     developers = models.ManyToManyField(DEVELOPER, related_name='infos', blank=True)
-
     operators = models.CharField(max_length=3000, default='无', null=True, blank=True)
-
     _type = models.ForeignKey(TYPE, related_name='infos', null=True, on_delete=models.SET_NULL)
-
-    domain = models.CharField(max_length=6000, default='无', null=True, blank=True)
-
+    domain = models.TextField(default='无', null=True, blank=True)
     location = models.ForeignKey(LOCATION, related_name='infos', null=True, on_delete=models.SET_NULL)
     envirtual = models.ForeignKey(ENVIRTUAL, related_name='infos', null=True, on_delete=models.SET_NULL)
-
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
 
     class Meta:

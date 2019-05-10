@@ -24,3 +24,19 @@ class KeySerializer(serializers.ModelSerializer):
         validated_data['private_key'] = pri
         validated_data['public_key'] = pub
         return super(KeySerializer, self).create(validated_data)
+
+
+class KeyDeleteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Key
+        fields = (
+            'id', 'uuid',
+        )
+        read_only_fields = (
+            'id', 'uuid',
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(KeyDeleteSerializer, self).update(instance, {})

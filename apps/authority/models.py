@@ -7,48 +7,26 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django_redis import get_redis_connection
-import django.utils.timezone as timezone
-from deveops.utils import sshkey, aes
-from deveops.utils.uuid_maker import uuid_maker
+from deveops.utils import aes
 from django.conf import settings
+from deveops.models import BaseModal
 from deveops.utils.uuid_maker import uuid_maker
 from .tasks import jumper_status_flush
+from .utils import private_key_validator, public_key_validator
 
 __all__ = [
     "Key", "ExtendUser", "Jumper", "Group"
 ]
 
 
-def private_key_validator(key):
-    if not sshkey.private_key_validator(key):
-        raise ValidationError(
-            _('%(value)s is not an even number'),
-            params={'value': key},
-        )
-
-
-def public_key_validator(key):
-    if not sshkey.public_key_validator(key):
-        raise ValidationError(
-            _('%(value)s is not an even number'),
-            params={'value': key},
-        )
-
-
-class Key(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class Key(BaseModal):
     name = models.CharField(max_length=100, default='')
-
-    # 操作权限限定
     _private_key = models.TextField(max_length=4096, blank=True, null=True,
                                     validators=[private_key_validator, ])
     _public_key = models.TextField(max_length=4096, blank=True, null=True,
                                    validators=[public_key_validator, ])
-    # 创建时间
-    _fetch_time = models.DateTimeField(auto_now_add=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         permissions = (
@@ -79,25 +57,9 @@ class Key(models.Model):
     def public_key(self, public_key):
         self._public_key = aes.encrypt(public_key).decode()
 
-    @property
-    def fetch_time(self):
-        return self._fetch_time
-
-    @fetch_time.setter
-    def fetch_time(self, fetch_time):
-        if fetch_time:
-            self._fetch_time = timezone.now
-
-    @property
-    def group_name(self):
-        if self.group is not None:
-            return self.group.name
-        else:
-            return u'未指定'
-
 
 class ExtendUser(AbstractUser):
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+    # uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     img = models.CharField(max_length=10, default='user.jpg')
     phone = models.CharField(max_length=11, default='None',)
     full_name = models.CharField(max_length=11, default='未获取')
@@ -116,6 +78,7 @@ class ExtendUser(AbstractUser):
         related_query_name="user",
     )
     info = models.CharField(default='', max_length=150)
+    _visible = models.BooleanField(default=True)
 
     class Meta:
         permissions = (
@@ -138,6 +101,9 @@ class ExtendUser(AbstractUser):
             ('deveops_page_user', u'用户页面'),
             ('deveops_page_pmngroup', u'权限组页面'),
         )
+
+    def visible(self):
+        self._visible = False
 
     def get_8531email(self):
         return self.username + '@8531.cn'
@@ -185,12 +151,8 @@ class ExtendUser(AbstractUser):
         ]
 
 
-class Jumper(models.Model):
-    # 全局ID
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class Jumper(BaseModal):
     connect_ip = models.GenericIPAddressField(default='0.0.0.0')
-    # 跳板机端口
     sshport = models.IntegerField(default='52000')
     name = models.CharField(max_length=50, default="")
     info = models.CharField(max_length=200, default="", blank=True, null=True)
@@ -211,7 +173,7 @@ class Jumper(models.Model):
         return self._status
 
     @status.setter
-    def status(self, status):
+    def status(self):
         self.check_status()
 
     def check_status(self):

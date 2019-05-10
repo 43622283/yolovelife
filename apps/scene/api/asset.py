@@ -12,9 +12,7 @@ from ..permissions import asset as asset_permission
 from deveops.api import WebTokenAuthentication
 
 __all__ = [
-    'AssetPagination',
-    'SceneAssetListByPageAPI',
-    'SceneAssetListAPI',
+    'AssetPagination', 'SceneAssetListAPI',
 ]
 
 
@@ -26,14 +24,6 @@ class AssetPagination(PageNumberPagination):
 
 
 class SceneAssetListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.Asset
-    serializer_class = asset_serializer.AssetSerializer
-    queryset = models.Asset.objects.all()
-    permission_classes = [asset_permission.AssetListRequiredMixin, IsAuthenticated]
-    filter_class = filter.AssetFilter
-
-
-class SceneAssetListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.Asset
     serializer_class = asset_serializer.AssetSerializer
     queryset = models.Asset.objects.all().order_by('-_status')

@@ -3,30 +3,27 @@
 # Time 18-7-3
 # Author Yo
 # Email YoLoveLife@outlook.com
-from django.utils.translation import ugettext_lazy as _
 from django.db import models
 import django.utils.timezone as timezone
 from django.conf import settings
-from deveops.utils.uuid_maker import uuid_maker
+from deveops.models import BaseModal
+
 __all__ = [
     'Kalendar'
 ]
 
 
-class Kalendar(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
-
+class Kalendar(BaseModal):
     time = models.DateTimeField(default=timezone.now)
     status = models.IntegerField(default=settings.STATUS_KALENDAR_NOTICE)
-    title = models.CharField(default='', max_length=1000)
-    description = models.CharField(default='', max_length=1000)
+    title = models.CharField(default='', max_length=200)
+    description = models.CharField(default='', max_length=500)
 
     class Meta:
         permissions = (
-            ('deveops_page_calendar', u'日历页面'),
-            ('deveops_api_list_calendar', u'罗列日历'),
-            ('deveops_api_update_calendar', u'更新日历'),
-            ('deveops_api_create_calendar', u'新建日历'),
-            ('deveops_api_delete_calendar', u'删除日历'),
+            ('deveops_page_kalendar', u'日历页面'),
+            ('deveops_api_list_kalendar', u'罗列日历'),
+            ('deveops_api_update_kalendar', u'更新日历'),
+            ('deveops_api_create_kalendar', u'新建日历'),
+            ('deveops_api_delete_kalendar', u'删除日历'),
         )

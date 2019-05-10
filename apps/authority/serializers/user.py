@@ -30,3 +30,16 @@ class UserSerializer(serializers.ModelSerializer):
         obj.set_password('deveops')
         obj.save()
         return obj
+
+
+class UserDeleteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExtendUser
+        fields = (
+            'id', 'uuid',
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(UserDeleteSerializer, self).update(instance, {})

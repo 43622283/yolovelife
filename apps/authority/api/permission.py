@@ -31,6 +31,7 @@ class PermissionAPIListAPI(generics.ListAPIView):
     pagination_class = PermissionPagination
     filter_class = APIFilter
 
+
 class PermissionPageListAPI(generics.ListAPIView):
     module = Permission
     serializer_class = serializer.PermissionSerializer

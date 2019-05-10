@@ -7,10 +7,9 @@ from django.urls import path
 from ..api import jumper
 
 urlpatterns = [
-    path(r'v1/jumper/', jumper.JumperListAPI.as_view()),
-    path(r'v1/jumper/bypage/', jumper.JumperListByPageAPI.as_view()),
-    path(r'v1/jumper/<uuid:pk>/status/', jumper.JumperStatusAPI.as_view()),
+    path(r'v1/jumper/list/', jumper.JumperListAPI.as_view()),
     path(r'v1/jumper/create/', jumper.JumperCreateAPI.as_view()),
+    path(r'v1/jumper/<uuid:pk>/status/', jumper.JumperStatusAPI.as_view()),
     path(r'v1/jumper/<uuid:pk>/update/', jumper.JumperUpdateAPI.as_view()),
     path(r'v1/jumper/<uuid:pk>/delete/', jumper.JumperDeleteAPI.as_view()),
 ]

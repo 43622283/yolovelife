@@ -3,6 +3,7 @@
 # Time 18-3-19
 # Author Yo
 # Email YoLoveLife@outlook.com
+from rest_framework.views import Response, status
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -40,10 +41,18 @@ class INFOTYPECreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     lookup_url_kwarg = "pk"
 
 
-class INFOTYPEDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    serializer_class = type_serializer.TYPESerializer
+class INFOTYPEDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = type_serializer.TYPEDeleteSerializer
     queryset = models.TYPE.objects.all()
     permission_classes = [type_permission.TYPEDeleteRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
 
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.infos.exists():
+            return Response({
+                'detail': '该类型有挂钩的项目 无法删除'
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            super(INFOTYPEDeleteAPI, self).update(request, *args, **kwargs)

@@ -4,6 +4,7 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 from datetime import datetime, date, timedelta
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
@@ -15,9 +16,9 @@ from ..permissions import comment as comment_permission
 from ..serializers import workorder as workoder_serializer
 from ..serializers import comment as comment_serializer
 from deveops.api import WebTokenAuthentication
-from timeline.models import SceneHistory
-from timeline.serializers import SceneHistorySerializer
-from timeline.decorator import decorator_workorder
+from timeline.models import WorkOrderHistory
+from timeline.decorator import decorator_base
+from timeline.serializers.workorder import WorkOrderHistorySerializer
 from django.conf import settings
 
 __all__ = [
@@ -47,21 +48,11 @@ class SceneWorkOrderMobileDetailAPI(WebTokenAuthentication, generics.ListAPIView
     def list(self, request, *args, **kwargs):
         user = request.user
 
-        from django.utils import timezone
         now = timezone.now().date()
         start_day = now - timedelta(days=1)
         end_day = now - timedelta(days=1)
 
-        work_order = user.workorders.filter(
-            create_time__gt=start_day, create_time__lt=end_day
-        )
-
         return Response(
-            # {
-            #     'workorder_total_count': work_order.count(),
-            #     'workorder_undone_count': work_order.filter(~Q(_status=2)).count(),
-            #     'full_name': user.full_name,
-            # },
             {
                 'workorder_total_count': 36,
                 'workorder_undone_count': 2,
@@ -86,7 +77,7 @@ class SceneWorkOrderCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [workoder_permission.WorkOrderCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.SceneWorkOrderCreateAPI
 
-    @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_CREATE'])
+    @decorator_base(WorkOrderHistory, timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_CREATE'])
     def create(self, request, *args, **kwargs):
         response = super(SceneWorkOrderCreateAPI, self).create(request, *args, **kwargs)
         obj = models.WorkOrder.objects.get(id=response.data['id'], uuid=response.data['uuid'])
@@ -104,7 +95,7 @@ class SceneWorkOrderUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = "pk"
     msg = settings.LANGUAGE.SceneWorkOrderUpdateAPI
 
-    @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_UPDATE'])
+    @decorator_base(WorkOrderHistory, timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_UPDATE'])
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
@@ -124,7 +115,7 @@ class SceneWorkOrderActiveAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderActiveAPI
 
-    @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_ACTIVE'])
+    @decorator_base(WorkOrderHistory, timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_ACTIVE'])
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         response = super(SceneWorkOrderActiveAPI, self).update(request, *args, **kwargs)
@@ -142,7 +133,7 @@ class SceneWorkOrderAppointAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderAppointAPI
 
-    @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_APPOINT'])
+    @decorator_base(WorkOrderHistory, timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_APPOINT'])
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
@@ -165,7 +156,7 @@ class SceneWorkOrderDoneAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.SceneWorkOrderDoneAPI
 
-    @decorator_workorder(timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_DONE'])
+    @decorator_base(WorkOrderHistory, timeline_type=settings.TIMELINE_KEY_VALUE['WORKORDER_DONE'])
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
@@ -209,11 +200,11 @@ class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         obj = self.get_object()
 
-        timeline_queryset = SceneHistory.objects.filter(
+        timeline_queryset = WorkOrderHistory.objects.filter(
             workorder=obj
         ).order_by('-id')
 
-        timeline_serializer = SceneHistorySerializer(timeline_queryset, many=True)
+        timeline_serializer = WorkOrderHistorySerializer(timeline_queryset, many=True)
 
         com_serializer = comment_serializer.CommentSerializer(obj.comments.order_by('create_time'), many=True)
 

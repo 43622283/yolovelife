@@ -89,7 +89,6 @@ class GroupFilter(django_filters.FilterSet):
 
 class KeyFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(method="name_filter")
-    # group_name = django_filters.CharFilter(method="group_name_filter")
 
     class Meta:
         model = models.Key
@@ -99,15 +98,9 @@ class KeyFilter(django_filters.FilterSet):
     def name_filter(queryset, first_name, value):
         return queryset.filter(name__icontains=value)
 
-    # @staticmethod
-    # def group_name_filter(queryset, first_name, value):
-    #     groups = models.Group.objects.filter(name__icontains=value)
-    #     return queryset.filter(group__in=groups)
-
 
 class JumperFilter(django_filters.FilterSet):
     info = django_filters.CharFilter(method="info_filter")
-    # group_name = django_filters.CharFilter(method="group_name_filter")
 
     class Meta:
         model = models.Jumper
@@ -115,9 +108,4 @@ class JumperFilter(django_filters.FilterSet):
 
     @staticmethod
     def info_filter(queryset, first_name, value):
-        return queryset.filter(Q(name__icontains=value)|Q(info__icontains=value))
-
-    # @staticmethod
-    # def group_name_filter(queryset, first_name, value):
-    #     groups = models.Group.objects.filter(name__icontains=value)
-    #     return queryset.filter(group__in=groups)
+        return queryset.filter(Q(name__icontains=value) | Q(info__icontains=value))

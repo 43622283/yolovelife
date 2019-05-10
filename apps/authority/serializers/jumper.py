@@ -19,3 +19,18 @@ class JumperSerializer(serializers.ModelSerializer):
         read_only_fields = (
             'id', 'uuid', 'status'
         )
+
+
+class JumperDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Jumper
+        fields = (
+            'id', 'uuid'
+        )
+        read_only_fields = (
+            'id', 'uuid'
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(JumperDeleteSerializer, self).update(instance, {})

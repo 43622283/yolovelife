@@ -14,7 +14,7 @@ from ..serializers import user as user_serializer
 from ..serializers import permission as permission_serializer
 from ..filter import UserFilter, PageFilter
 from .. import models
-from timeline.decorator import decorator_base, decorator_api
+from timeline.decorator import decorator_base
 from timeline.models import RoleHistory
 
 __all__ = [

@@ -24,20 +24,20 @@ class JumperAPIRequiredMixin(BasePermission):
 
 
 class JumperListRequiredMixin(JumperAPIRequiredMixin):
-    permission_required = u'authority.deveops_list_jumper'
+    permission_required = u'authority.deveops_api_list_jumper'
 
 
 class JumperCreateRequiredMixin(JumperAPIRequiredMixin):
-    permission_required = u'authority.deveops_create_jumper'
+    permission_required = u'authority.deveops_api_create_jumper'
 
 
 class JumperUpdateRequiredMixin(JumperAPIRequiredMixin):
-    permission_required = u'authority.deveops_update_jumper'
+    permission_required = u'authority.deveops_api_update_jumper'
 
 
 class JumperDeleteRequiredMixin(JumperAPIRequiredMixin):
-    permission_required = u'authority.deveops_delete_jumper'
+    permission_required = u'authority.deveops_api_delete_jumper'
 
 
 class JumperStatusRequiredMixin(JumperAPIRequiredMixin):
-    permission_required = u'authority.deveops_status_jumper'
+    permission_required = u'authority.deveops_api_status_jumper'

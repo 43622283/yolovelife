@@ -38,6 +38,5 @@ def remind(remind_obj):
                 json.dumps(data),
             )
 
-    remind_obj.visible = True
-    remind_obj.save()
+    remind_obj.visible()
 

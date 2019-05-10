@@ -19,8 +19,8 @@ from deveops.timeline import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-APPS_DIR = BASE_DIR+'/apps'
-sys.path.append(APPS_DIR)
+
+sys.path.append(BASE_DIR+'/apps')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -43,19 +43,18 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'authority.apps.AuthorityConfig',
-    'manager.apps.ManagerConfig',
-    'ops.apps.OpsConfig',
-    'work.apps.WorkConfig',
+    # 'manager.apps.ManagerConfig',
+    # 'ops.apps.OpsConfig',
+    # 'work.apps.WorkConfig',
     'timeline.apps.TimelineConfig',
-    'variable.apps.VariableConfig',
-    'dashboard.apps.DashboardConfig',
-    'yodns.apps.YoDnsConfig',
-    'zdb.apps.ZDBConfig',
-    'monitor.apps.MonitorConfig',
-    'ezsetup.apps.EZSetupConfig',
-    'yocdn.apps.YoCDNConfig',
-    'pool.apps.PoolConfig',
-    'slot.apps.SlotConfig',
+    # 'variable.apps.VariableConfig',
+    # 'dashboard.apps.DashboardConfig',
+    # 'yodns.apps.YoDnsConfig',
+    # 'zdb.apps.ZDBConfig',
+    # 'monitor.apps.MonitorConfig',
+    # 'ezsetup.apps.EZSetupConfig',
+    # 'yocdn.apps.YoCDNConfig',
+    # 'pool.apps.PoolConfig',
     'scene.apps.SceneConfig',
     'kalendar.apps.KalendarConfig',
     'notify.apps.NotifyConfig',

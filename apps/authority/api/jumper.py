@@ -14,12 +14,13 @@ from deveops.api import WebTokenAuthentication
 from ..permissions import jumper as JumperPermission
 from ..serializers import jumper as serializer
 from .. import models, filter
-from timeline.decorator import decorator_api
+from timeline.models import JumperHistory
+from timeline.decorator import decorator_base
 
 
 __all__ = [
     "JumperListAPI", "JumperCreateAPI", "JumperUpdateAPI",
-    "JumperDeleteAPI", "JumperPagination", "JumperListByPageAPI",
+    "JumperDeleteAPI", "JumperPagination",
 ]
 
 
@@ -29,17 +30,10 @@ class JumperPagination(PageNumberPagination):
 
 class JumperListAPI(WebTokenAuthentication, generics.ListAPIView):
     serializer_class = serializer.JumperSerializer
-    queryset = models.Jumper.objects.all()
+    queryset = models.Jumper.objects.filter(_visible=True)
     permission_classes = [JumperPermission.JumperListRequiredMixin, IsAuthenticated]
     filter_class = filter.JumperFilter
-
-
-class JumperListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
-    serializer_class = serializer.JumperSerializer
-    queryset = models.Jumper.objects.all()
-    permission_classes = [JumperPermission.JumperListRequiredMixin, IsAuthenticated]
     pagination_class = JumperPagination
-    filter_class = filter.JumperFilter
 
 
 class JumperStatusAPI(WebTokenAuthentication, APIView):
@@ -61,18 +55,16 @@ class JumperCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [JumperPermission.JumperCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.JumperCreateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['JUMPER_CREATE'])
+    @decorator_base(JumperHistory, timeline_type=settings.TIMELINE_KEY_VALUE['FILE_CREATE'])
     def create(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            response = super(JumperCreateAPI, self).create(request, *args, **kwargs)
-            return self.msg.format(
-                USER=request.user.full_name,
-                NAME=response.data['name'],
-                UUID=response.data['uuid'],
-                CONNECT_IP=response.data['connect_ip']
-            ), response
-        else:
-            return '', self.qrcode_response
+        response = super(JumperCreateAPI, self).create(request, *args, **kwargs)
+        obj = self.get_object()
+        return [obj, ], self.msg.format(
+            USER=request.user.full_name,
+            NAME=response.data['name'],
+            UUID=response.data['uuid'],
+            CONNECT_IP=response.data['connect_ip']
+        ), response
 
 
 class JumperUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
@@ -83,47 +75,33 @@ class JumperUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.JumperUpdateAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['JUMPER_UPDATE'])
+    @decorator_base(JumperHistory, timeline_type=settings.TIMELINE_KEY_VALUE['FILE_UPDATE'])
     def update(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            response = super(JumperUpdateAPI, self).update(request, *args, **kwargs)
-            jumper = self.get_object()
-            return self.msg.format(
-                USER=request.user.full_name,
-                NAME=jumper.name,
-                UUID=jumper.uuid,
-                CONNECT_IP=jumper.connect_ip
-            ), response
-        else:
-            return '', self.qrcode_response
+        response = super(JumperUpdateAPI, self).update(request, *args, **kwargs)
+        jumper = self.get_object()
+        return [jumper, ], self.msg.format(
+            USER=request.user.full_name,
+            NAME=jumper.name,
+            UUID=jumper.uuid,
+            CONNECT_IP=jumper.connect_ip
+        ), response
 
 
-class JumperDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    serializer_class = serializer.JumperSerializer
+class JumperDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = serializer.JumperDeleteSerializer
     queryset = models.Jumper.objects.all()
     permission_classes = [JumperPermission.JumperDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.JumperDeleteAPI
 
-    @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['JUMPER_DELETE'])
-    def delete(self, request, *args, **kwargs):
-        if self.qrcode_check(request):
-            jumper = self.get_object()
-            try:
-                group = jumper.group
-                return '', Response({
-                    'detail': settings.LANGUAGE.JumperDeleteAPICanNotDelete.format(
-                        GROUP=group.name
-                    )
-                }, status=status.HTTP_406_NOT_ACCEPTABLE)
-            except ObjectDoesNotExist:
-                response = super(JumperDeleteAPI, self).delete(request, *args, **kwargs)
-                return self.msg.format(
-                    USER=request.user.full_name,
-                    NAME=jumper.name,
-                    UUID=jumper.uuid,
-                    CONNECT_IP=jumper.connect_ip
-                ), response
-        else:
-            return '', self.qrcode_response
+    @decorator_base(JumperHistory, timeline_type=settings.TIMELINE_KEY_VALUE['JUMPER_DELETE'])
+    def update(self, request, *args, **kwargs):
+        response = super(JumperDeleteAPI, self).update(request, *args, **kwargs)
+        jumper = self.get_object()
+        return [jumper, ], self.msg.format(
+            USER=request.user.full_name,
+            NAME=jumper.name,
+            UUID=jumper.uuid,
+            CONNECT_IP=jumper.connect_ip
+        ), response

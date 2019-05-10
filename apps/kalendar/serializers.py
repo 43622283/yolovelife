@@ -20,7 +20,7 @@ STATUS_TYPE = {
 }
 
 
-class KalendarSerializer(serializers.HyperlinkedModelSerializer):
+class KalendarSerializer(serializers.ModelSerializer):
     time = serializers.DateTimeField(format='%Y-%m-%d', required=False)
     type = serializers.SerializerMethodField(read_only=True)
 
@@ -32,4 +32,16 @@ class KalendarSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_type(self, obj):
         return STATUS_TYPE[obj.status]
+
+
+class KalendarDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Kalendar
+        fields = (
+            'id', 'uuid'
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(KalendarDeleteSerializer, self).update(instance, validated_data)
 

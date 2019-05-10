@@ -7,6 +7,6 @@ from django.urls import path
 from ..api import permission
 
 urlpatterns = [
-    path(r'v1/permission/api/', permission.PermissionAPIListAPI.as_view()),
-    path(r'v1/permission/page/', permission.PermissionPageListAPI.as_view()),
+    path(r'v1/permission/api/list/', permission.PermissionAPIListAPI.as_view()),
+    path(r'v1/permission/page/list/', permission.PermissionPageListAPI.as_view()),
 ]

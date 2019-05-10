@@ -3,6 +3,7 @@
 # Time 18-3-19
 # Author Yo
 # Email YoLoveLife@outlook.com
+from rest_framework.views import Response, status
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
@@ -40,10 +41,18 @@ class INFOLOCATIONCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     lookup_url_kwarg = "pk"
 
 
-class INFOLOCATIONDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    serializer_class = location_serializer.LOCATIONSerializer
+class INFOLOCATIONDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = location_serializer.LOCATIONDeleteSerializer
     queryset = models.LOCATION.objects.all()
     permission_classes = [location_permission.LOCATIONDeleteRequiredMixin, IsAuthenticated]
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
 
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.infos.exists():
+            return Response({
+                'detail': '该地点有挂钩的项目 无法删除'
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            super(INFOLOCATIONDeleteAPI, self).update(request, *args, **kwargs)

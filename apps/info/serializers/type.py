@@ -17,3 +17,15 @@ class TYPESerializer(serializers.ModelSerializer):
         fields = (
             'id', 'uuid', 'name'
         )
+
+
+class TYPEDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TYPE
+        fields = (
+            'id', 'uuid'
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(TYPEDeleteSerializer, self).update(instance, validated_data)

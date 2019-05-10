@@ -5,22 +5,18 @@
 # Email YoLoveLife@outlook.com
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
-from deveops.utils.uuid_maker import uuid_maker
-import json
 from authority.models import ExtendUser
 from django.conf import settings
 import django.utils.timezone as timezone
 from django_mysql.models import JSONField
+from deveops.models import BaseModal
 
 __all__ = [
     'Asset', 'WorkOrder',
 ]
 
 
-class Asset(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
-
+class Asset(BaseModal):
     _status = models.IntegerField(default=settings.STATUS_ASSET_DONE,)
 
     create_time = models.DateTimeField(auto_now_add=True)
@@ -95,10 +91,7 @@ class Asset(models.Model):
         self.save()
 
 
-class AssetChange(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
-
+class AssetChange(BaseModal):
     create_time = models.DateTimeField(auto_now_add=True)
 
     type = models.IntegerField(default=settings.TYPE_ASSET_CHANGE_CREATE)
@@ -216,9 +209,7 @@ def null_tags():
     return []
 
 
-class Comment(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class Comment(BaseModal):
     description = models.TextField(default='', null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
 
@@ -233,9 +224,7 @@ class Comment(models.Model):
         )
 
 
-class Classify(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+class Classify(BaseModal):
     name = models.CharField(max_length=13, default='', null=True)
 
     class Meta:
@@ -246,10 +235,7 @@ class Classify(models.Model):
         )
 
 
-class WorkOrder(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
-
+class WorkOrder(BaseModal):
     classify = models.ForeignKey(Classify, default=None, blank=True, null=True,
                                     on_delete=models.SET_NULL, related_name='workorders')
 
@@ -315,9 +301,7 @@ class WorkOrder(models.Model):
         self.duty_user = turn_obj
 
 
-class Repository(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class Repository(BaseModal):
     title = models.CharField(max_length=200, default='', null=True, blank=True)
     description = models.TextField(default='', null=True, blank=True)
     score = models.FloatField(default=0)
@@ -360,9 +344,7 @@ class Repository(models.Model):
             self.status = settings.STATUS_REPOSITORY_MAINTENANCE
 
 
-class Record(models.Model):
-    id = models.AutoField(primary_key=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid_maker, editable=False)
+class Record(BaseModal):
     sound = models.FileField(upload_to=upload_sound_path, null=True, blank=True)
     phone = models.CharField(max_length=12, default='', null=True)
 
@@ -373,7 +355,6 @@ class Record(models.Model):
     def workorder(self):
         obj_filter = Asset.objects.filter(phone=self.phone)
         if obj_filter.exists():
-            print('exists')
             obj = obj_filter.get()
             WorkOrder.objects.create(
                 **{
@@ -389,7 +370,6 @@ class Record(models.Model):
                     'create_time': self.create_time
                 })
         else:
-            print('no_exists')
             WorkOrder.objects.create(**{
                 'sound': self.sound,
                 'create_time': self.create_time,
