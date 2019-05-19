@@ -27,6 +27,12 @@ class Notice(BaseModal):
     class Meta:
         ordering = ['create_time', ]
 
+        permissions = (
+            ('deveops_page_notice', u'注意页面'),
+            ('deveops_api_list_notice', u'获取注意'),
+            ('deveops_api_create_notice', u'新建注意'),
+        )
+
 
 class Remind(BaseModal):
     create_time = models.DateTimeField(auto_now_add=True)
@@ -38,3 +44,9 @@ class Remind(BaseModal):
 
     class Meta:
         ordering = ['create_time', ]
+
+        permissions = (
+            ('deveops_page_remind', u'提醒页面'),
+            ('deveops_api_list_remind', u'获取提醒'),
+            ('deveops_api_create_remind', u'新建提醒'),
+        )

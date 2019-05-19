@@ -27,7 +27,7 @@ class TYPEPagination(PageNumberPagination):
 class INFOTYPEListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.TYPE
     serializer_class = type_serializer.TYPESerializer
-    queryset = models.TYPE.objects.all()
+    queryset = models.TYPE.objects.filter(_visible=True)
     permission_classes = [type_permission.TYPEListRequiredMixin, IsAuthenticated]
     filter_class = filter.TYPEFilter
     pagination_class = TYPEPagination
@@ -55,4 +55,4 @@ class INFOTYPEDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
                 'detail': '该类型有挂钩的项目 无法删除'
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            super(INFOTYPEDeleteAPI, self).update(request, *args, **kwargs)
+            return super(INFOTYPEDeleteAPI, self).update(request, *args, **kwargs)

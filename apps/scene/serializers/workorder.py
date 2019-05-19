@@ -24,7 +24,7 @@ class WorkOrderSerializer(serializers.HyperlinkedModelSerializer):
         model = models.WorkOrder
         fields = (
             'id', 'uuid', 'create_time', 'update_time', 'serial_number', 'phone',
-            'department', 'user', '_status', 'title', 'description', 'sound', 'duty_user',
+            'department', 'user', '_status', 'title', 'description', 'url', 'duty_user',
             'ip_address', 'mac_address', 'tags', 'src_phone', 'location', 'classify',
         )
 
@@ -94,15 +94,14 @@ class WorkOrderDoneSerializer(serializers.ModelSerializer):
 
 
 class WorkOrderAppointSerializer(serializers.ModelSerializer):
-    appoint_id = serializers.IntegerField(required=True, write_only=True)
-
+    appoint = serializers.PrimaryKeyRelatedField(required=True, queryset=models.ExtendUser.objects.all(), write_only=True)
     class Meta:
         model = models.WorkOrder
         fields = (
-            'id', 'uuid', 'appoint_id'
+            'id', 'uuid', 'appoint'
         )
 
     def update(self, instance, validated_data):
-        obj = models.ExtendUser.objects.get(id=validated_data['appoint_id'])
-        instance.turn(obj)
+        appoint = validated_data.pop('appoint')
+        instance.turn(appoint)
         return super(WorkOrderAppointSerializer, self).update(instance, {})

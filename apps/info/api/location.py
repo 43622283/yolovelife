@@ -27,7 +27,7 @@ class LOCATIONPagination(PageNumberPagination):
 class INFOLOCATIONListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.LOCATION
     serializer_class = location_serializer.LOCATIONSerializer
-    queryset = models.LOCATION.objects.all()
+    queryset = models.LOCATION.objects.filter(_visible=True)
     permission_classes = [location_permission.LOCATIONListRequiredMixin, IsAuthenticated]
     filter_class = filter.LOCATIONFilter
     pagination_class = LOCATIONPagination
@@ -55,4 +55,4 @@ class INFOLOCATIONDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
                 'detail': '该地点有挂钩的项目 无法删除'
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            super(INFOLOCATIONDeleteAPI, self).update(request, *args, **kwargs)
+            return super(INFOLOCATIONDeleteAPI, self).update(request, *args, **kwargs)

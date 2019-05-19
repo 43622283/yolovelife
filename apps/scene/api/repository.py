@@ -27,7 +27,7 @@ class RepositoryPagination(PageNumberPagination):
     page_query_param = 'current'
 
 
-class SceneRepositoryListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
+class SceneRepositoryListAPI(WebTokenAuthentication, generics.ListAPIView):
     serializer_class = repository_serializer.RepositorySerializer
     queryset = models.Repository.objects.all().order_by('-score', '-status', '-update_time')
     permission_classes = [repository_permission.RepositoryListRequiredMixin, IsAuthenticated]

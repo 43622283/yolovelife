@@ -59,7 +59,7 @@ class Key(BaseModal):
 
 
 class ExtendUser(AbstractUser):
-    # uuid = models.UUIDField(auto_created=True, default=uuid_maker)
+    uuid = models.UUIDField(auto_created=True, default=uuid_maker)
     img = models.CharField(max_length=10, default='user.jpg')
     phone = models.CharField(max_length=11, default='None',)
     full_name = models.CharField(max_length=11, default='未获取')
@@ -83,23 +83,16 @@ class ExtendUser(AbstractUser):
     class Meta:
         permissions = (
             ('deveops_api_list_user', u'罗列用户'),
-            ('deveops_api_list_opsuser', u'罗列运维用户'),
-            ('deveops_api_list_workuser', u'罗列值班用户'),
             ('deveops_api_create_user', u'新增用户'),
             ('deveops_api_update_user', u'修改用户'),
             ('deveops_api_delete_user', u'删除用户'),
-            ('deveops_api_list_pmngroup', u'罗列权限组'),
-            ('deveops_api_create_pmngroup', u'新增权限组'),
-            ('deveops_api_update_pmngroup', u'修改权限组'),
-            ('deveops_api_delete_pmngroup', u'删除权限组'),
             # django.contrib.auth.models.Permission django.contrib.auth.models.Group 无法重构
-            ('deveops_api_list_permission', u'罗列所有权限'),
             ('deveops_api_list_role', u'罗列角色'),
             ('deveops_api_create_role', u'新增角色'),
             ('deveops_api_update_role', u'修改角色'),
+            ('deveops_api_list_permission', u'罗列权限'),
             ('deveops_page_role', u'角色页面'),
             ('deveops_page_user', u'用户页面'),
-            ('deveops_page_pmngroup', u'权限组页面'),
         )
 
     def visible(self):

@@ -59,7 +59,7 @@ class KalendarListAPI(WebTokenAuthentication, generics.ListAPIView):
             time__year=int(kwargs['year']),
             time__month=int(kwargs['month']),
             time__day=int(kwargs['day'])
-        )
+        ).exclude(_visible=False)
 
         kalendar_serializer = serializers.KalendarSerializer(kalendar_queryset, many=True)
 
@@ -112,6 +112,7 @@ class KalendarDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_url_kwarg = 'pk'
     msg = settings.LANGUAGE.KalendarDeleteAPI
 
+    @decorator_base(KalendarHistory, timeline_type=settings.TIMELINE_KEY_VALUE['KALENDAR_DELETE'])
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         response = super(KalendarDeleteAPI, self).update(request, *args, **kwargs)

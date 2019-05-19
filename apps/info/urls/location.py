@@ -7,7 +7,7 @@ from django.urls import path
 from ..api import location as LOCATIONAPI
 
 urlpatterns = [
-    path(r'v1/location/list/', LOCATIONAPI.INFOLOCATIONListAPI.as_view()),
-    path(r'v1/location/create/', LOCATIONAPI.INFOLOCATIONCreateAPI.as_view()),
-    path(r'v1/location/<uuid:pk>/delete/', LOCATIONAPI.INFOLOCATIONDeleteAPI.as_view()),
+    path(r'v2/location/list/', LOCATIONAPI.INFOLOCATIONListAPI.as_view()),
+    path(r'v2/location/create/', LOCATIONAPI.INFOLOCATIONCreateAPI.as_view()),
+    path(r'v2/location/<uuid:pk>/delete/', LOCATIONAPI.INFOLOCATIONDeleteAPI.as_view()),
 ]

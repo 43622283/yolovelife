@@ -79,12 +79,12 @@ YoCDNCreateAPI = '{USER} 刷新了若干CDN信息'
 # Utils
 
 ## FILE
-UtilsFileCreateAPI = '{USER} 在分发中心上传了文件 文件名:{FILENAME} UUID:{UUID}'
-UtilsFileUpdateAPI = '{USER} 在分发中心上传了文件 文件名:{FILENAME} UUID:{UUID}'
-UtilsFileDeleteAPI = '{USER} 在分发中心删除了未使用的文件 文件名:{FILENAME} UUID:{UUID}'
+UtilsFileCreateAPI = '{USER} 在分发中心上传了文件'
+UtilsFileUpdateAPI = '{USER} 在分发中心上传了文件'
+UtilsFileDeleteAPI = '{USER} 在分发中心删除了未使用的文件'
 
 ## IMAGE
-UtilsImageCreateAPI = '{USER} 上传了架构图 UUID:{UUID}'
+UtilsImageCreateAPI = '{USER} 上传了架构图'
 
 # Scene
 ## Report
@@ -92,12 +92,29 @@ SceneReportDayAPI = ''
 SceneReportDayFormat = '时间{start_time}: 用户{user}本日内共操作工单{workorder_count}个，' \
                        '其中{workorder_inactive}个未激活 {workorder_run}个正在运行 {workorder_done}已经完成'
 
+## Asset
+SceneAssetChangeUpdateAPI = '{USER}修改了资产扭转中的信息 扭转的资产{UUID}'
+SceneAssetChangeCreate2InstallAPI = '{USER}创建了新的资产 进入工单扭转流程 流程{UUID}'
+SceneAssetChangeCreate2ConfigAPI = '{USER}配置完新创建的资产 流程{UUID}'
+SceneAssetChangeCreate2DoneAPI = '{USER}完成资产信息登记 资产{UUID}生成完毕'
+SceneAssetChangeUpdate2CheckAPI = '{USER}更新资产进入审核状态 流程{UUID}'
+SceneAssetChangeUpdate2CheckAPILOCKED = '当前资产是无法操作状态 请将原有的资产操作流程完毕'
+SceneAssetChangeUpdate2DoneAPI = '{USER}完成资产修改的审核 资产{UUID}变更完毕'
+SceneAssetChangeStop2CheckAPI = '{USER}将资产{UUID}置于停止状态 审核流程扭转'
+SceneAssetChangeStop2CheckAPILOCKED = '当前资产是无法操作状态 请将原有的资产操作流程完毕'
+SceneAssetChangeStop2DoneAPI = '{USER}完成资产停止的审核 资产{UUID}变更完毕 已停止'
+SceneAssetChangeScrap2CheckAPI = '{USER}将资产{UUID}置于废弃状态 审核流程扭转'
+SceneAssetChangeScrap2CheckAPILOCKED = '当前资产是无法操作状态 请将原有的资产操作流程完毕'
+SceneAssetChangeScrap2DoneAPI = '{USER}完成资产废弃的审核 资产{UUID}变更完毕 已废弃'
+
+
 ##
 SceneWorkOrderCreateAPI = '{USER}自建新工单'
 SceneWorkOrderUpdateAPI = '{USER}更新工单信息'
 SceneWorkOrderActiveAPI = '{USER}激活来电工单'
-SceneWorkOrderAppointAPI = '{USER1}将工单指派给{USER2} 指派理由：{REASON}'
+SceneWorkOrderAppointAPI = '{USER1}将工单指派给{USER2}'
 SceneWorkOrderDoneAPI = '{USER}完结工单'
+SceneWorkOrderNotAccept = '您完结不是您负责的工单，请先转接工单。'
 
 # EZSetup
 EZSetupCreateRedisAPI = '{USER} 通过平台易装了Redis应用 安装信息 UUID:{UUID}'

@@ -24,16 +24,16 @@ class KalendarAPIRequiredMixin(BasePermission):
 
 
 class KalendarListRequiredMixin(KalendarAPIRequiredMixin):
-    permission_required = u'info.deveops_api_list_kalendar'
+    permission_required = u'kalendar.deveops_api_list_kalendar'
 
 
 class KalendarCreateRequiredMixin(KalendarAPIRequiredMixin):
-    permission_required = u'info.deveops_api_create_kalendar'
+    permission_required = u'kalendar.deveops_api_create_kalendar'
 
 
 class KalendarUpdateRequiredMixin(KalendarAPIRequiredMixin):
-    permission_required = u'info.deveops_api_update_kalendar'
+    permission_required = u'kalendar.deveops_api_update_kalendar'
 
 
 class KalendarDeleteRequiredMixin(KalendarAPIRequiredMixin):
-    permission_required = u'info.deveops_api_delete_kalendar'
+    permission_required = u'kalendar.deveops_api_delete_kalendar'

@@ -9,7 +9,8 @@ from rest_framework.pagination import PageNumberPagination
 from django.conf import settings
 from timeline.decorator import decorator_base
 from timeline.models import FileHistory
-from . import models, serializers, permission
+from .. import models, serializers
+from ..permissions import file as file_permission
 from deveops.api import WebTokenAuthentication
 
 __all__ = [
@@ -25,7 +26,7 @@ class FilePagination(PageNumberPagination):
 class UtilsFileListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.FILE
     serializer_class = serializers.FileSerializer
-    permission_classes = [permission.FileListRequiredMixin, IsAuthenticated]
+    permission_classes = [file_permission.FileListRequiredMixin, IsAuthenticated]
     pagination_class = FilePagination
     queryset = models.FILE.objects.all().order_by('-create_time')
 
@@ -33,7 +34,7 @@ class UtilsFileListAPI(WebTokenAuthentication, generics.ListAPIView):
 class UtilsFileCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     module = models.FILE
     serializer_class = serializers.FileSerializer
-    permission_classes = [permission.FileCreateRequiredMixin, IsAuthenticated]
+    permission_classes = [IsAuthenticated,]#[permission.FileCreateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UtilsFileCreateAPI
 
     @decorator_base(FileHistory, timeline_type=settings.TIMELINE_KEY_VALUE['FILE_CREATE'])

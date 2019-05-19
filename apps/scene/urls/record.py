@@ -7,5 +7,5 @@ from django.urls import path
 from ..api import record as RecordAPI
 
 urlpatterns = [
-    path(r'v1/record/create/', RecordAPI.SceneRecordCreateAPI.as_view()),
+    path(r'v2/record/create/', RecordAPI.SceneRecordCreateAPI.as_view()),
 ]

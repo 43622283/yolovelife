@@ -7,7 +7,7 @@ from django.urls import path
 from ..api import envirtual as ENVIRTUALAPI
 
 urlpatterns = [
-    path(r'v1/envirtual/list/', ENVIRTUALAPI.INFOENVIRTUALListAPI.as_view()),
-    path(r'v1/envirtual/create/', ENVIRTUALAPI.INFOENVIRTUALCreateAPI.as_view()),
-    path(r'v1/envirtual/<uuid:pk>/delete/', ENVIRTUALAPI.INFOENVIRTUALDeleteAPI.as_view()),
+    path(r'v2/envirtual/list/', ENVIRTUALAPI.INFOENVIRTUALListAPI.as_view()),
+    path(r'v2/envirtual/create/', ENVIRTUALAPI.INFOENVIRTUALCreateAPI.as_view()),
+    path(r'v2/envirtual/<uuid:pk>/delete/', ENVIRTUALAPI.INFOENVIRTUALDeleteAPI.as_view()),
 ]

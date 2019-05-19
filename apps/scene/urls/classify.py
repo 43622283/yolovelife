@@ -7,7 +7,7 @@ from django.urls import path
 from ..api import classify as ClassifyAPI
 
 urlpatterns = [
-    path(r'v1/classify/', ClassifyAPI.SceneClassifyListAPI.as_view()),
-    path(r'v1/classify/create/', ClassifyAPI.SceneClassifyCreateAPI.as_view()),
-    path(r'v1/classify/<uuid:pk>/delete/', ClassifyAPI.SceneClassifyDeleteAPI.as_view()),
+    path(r'v2/classify/list/', ClassifyAPI.SceneClassifyListAPI.as_view()),
+    path(r'v2/classify/create/', ClassifyAPI.SceneClassifyCreateAPI.as_view()),
+    path(r'v2/classify/<uuid:pk>/delete/', ClassifyAPI.SceneClassifyDeleteAPI.as_view()),
 ]

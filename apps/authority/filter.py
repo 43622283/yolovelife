@@ -109,3 +109,15 @@ class JumperFilter(django_filters.FilterSet):
     @staticmethod
     def info_filter(queryset, first_name, value):
         return queryset.filter(Q(name__icontains=value) | Q(info__icontains=value))
+
+
+class RoleFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(method="name_filter")
+
+    class Meta:
+        model = models.Group
+        fields = ['name',]
+
+    @staticmethod
+    def name_filter(queryset, first_name, value):
+        return queryset.filter(name__icontains=value)

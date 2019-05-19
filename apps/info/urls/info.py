@@ -7,7 +7,7 @@ from django.urls import path
 from ..api import info as INFOAPI
 
 urlpatterns = [
-    path(r'v1/info/list/', INFOAPI.INFOINFOListAPI.as_view()),
-    path(r'v1/info/create/', INFOAPI.INFOINFOCreateAPI.as_view()),
-    path(r'v1/info/<uuid:pk>/update/', INFOAPI.INFOINFOUpdateAPI.as_view()),
+    path(r'v2/info/list/', INFOAPI.INFOINFOListAPI.as_view()),
+    path(r'v2/info/create/', INFOAPI.INFOINFOCreateAPI.as_view()),
+    path(r'v2/info/<uuid:pk>/update/', INFOAPI.INFOINFOUpdateAPI.as_view()),
 ]

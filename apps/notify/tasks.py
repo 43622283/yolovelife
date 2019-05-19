@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 import json
 from celery import Task, task
 from django_redis import get_redis_connection
-from notify import serialiers
+from . import serializers
 
 
 class JumperTask(Task):
@@ -19,7 +19,7 @@ class JumperTask(Task):
 @task(base=JumperTask)
 def remind(remind_obj):
     conn = get_redis_connection('notify')
-    data = serialiers.RemindSerializer(remind_obj)
+    data = serializers.RemindSerializer(remind_obj)
     if remind_obj.groups.exists():
         for group in remind_obj.groups.all():
             for user in group.user_set.all():

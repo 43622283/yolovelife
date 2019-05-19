@@ -22,8 +22,9 @@ from timeline.serializers.workorder import WorkOrderHistorySerializer
 from django.conf import settings
 
 __all__ = [
-    'WorkOrderPagination', 'SceneWorkOrderCreateAPI', 'SceneWorkOrderDeleteAPI',
-    'SceneWorkOrderListByPageAPI', 'SceneWorkOrderUpdateAPI'
+    'SceneWorkOrderCommentAPI', 'SceneWorkOrderCreateAPI',
+    'SceneWorkOrderListAPI', 'SceneWorkOrderUpdateAPI', 'SceneWorkOrderMobileDetailAPI',
+    'SceneWorkOrderActiveAPI', 'SceneWorkOrderAppointAPI', 'SceneWorkOrderDetailAPI', 'SceneWorkOrderDoneAPI'
 ]
 
 
@@ -32,13 +33,6 @@ class WorkOrderPagination(PageNumberPagination):
     max_page_size = 60
     page_size_query_param = 'pageSize'
     page_query_param = 'current'
-
-
-class SceneWorkOrderListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.WorkOrder
-    serializer_class = workoder_serializer.WorkOrderSerializer
-    queryset = models.WorkOrder.objects.all().order_by('_status')[:7]
-    permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
 
 
 class SceneWorkOrderMobileDetailAPI(WebTokenAuthentication, generics.ListAPIView):
@@ -62,10 +56,10 @@ class SceneWorkOrderMobileDetailAPI(WebTokenAuthentication, generics.ListAPIView
         )
 
 
-class SceneWorkOrderListByPageAPI(WebTokenAuthentication, generics.ListAPIView):
+class SceneWorkOrderListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.WorkOrder
     serializer_class = workoder_serializer.WorkOrderSerializer
-    queryset = models.WorkOrder.objects.all().order_by('_status')
+    queryset = models.WorkOrder.objects.all().order_by('create_time')
     permission_classes = [workoder_permission.WorkOrderListRequiredMixin, IsAuthenticated]
     pagination_class = WorkOrderPagination
     filter_class = filter.WorkOrderFilter
@@ -81,7 +75,7 @@ class SceneWorkOrderCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         response = super(SceneWorkOrderCreateAPI, self).create(request, *args, **kwargs)
         obj = models.WorkOrder.objects.get(id=response.data['id'], uuid=response.data['uuid'])
-        return obj, self.msg.format(
+        return [obj, ], self.msg.format(
             USER=request.user.full_name,
         ), response
 
@@ -99,9 +93,9 @@ class SceneWorkOrderUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
-            return None, '', Response({'detail': u'您修改不是您负责的工单，请先转接工单。'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return None, '', Response({'detail': settings.LANGUAGE.SceneWorkOrderNotAccept}, status=status.HTTP_406_NOT_ACCEPTABLE)
         response = super(SceneWorkOrderUpdateAPI, self).update(request, *args, **kwargs)
-        return obj, self.msg.format(
+        return [obj, ], self.msg.format(
             USER=request.user.full_name,
         ), response
 
@@ -119,7 +113,7 @@ class SceneWorkOrderActiveAPI(WebTokenAuthentication, generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         response = super(SceneWorkOrderActiveAPI, self).update(request, *args, **kwargs)
-        return obj, self.msg.format(
+        return [obj, ], self.msg.format(
             USER=request.user.full_name,
         ), response
 
@@ -137,13 +131,12 @@ class SceneWorkOrderAppointAPI(WebTokenAuthentication, generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
-            return None, '', Response({'detail': u'您无法指派不是您负责的工单。'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        new_duty_user = models.ExtendUser.objects.get(id=request.data['appoint_id'])
+            return None, '', Response({'detail': settings.LANGUAGE.SceneWorkOrderNotAccept}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        new_duty_user = models.ExtendUser.objects.get(id=request.data['appoint'])
         response = super(SceneWorkOrderAppointAPI, self).update(request, *args, **kwargs)
-        return obj, self.msg.format(
+        return [obj, ], self.msg.format(
             USER1=request.user.full_name,
             USER2=new_duty_user.full_name,
-            REASON=request.data['reason']
         ), response
 
 
@@ -160,35 +153,11 @@ class SceneWorkOrderDoneAPI(WebTokenAuthentication, generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         obj = self.get_object()
         if obj.duty_user.id != request.user.id:
-            return None, '', Response({'detail': u'您完结不是您负责的工单，请先转接工单。'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return None, '', Response({'detail': settings.LANGUAGE.SceneWorkOrderNotAccept }, status=status.HTTP_406_NOT_ACCEPTABLE)
         response = super(SceneWorkOrderDoneAPI, self).update(request, *args, **kwargs)
-        return obj, self.msg.format(
+        return [obj, ], self.msg.format(
             USER=request.user.full_name,
         ), response
-
-
-class SceneWorkOrderDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
-    module = models.WorkOrder
-    serializer_class = workoder_serializer.WorkOrderSerializer
-    queryset = models.WorkOrder.objects.all()
-    permission_classes = [workoder_permission.WorkOrderUpdateRequiredMixin, IsAuthenticated]
-    lookup_field = 'uuid'
-    lookup_url_kwarg = 'pk'
-    # msg = settings.LANGUAGE.SceneWorkOrderDeleteAPI
-
-    # @decorator_api(timeline_type=settings.TIMELINE_KEY_VALUE['HOST_DELETE'])
-    # def update(self, request, *args, **kwargs):
-    #     if self.qrcode_check(request):
-    #         host = self.get_object()
-    #         response = super(SceneWorkOrderDeleteAPI, self).update(request, *args, **kwargs)
-    #         return self.msg.format(
-    #             USER=request.user.full_name,
-    #             HOSTNAME=host.hostname,
-    #             CONNECT_IP=host.connect_ip,
-    #             UUID=host.uuid,
-    #         ), response
-    #     else:
-    #         return '', self.qrcode_response
 
 
 class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
@@ -201,7 +170,7 @@ class SceneWorkOrderDetailAPI(WebTokenAuthentication, generics.ListAPIView):
         obj = self.get_object()
 
         timeline_queryset = WorkOrderHistory.objects.filter(
-            workorder=obj
+            instances=obj
         ).order_by('-id')
 
         timeline_serializer = WorkOrderHistorySerializer(timeline_queryset, many=True)

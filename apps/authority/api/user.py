@@ -34,7 +34,7 @@ class UserLoginAPI(ObtainJSONWebToken):
     @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['LOGIN'])
     def post(self, request, *args, **kwargs):
         response = super(UserLoginAPI, self).post(request, *args, **kwargs)
-        return [None, ], self.msg.format(
+        return [], self.msg.format(
             USERNAME=request.data['username']
         ), response
 
@@ -63,7 +63,7 @@ class UserPagination(PageNumberPagination):
 
 class UserListAPI(WebTokenAuthentication, generics.ListAPIView):
     serializer_class = serializer.UserSerializer
-    queryset = models.ExtendUser.objects.filter(_visible=True)
+    queryset = models.ExtendUser.objects.all() #filter(_visible=True)
     permission_classes = [UserPermission.UserListRequiredMixin, IsAuthenticated]
     pagination_class = UserPagination
     filter_class = filter.UserFilter
@@ -78,7 +78,7 @@ class UserCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_CREATE'])
     def create(self, request, *args, **kwargs):
         response = super(UserCreateAPI, self).create(request, *args, **kwargs)
-        obj = models.ExtendUser.get(id=response.data['id'], uuid=response.data['uuid'])
+        obj = models.ExtendUser.objects.get(id=response.data['id'], uuid=response.data['uuid'])
 
         return [obj, ], self.msg.format(
             USER=request.user.full_name,
@@ -92,6 +92,8 @@ class UserUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     queryset = models.ExtendUser.objects.all()
     permission_classes = [UserPermission.UserUpdateRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UserUpdateAPI
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'pk'
 
     @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_UPDATE'])
     def update(self, request, *args, **kwargs):
@@ -109,6 +111,8 @@ class UserDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
     queryset = models.ExtendUser.objects.all()
     permission_classes = [UserPermission.UserDeleteRequiredMixin, IsAuthenticated]
     msg = settings.LANGUAGE.UserDeleteAPI
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'pk'
 
     @decorator_base(UserHistory, timeline_type=settings.TIMELINE_KEY_VALUE['USER_DELETE'])
     def update(self, request, *args, **kwargs):

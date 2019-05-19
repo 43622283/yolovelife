@@ -4,7 +4,7 @@
 # Author Yo
 # Email YoLoveLife@outlook.com
 from rest_framework import serializers
-from notify import models
+from . import models
 
 __all__ = [
     'NoticeSerializer',

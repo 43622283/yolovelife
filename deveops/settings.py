@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     # 'work.apps.WorkConfig',
     'timeline.apps.TimelineConfig',
     # 'variable.apps.VariableConfig',
-    # 'dashboard.apps.DashboardConfig',
+    'dashboard.apps.DashboardConfig',
     # 'yodns.apps.YoDnsConfig',
     # 'zdb.apps.ZDBConfig',
     # 'monitor.apps.MonitorConfig',
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'kalendar.apps.KalendarConfig',
     'notify.apps.NotifyConfig',
     'info.apps.InfoConfig',
+    'organization.apps.OrganizationConfig',
     'rest_framework',
     'rest_framework_jwt',
     'corsheaders',
@@ -67,7 +68,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django_celery_beat',
-    'channels',
     'django_mysql',
     # 'django.contrib.messages',
     # 'bootstrap3',
@@ -110,11 +110,11 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
-    'localhost:8000',
-    'localhost:8080',
-    '10.100.100.246:8888',
-    '192.168.122.222:8000',
-    'dev-deveops.8531.cn',
+    'http://localhost:8000',
+    'http://localhost:8080',
+    'http://10.100.100.246:8888',
+    'http://192.168.122.222:8000',
+    'http://dev-deveops.8531.cn',
 )
 
 ROOT_URLCONF = 'deveops.urls'
@@ -146,6 +146,19 @@ CACHES = {
             HOST=REDIS_HOST,
             PORT=REDIS_PORT,
             SPACE=REDIS_CACHE_SPACE,
+        ),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {"max_connections": REDIS_CONNECT_MAX},
+            'PASSWORD': REDIS_PASSWD,
+        }
+    },
+    'organization': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{HOST}:{PORT}/{SPACE}'.format(
+            HOST=REDIS_HOST,
+            PORT=REDIS_PORT,
+            SPACE=REDIS_ORGANIZATION_SPACE,
         ),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
@@ -342,69 +355,3 @@ else:
 
 # LANGUAGE
 LANGUAGE = importlib.import_module('deveops.i18n.' + I18N)
-
-# CHANNEL
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(
-                "redis://:{PASSWORD}@{HOST}:{PORT}/{SPACE}".format(
-                    PASSWORD=REDIS_PASSWD,
-                    HOST=REDIS_HOST,
-                    PORT=REDIS_PORT,
-                    SPACE=REDIS_CHANNEL_SPACE)
-            )],
-        },
-    },
-}
-
-#DJANGO LOG
-# if DEBUG == True:
-#     LOGGING_LEVEL = 'DEBUG'
-# else:
-#     LOGGING_LEVEL = 'WARNING'
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#        'standard': {
-#            # 'format': '%(levelname)s-%(asctime)s-'
-#            'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s]- %(message)s'  #日志格式
-#        }
-#     },
-#     'filters': {
-#     },
-#     'handlers': {
-#         'default': {
-#             'level':LOGGING_LEVEL,
-#             'class':'logging.handlers.RotatingFileHandler',
-#             'filename': 'logs/django.log',     #日志输出文件
-#             'maxBytes': 1024*1024*5,                  #文件大小
-#             'backupCount': 5,                         #备份份数
-#             'formatter':'standard',                   #使用哪种formatters日志格式
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ['default'],
-#             'level': LOGGING_LEVEL,
-#             'propagate': False
-#         }
-#     }
-# }
-#
-# #PERSON LOG
-# import logging
-# import logging.config
-# # logging.basicConfig(level=logging.DEBUG,
-# #                     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-# #                     datefmt='%a, %d %b %Y %H:%M:%S',
-# #                     filename='logs/myapp.log',
-# #                     filemode='w')
-#
-# logging.config.fileConfig('logging.ini')
-# logger = logging.getLogger("deveops.api")
-# logging.debug('This is debug message')
-# logging.info('This is info message')
-# logging.warning('This is warning message')

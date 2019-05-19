@@ -7,8 +7,8 @@ from django.urls import path
 from ..api import key
 
 urlpatterns = [
-    path(r'v1/key/list/', key.KeyListAPI.as_view()),
-    path(r'v1/key/create/', key.KeyCreateAPI.as_view()),
-    path(r'v1/key/<uuid:pk>/update/', key.KeyUpdateAPI.as_view()),
-    path(r'v1/key/<uuid:pk>/delete/', key.KeyDeleteAPI.as_view()),
+    path(r'v2/key/list/', key.KeyListAPI.as_view()),
+    path(r'v2/key/create/', key.KeyCreateAPI.as_view()),
+    path(r'v2/key/<uuid:pk>/update/', key.KeyUpdateAPI.as_view()),
+    path(r'v2/key/<uuid:pk>/delete/', key.KeyDeleteAPI.as_view()),
 ]

@@ -27,7 +27,7 @@ class ENVIRTUALPagination(PageNumberPagination):
 class INFOENVIRTUALListAPI(WebTokenAuthentication, generics.ListAPIView):
     module = models.ENVIRTUAL
     serializer_class = envirtual_serializer.ENVIRTUALSerializer
-    queryset = models.ENVIRTUAL.objects.all()
+    queryset = models.ENVIRTUAL.objects.filter(_visible=True)
     permission_classes = [envirtual_permission.ENVIRTUALListRequiredMixin, IsAuthenticated]
     filter_class = filter.ENVIRTUALFilter
     pagination_class = ENVIRTUALPagination
@@ -55,4 +55,4 @@ class INFOENVIRTUALDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
                 'detail': '该环境有挂钩的项目 无法删除'
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            super(INFOENVIRTUALDeleteAPI, self).update(request, *args, **kwargs)
+            return super(INFOENVIRTUALDeleteAPI, self).update(request, *args, **kwargs)

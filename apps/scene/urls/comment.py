@@ -14,8 +14,8 @@ from ..api import record as RecordAPI
 
 urlpatterns = [
     # Resource comment api
-    # path(r'v1/comment/', CommentAPI.SceneCommentListAPI.as_view()),
-    # path(r'v1/comment/create/', CommentAPI.SceneCommentCreateAPI.as_view()),
-    # path(r'v1/comment/<uuid:pk>/update/', CommentAPI.SceneCommentUpdateAPI.as_view()),
-    path(r'v1/comment/<uuid:pk>/delete/', CommentAPI.SceneCommentDeleteAPI.as_view()),
+    # path(r'v2/comment/', CommentAPI.SceneCommentListAPI.as_view()),
+    # path(r'v2/comment/create/', CommentAPI.SceneCommentCreateAPI.as_view()),
+    # path(r'v2/comment/<uuid:pk>/update/', CommentAPI.SceneCommentUpdateAPI.as_view()),
+    path(r'v2/comment/<uuid:pk>/delete/', CommentAPI.SceneCommentDeleteAPI.as_view()),
 ]

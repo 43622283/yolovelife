@@ -8,6 +8,7 @@ from django.db import models
 from authority.models import ExtendUser
 from django.conf import settings
 from deveops.models import BaseModal
+from utils.models import IMAGE
 
 __all__ = [
 
@@ -58,13 +59,7 @@ class ENVIRTUAL(BaseModal):
         )
 
 
-def upload_image_path(instance, filename):
-    t = filename.split('.')
-    return 'framework' + '/' + str(instance.uuid) + t[1]
-
-
 class INFO(BaseModal):
-
     name = models.CharField(max_length=300, default='无')
     detail = models.TextField(default='无')
 
@@ -76,7 +71,7 @@ class INFO(BaseModal):
     domain = models.TextField(default='无', null=True, blank=True)
     location = models.ForeignKey(LOCATION, related_name='infos', null=True, on_delete=models.SET_NULL)
     envirtual = models.ForeignKey(ENVIRTUAL, related_name='infos', null=True, on_delete=models.SET_NULL)
-    image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
+    image = models.ForeignKey(IMAGE, related_name='infos', null=True, on_delete=models.SET_NULL)
 
     class Meta:
         permissions = (

@@ -18,7 +18,7 @@ class AssetSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Asset
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
+            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number', 'service_number', 'machine_type', 'remark',
             'phone', 'department', 'user', 'location', '_status'
         )
 
@@ -30,7 +30,7 @@ class AssetChangeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.AssetChange
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
+            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number', 'service_number', 'machine_type', 'remark',
             'phone', 'department', 'user', 'location', '_status', 'type', 'create_time',
             '_connect'
         )
@@ -40,7 +40,7 @@ class AssetChangeCreate2InstallSerializer(AssetChangeSerializer):
     class Meta:
         model = models.AssetChange
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
+            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number', 'service_number', 'machine_type', 'remark',
             'phone', 'department', 'user', 'location', '_status', 'type',
         )
 
@@ -66,12 +66,11 @@ class AssetChangeCreate2DoneSerializer(AssetChangeSerializer):
     class Meta:
         model = models.AssetChange
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
-            'phone', 'department', 'user', 'location', 'type',
+            'id', 'uuid',
         )
 
     def update(self, instance, validated_data):
-        obj = super(AssetChangeCreate2DoneSerializer, self).update(instance, validated_data)
+        obj = super(AssetChangeCreate2DoneSerializer, self).update(instance, {})
         obj.create()
         obj.self2done()
         return obj
@@ -81,7 +80,7 @@ class AssetChangeUpdate2CheckSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Asset
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
+            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number', 'service_number', 'machine_type', 'remark',
             'phone', 'department', 'user', 'location',
         )
 
@@ -95,12 +94,11 @@ class AssetChangeUpdate2DoneSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.AssetChange
         fields = (
-            'id', 'uuid', 'ip_address', 'mac_address', 'serial_number',
-            'phone', 'department', 'user', 'location',
+            'id', 'uuid'
         )
 
     def update(self, instance, validated_data):
-        obj = super(AssetChangeUpdate2DoneSerializer, self).update(instance, validated_data)
+        obj = super(AssetChangeUpdate2DoneSerializer, self).update(instance, {})
         obj.update()
         return obj
 

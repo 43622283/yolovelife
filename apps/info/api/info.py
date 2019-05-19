@@ -51,3 +51,12 @@ class INFOINFOUpdateAPI(WebTokenAuthentication, generics.UpdateAPIView):
     lookup_field = "uuid"
     lookup_url_kwarg = "pk"
 
+    def update(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.main_manager.id != request.user.id:
+            return Response({
+                'detail': '您无法操作不属于您主管的信息'
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            return super(INFOINFOUpdateAPI, self).update(request, *args, **kwargs)
+

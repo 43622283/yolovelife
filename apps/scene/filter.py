@@ -54,6 +54,47 @@ class AssetFilter(django_filters.FilterSet):
     def status_filter(queryset, first_name, value):
         return queryset.filter(_status=value)
 
+class AssetChangeFilter(django_filters.FilterSet):
+    user = django_filters.CharFilter(method="user_filter")
+    ip_address = django_filters.CharFilter(method="ip_filter")
+    phone = django_filters.CharFilter(method="phone_filter")
+    department_location = django_filters.CharFilter(method="department_location_filter")
+    user_phone = django_filters.CharFilter(method="user_phone_filter")
+    user_phone_split = django_filters.CharFilter(method="user_phone_split_filter")
+    status = django_filters.CharFilter(method="status_filter")
+
+    class Meta:
+        model = models.AssetChange
+        fields = ['user', 'ip_address', 'phone', 'department', 'status']
+
+    @staticmethod
+    def user_filter(queryset, first_name, value):
+        return queryset.filter(user__contains=value)
+
+    @staticmethod
+    def ip_filter(queryset, first_name, value):
+        return queryset.filter(ip_address__contains=value)
+
+    @staticmethod
+    def phone_filter(queryset, first_name, value):
+        return queryset.filter(phone__contains=value)
+
+    @staticmethod
+    def department_location_filter(queryset, first_name, value):
+        return queryset.filter(Q(department__contains=value) | Q(location__contains=value))
+
+    @staticmethod
+    def user_phone_filter(queryset, first_name, value):
+        return queryset.filter(Q(user__contains=value) | Q(phone__contains=value))
+
+    @staticmethod
+    def user_phone_split_filter(queryset, first_name, value):
+        return queryset.filter(Q(user__contains=value) | Q(phone__contains=value))[:20]
+
+    @staticmethod
+    def status_filter(queryset, first_name, value):
+        return queryset.filter(_status=value)
+
 
 class WorkOrderFilter(django_filters.FilterSet):
     duty_user = django_filters.CharFilter(method="duty_user_filter")

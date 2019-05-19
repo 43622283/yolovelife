@@ -23,8 +23,8 @@ class PermissionAPIRequiredMixin(BasePermission):
 
 
 class PermissionAPIListRequiredMixin(PermissionAPIRequiredMixin):
-    permission_required = u'authority.deveops_list_permission'
+    permission_required = u'authority.deveops_api_list_permission'
 
 
 class PermissionPageListRequiredMixin(PermissionAPIRequiredMixin):
-    permission_required = u'authority.deveops_list_permission'
+    permission_required = u'authority.deveops_api_list_permission'

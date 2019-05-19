@@ -34,7 +34,7 @@ urlpatterns = [
     # path(r'api-dns/', include('yodns.urls.api_urls')),
     # path(r'api-cdn/', include('yocdn.urls.api_urls')),
     # path(r'api-zdb/', include('zdb.urls.api_urls')),
-    # path(r'api-dashboard/', include('dashboard.urls.api_urls')),
+    path(r'api-dashboard/', include('dashboard.api_urls')),
     # path(r'api-slot/', include('slot.urls.api_urls')),
     # path(r'api-monitor/', include('monitor.urls.api_urls')),
     # path(r'api-console/', include('console.urls.api_urls')),
@@ -45,6 +45,7 @@ urlpatterns = [
     path(r'api-kalendar/', include('kalendar.api_urls')),
     path(r'api-notify/', include('notify.api_urls')),
     path(r'api-info/', include('info.api_urls')),
+    path(r'api-organization/', include('organization.api_urls')),
     path(r'api-docs/', include_docs_urls(title=u'接口说明文档', authentication_classes=[], permission_classes=[])),
     re_path(r'media/(?P<path>.*)', serve, {"document_root": settings.MEDIA_ROOT}),
 ]

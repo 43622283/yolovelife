@@ -38,18 +38,18 @@ class SceneClassifyCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
     permission_classes = [classify_permission.ClassifyCreateRequiredMixin, IsAuthenticated]
 
 
-class SceneClassifyDeleteAPI(WebTokenAuthentication, generics.DestroyAPIView):
-    serializer_class = classify_serializer.ClassifySerializer
+class SceneClassifyDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
+    serializer_class = classify_serializer.ClassifyDeleteSerializer
     queryset = models.Classify.objects.all()
     permission_classes = [classify_permission.ClassifyDeleteRequiredMixin, IsAuthenticated]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'pk'
 
-    def delete(self, request, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         classify = self.get_object()
         if classify.workorders.exists():
             return Response({
                 'detail': '您操作的分类下有多个工单，无法删除'
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-        return super(SceneClassifyDeleteAPI, self).delete(request, *args, **kwargs)
+        return super(SceneClassifyDeleteAPI, self).update(request, *args, **kwargs)

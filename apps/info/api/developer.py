@@ -25,7 +25,6 @@ class DEVELOPERPagination(PageNumberPagination):
 
 
 class INFODEVELOPERListAPI(WebTokenAuthentication, generics.ListAPIView):
-    module = models.DEVELOPER
     serializer_class = developer_serializer.DEVELOPERSerializer
     queryset = models.DEVELOPER.objects.filter(_visible=True)
     permission_classes = [developer_permission.DEVELOPERListRequiredMixin, IsAuthenticated]
@@ -55,4 +54,4 @@ class INFODEVELOPERDeleteAPI(WebTokenAuthentication, generics.UpdateAPIView):
                 'detail': '该开发者有负责的项目 无法删除'
             }, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            super(INFODEVELOPERDeleteAPI, self).update(request, *args, **kwargs)
+            return super(INFODEVELOPERDeleteAPI, self).update(request, *args, **kwargs)

@@ -7,7 +7,7 @@ from django.urls import path
 from ..api import type as TYPEAPI
 
 urlpatterns = [
-    path(r'v1/type/list/', TYPEAPI.INFOTYPEListAPI.as_view()),
-    path(r'v1/type/create/', TYPEAPI.INFOTYPECreateAPI.as_view()),
-    path(r'v1/type/<uuid:pk>/delete/', TYPEAPI.INFOTYPEDeleteAPI.as_view()),
+    path(r'v2/type/list/', TYPEAPI.INFOTYPEListAPI.as_view()),
+    path(r'v2/type/create/', TYPEAPI.INFOTYPECreateAPI.as_view()),
+    path(r'v2/type/<uuid:pk>/delete/', TYPEAPI.INFOTYPEDeleteAPI.as_view()),
 ]

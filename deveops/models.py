@@ -22,3 +22,4 @@ class BaseModal(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['id', 'uuid']

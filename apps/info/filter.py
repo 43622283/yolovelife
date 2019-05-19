@@ -72,7 +72,7 @@ class INFOFilter(django_filters.FilterSet):
     @staticmethod
     def name_filter(queryset, first_name, value):
         return queryset.filter(
-                Q(name__icontains=value) | Q(detail__icontains=value)
+                Q(name__icontains=value) | Q(detail__icontains=value) | Q(domain__icontains=value)
                 ).distinct()
 
     @staticmethod

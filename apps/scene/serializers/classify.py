@@ -18,3 +18,16 @@ class ClassifySerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'id', 'uuid', 'name'
         )
+
+
+class ClassifyDeleteSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Classify
+        fields = (
+            'id', 'uuid',
+        )
+
+    def update(self, instance, validated_data):
+        instance.visible()
+        return super(ClassifyDeleteSerializer, self).update(instance, validated_data)

@@ -25,12 +25,6 @@ class UserSerializer(serializers.ModelSerializer):
             'id',
         )
 
-    def create(self, validated_data):
-        obj = super(UserSerializer, self).create(validated_data=validated_data)
-        obj.set_password('deveops')
-        obj.save()
-        return obj
-
 
 class UserDeleteSerializer(serializers.ModelSerializer):
 
@@ -41,5 +35,6 @@ class UserDeleteSerializer(serializers.ModelSerializer):
         )
 
     def update(self, instance, validated_data):
+        instance.is_active = False
         instance.visible()
         return super(UserDeleteSerializer, self).update(instance, {})

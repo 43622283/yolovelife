@@ -10,7 +10,7 @@ def decorator_base(ClassName, timeline_type):
         def inner_wrapper(*args, **kwargs):
             instances, msg, response = func(*args, **kwargs)
             if 100 < response.status_code < 300:
-                obj = ClassName.objects.create(type=timeline_type)
+                obj = ClassName.objects.create(type=timeline_type, msg=msg)
                 obj.instances.set(instances)
             return response
         return inner_wrapper

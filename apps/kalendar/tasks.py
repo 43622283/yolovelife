@@ -20,7 +20,7 @@ def kalendar_push(time):
         time__year=time.year,
         time__month=time.month,
         time__day=time.day
-    )
+    ).exclude(_visible=False)
 
     kalendar_serializer = serializers.KalendarSerializer(kalendar_queryset, many=True)
     conn.set(time.strftime('%Y-%m-%d'), json.dumps(kalendar_serializer.data))

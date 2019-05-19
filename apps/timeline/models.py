@@ -9,7 +9,7 @@ from deveops.utils.uuid_maker import uuid_maker
 from deveops.models import BaseModal
 
 from scene.models import WorkOrder, AssetChange
-from utils.models import FILE
+from utils.models import FILE, IMAGE
 from authority.models import Jumper, Key, ExtendUser
 from kalendar.models import Kalendar
 
@@ -37,6 +37,10 @@ class KeyHistory(AbstractHistory):
 
 class FileHistory(AbstractHistory):
     instances = models.ManyToManyField(FILE, default=None, blank=True, related_name='file_history')
+
+
+class ImageHistory(AbstractHistory):
+    instances = models.ManyToManyField(IMAGE, default=None, blank=True, related_name='image_history')
 
 
 class RoleHistory(AbstractHistory):

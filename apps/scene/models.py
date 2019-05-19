@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+    # -*- coding:utf-8 -*-
 # !/usr/bin/env python
 # Time 19-03-27
 # Author Yo
@@ -21,19 +21,25 @@ class Asset(BaseModal):
 
     create_time = models.DateTimeField(auto_now_add=True)
 
-    location = models.CharField(max_length=15, default='', null=True)
+    location = models.CharField(max_length=50, default='', blank=True)
 
-    ip_address = models.CharField(max_length=15, default='', null=True)
+    ip_address = models.CharField(max_length=50, default='', blank=True)
 
-    mac_address = models.CharField(max_length=25, default='', null=False)
+    mac_address = models.CharField(max_length=25, default='', blank=True)
 
-    serial_number = models.CharField(max_length=30, default='', null=True)
+    serial_number = models.CharField(max_length=128, default='', blank=True)
 
-    phone = models.CharField(max_length=12, default='', null=True)
+    service_number = models.CharField(max_length=128, default='', blank=True)
 
-    department = models.CharField(max_length=50, default='', null=True)
+    machine_type = models.CharField(max_length=128, default='', blank=True)
 
-    user = models.CharField(max_length=50, default='', null=True)
+    phone = models.CharField(max_length=20, default='', blank=True)
+
+    department = models.CharField(max_length=50, default='', blank=True)
+
+    user = models.CharField(max_length=50, default='', blank=True)
+
+    remark = models.TextField(default='', blank=True)
 
     class Meta:
         permissions = (
@@ -62,6 +68,9 @@ class Asset(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -80,6 +89,9 @@ class Asset(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -98,19 +110,25 @@ class AssetChange(BaseModal):
 
     _status = models.IntegerField(default=settings.STATUS_ASSET_CHANGE_CHECK,)
 
-    location = models.CharField(max_length=15, default='', null=True)
+    location = models.CharField(max_length=15, default='', blank=False)
 
-    ip_address = models.CharField(max_length=15, default='', null=True)
+    ip_address = models.CharField(max_length=15, default='', blank=True)
 
-    mac_address = models.CharField(max_length=25, default='', null=False)
+    mac_address = models.CharField(max_length=25, default='', blank=True)
 
-    serial_number = models.CharField(max_length=30, default='', null=True)
+    serial_number = models.CharField(max_length=128, default='', blank=True)
 
-    phone = models.CharField(max_length=12, default='', null=True)
+    service_number = models.CharField(max_length=128, default='', blank=True)
 
-    department = models.CharField(max_length=50, default='', null=True)
+    machine_type = models.CharField(max_length=128, default='', blank=True)
 
-    user = models.CharField(max_length=50, default='', null=True)
+    phone = models.CharField(max_length=12, default='', blank=False)
+
+    department = models.CharField(max_length=50, default='', blank=False)
+
+    user = models.CharField(max_length=50, default='', blank=False)
+
+    remark = models.CharField(max_length=128, default='', blank=True)
 
     def self2install(self):
         self._status = settings.STATUS_ASSET_CHANGE_INSTALL
@@ -131,6 +149,9 @@ class AssetChange(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -147,6 +168,9 @@ class AssetChange(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -163,6 +187,9 @@ class AssetChange(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -179,6 +206,9 @@ class AssetChange(BaseModal):
                 'ip_address': self.ip_address,
                 'mac_address': self.mac_address,
                 'serial_number': self.serial_number,
+                'service_number': self.service_number,
+                'machine_type': self.machine_type,
+                'remark': self.remark,
                 'phone': self.phone,
                 'department': self.department,
                 'user': self.user,
@@ -300,6 +330,12 @@ class WorkOrder(BaseModal):
         # obj = ExtendUser.objects.get(id=turn_id)
         self.duty_user = turn_obj
 
+    @property
+    def url(self):
+        return '{HTTP_API_DOMAIN}{URL}'.format(
+            HTTP_API_DOMAIN=settings.HTTP_API_DOMAIN,
+            URL=self.sound.url,
+        )
 
 class Repository(BaseModal):
     title = models.CharField(max_length=200, default='', null=True, blank=True)

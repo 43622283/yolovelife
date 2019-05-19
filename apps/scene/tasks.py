@@ -3,11 +3,8 @@
 # Time 19-03-27
 # Author Yo
 # Email YoLoveLife@outlook.com
-import time
-import os
 import json
-from datetime import datetime, date, timedelta
-from django.db.models import Q
+from datetime import date, timedelta
 from celery.task import periodic_task
 from django_redis import get_redis_connection
 from django.conf import settings

@@ -12,7 +12,7 @@ from ..permissions import role as RolePermission
 from ..serializers import role as serializer
 from ..serializers import user as user_serializer
 from ..serializers import permission as permission_serializer
-from ..filter import UserFilter, PageFilter
+from ..filter import UserFilter, PageFilter, RoleFilter, APIFilter
 from .. import models
 from timeline.decorator import decorator_base
 from timeline.models import RoleHistory
@@ -35,6 +35,7 @@ class RoleListAPI(WebTokenAuthentication, generics.ListAPIView):
     queryset = models.Group.objects.all().filter(name__startswith='role_')
     permission_classes = [RolePermission.RoleListRequiredMixin, IsAuthenticated]
     pagination_class = RolePagination
+    filter_class = RoleFilter
 
 
 class RoleCreateAPI(WebTokenAuthentication, generics.CreateAPIView):
@@ -198,7 +199,7 @@ class RoleAPIAPI(WebTokenAuthentication, generics.ListAPIView):
     lookup_url_kwarg = 'pk'
     lookup_field = 'id'
     pagination_class = RolePagination
-    filter_class = PageFilter
+    filter_class = APIFilter
 
     def get_queryset(self):
         obj = models.Group.objects.get(
